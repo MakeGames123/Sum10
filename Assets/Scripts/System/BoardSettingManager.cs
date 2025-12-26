@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using UnityEngine.UI;
 using System.Drawing;
+using Unity.Mathematics;
 public class BoardSettingManager : MonoBehaviour
 {
     public int n;
@@ -12,18 +13,10 @@ public class BoardSettingManager : MonoBehaviour
     public int[,] boardValues;
     private GridLayoutGroup gridLayout;
     public RectTransform boardRoot;
+    public RectTransform boardSkin;
     [SerializeField] private CellView cellPrefab;
     private PathFinder pathFinder = new();
     BoardManager boardManager;
-    Dictionary<int, float> scaleMap = new()
-    {
-        {8, 1f},
-        {7, 1.14f},
-        {6, 1.75f},
-        {5, 2.1f},
-        {4, 2.7f},
-        {3, 3.6f},
-    };
     void Awake()
     {
         gridLayout = boardRoot.GetComponent<GridLayoutGroup>();
@@ -322,7 +315,13 @@ public class BoardSettingManager : MonoBehaviour
         {
             gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             gridLayout.constraintCount = n;
+
+            gridLayout.spacing = new Vector2(ThemeManager.Instance.selectedTheme.spacing, ThemeManager.Instance.selectedTheme.spacing);
+            gridLayout.cellSize = new Vector2(ThemeManager.Instance.selectedTheme.gridSize, ThemeManager.Instance.selectedTheme.gridSize);
         }
+
+        boardSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardWidth);
+        boardSkin.anchoredPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.boardOffset);
 
         // 3. 기존 셀 제거
         for (int i = boardRoot.childCount - 1; i >= 0; i--)
@@ -343,6 +342,6 @@ public class BoardSettingManager : MonoBehaviour
                 cells[x, y] = cell;
             }
         }
-        boardRoot.localScale = Vector3.one * scaleMap[n];
+        boardRoot.localScale = Vector3.one * ThemeManager.Instance.selectedTheme.scale[n - 3];
     }
 }

@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
         get { return remainingTime; }
         set
         {
-            remainingTime = Mathf.Min(30, value);
+            remainingTime = Mathf.Min(3000, value);
         }
     }
     private bool isRunning = false;

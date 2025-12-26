@@ -10,21 +10,12 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     public int Y { get; private set; }
 
     [Header("References")]
-    [SerializeField] private Image background;
+    [SerializeField] private Image cellImage;
+    [SerializeField] private Image cellBackground;
     [SerializeField] private TextMeshProUGUI numberText;
 
-    [Header("Number Cell Sprites")]
-    [SerializeField] private Sprite normalSprite;       // 기본 셀
-    [SerializeField] private Sprite selectedSprite;     // 선택된 셀
-    [SerializeField] private Sprite hintSprite;         // 힌트 셀
-
-    [Header("Blank Cell Sprites")]
-    [SerializeField] private Sprite blankNormalSprite;      // 공백 셀
-    [SerializeField] private Sprite blankSelectedSprite;    // 선택된 공백 셀
-    [SerializeField] private Sprite blankHintSprite;        // 공백 셀 힌트
-
-    [Header("Text Color")]
-    [SerializeField] private Color numberColor    = new Color(0.1f, 0.1f, 0.25f, 1f);      // 검은색-남색 계열
+    private CellSprite normalSprite;
+    private CellSprite blankSprite;
 
     [Header("Animation Settings")]
     [SerializeField] private float selectAnimDuration = 0.3f;
@@ -52,6 +43,8 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         this.board = board;
         this.X = x;
         this.Y = y;
+        normalSprite = ThemeManager.Instance.selectedTheme.normalSpriteSets[Random.Range(0, ThemeManager.Instance.selectedTheme.normalSpriteSets.Count)];
+        blankSprite = ThemeManager.Instance.selectedTheme.blankSpriteSets[Random.Range(0, ThemeManager.Instance.selectedTheme.blankSpriteSets.Count)];
         SetValue(initialValue);
     }
     
@@ -63,7 +56,6 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         {
             numberText.text = value.ToString();
             numberText.enabled = true;
-            numberText.color = numberColor;
         }
         else
         {
@@ -101,13 +93,18 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
     private void UpdateVisualState()
     {
-        if (background != null)
+        if(ThemeManager.Instance.selectedTheme.cellBackground != null) {
+            cellBackground.sprite = ThemeManager.Instance.selectedTheme.cellBackground;
+            cellBackground.enabled = true;
+        }
+        else cellBackground.enabled = false;
+        if (cellImage != null)
         {
             Sprite targetSprite = GetCurrentSprite();
             if (targetSprite != null)
-                background.sprite = targetSprite;
+                cellImage.sprite = targetSprite;
 
-            background.color = Color.white; // 스프라이트 자체 색상 유지
+            cellImage.color = Color.white; // 스프라이트 자체 색상 유지
         }
 
         // 애니메이션 처리
@@ -246,21 +243,21 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
         if (isBlankCell)
         {
-            // 공백 셀
-            if (isSelected && blankSelectedSprite != null)
-                return blankSelectedSprite;
-            if (isHint && blankHintSprite != null)
-                return blankHintSprite;
-            return blankNormalSprite;
+            // 숫자 셀
+            if (isSelected && blankSprite.selectedSprite != null)
+                return blankSprite.selectedSprite;
+            if (isHint && blankSprite.hintSprite != null)
+                return blankSprite.hintSprite;
+            return blankSprite.normalSprite;
         }
         else
         {
             // 숫자 셀
-            if (isSelected && selectedSprite != null)
-                return selectedSprite;
-            if (isHint && hintSprite != null)
-                return hintSprite;
-            return normalSprite;
+            if (isSelected && normalSprite.selectedSprite != null)
+                return normalSprite.selectedSprite;
+            if (isHint && normalSprite.hintSprite != null)
+                return normalSprite.hintSprite;
+            return normalSprite.normalSprite;
         }
     }
 

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ff26c4546c9f20498ddea60a84094fa, type: 3}
+  m_Name: KeyCaps
+  m_EditorClassIdentifier: 
+  themeName: KeyCaps
+  normalSpriteSets:
+  - normalSprite: {fileID: 21300000, guid: dc5305955be72864aac666bc09762c20, type: 3}
+    hintSprite: {fileID: 21300000, guid: d20d572d72d27784f858f31bbdf48723, type: 3}
+    selectedSprite: {fileID: 21300000, guid: ddf89002b31d36a4b95bc3d11cc670d9, type: 3}
+  - normalSprite: {fileID: 21300000, guid: e1167be7f9addcc4c811104aedeadaf3, type: 3}
+    hintSprite: {fileID: 21300000, guid: 0dd89e91da3f08f409254877df59b02c, type: 3}
+    selectedSprite: {fileID: 21300000, guid: 8d8067be2186e34488d4273deb5bd754, type: 3}
+  blankSpriteSets:
+  - normalSprite: {fileID: 21300000, guid: 904821b632594a248b2b98e7ccb3c57e, type: 3}
+    hintSprite: {fileID: 21300000, guid: db6ccb210d6d1f54ebf60424adaea25e, type: 3}
+    selectedSprite: {fileID: 21300000, guid: de93db7672cca3e44bfa74c7e8382a7d, type: 3}
+  boardSkin: {fileID: 21300000, guid: dab64fffd908900418213fdd14ece396, type: 3}
+  cellBackground: {fileID: 21300000, guid: a1687e02a3ff3c844816be5e1bac55cf, type: 3}

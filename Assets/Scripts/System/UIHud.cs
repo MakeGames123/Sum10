@@ -47,7 +47,7 @@ public class UIHud : MonoBehaviour
     // 점수 변경 이벤트 콜백
     private void HandleComboChanged(int newCombo)
     {
-        if(newCombo <= 1)comboText.enabled = false;
+        if (newCombo <= 1) comboText.enabled = false;
         else comboText.enabled = true;
         comboText.text = $"Combo : {newCombo}";
     }
@@ -57,7 +57,12 @@ public class UIHud : MonoBehaviour
         if (timeText != null)
         {
             timeText.text = remainingTime.ToString("0.#");
-            timer.value = remainingTime/30;
+
+            float rawValue = remainingTime / 30f;
+
+            float visualValue = (rawValue * (1f - 0.14f)) + 0.14f;
+
+            timer.value = visualValue;
         }
     }
 }
