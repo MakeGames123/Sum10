@@ -64,6 +64,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   n: 0
   boardRoot: {fileID: 0}
+  boardSkin: {fileID: 0}
   cellPrefab: {fileID: 2928456024096394897, guid: 3ab2810dedde85141a847da70480292e, type: 3}
 --- !u!1 &9002287574787720688
 GameObject:
@@ -111,7 +112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardManager: {fileID: 6423586411714896884}
   boardSettingManager: {fileID: 7653623642847559619}
-  gameDuration: 30
+  gameDuration: 3333
   hintIdleThreshold: 5
   hintFlashDuration: 1
   scoreTextPosition: {x: 0, y: 700}

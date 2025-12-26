@@ -22,9 +22,10 @@ public class BoardSettingManager : MonoBehaviour
         gridLayout = boardRoot.GetComponent<GridLayoutGroup>();
         boardManager = GetComponent<BoardManager>();
     }
+    public int Size;
     public void SetupBoardWithSize(int size)
     {
-        n = size;
+        n = Size;
         cells = new CellView[n, n];
         boardValues = new int[n, n];
 
@@ -315,9 +316,6 @@ public class BoardSettingManager : MonoBehaviour
         {
             gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             gridLayout.constraintCount = n;
-
-            gridLayout.spacing = new Vector2(ThemeManager.Instance.selectedTheme.spacing, ThemeManager.Instance.selectedTheme.spacing);
-            gridLayout.cellSize = new Vector2(ThemeManager.Instance.selectedTheme.gridSize, ThemeManager.Instance.selectedTheme.gridSize);
         }
 
         boardSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardWidth);

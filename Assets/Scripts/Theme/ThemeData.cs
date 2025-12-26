@@ -10,8 +10,8 @@ public class ThemeData : ScriptableObject
     public float textOffset;
     public List<CellSprite> normalSpriteSets;
     public List<CellSprite> blankSpriteSets;
-    public float gridSize;
-    public float spacing;
+    public float cellScale;
+    public float backgroundScale;
     public Sprite boardSkin;//판떼기
     public float boardWidth;
     public float boardOffset;

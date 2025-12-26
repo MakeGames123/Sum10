@@ -10,8 +10,8 @@ public class ThemeDataEditor : Editor
     SerializedProperty normalSpriteSets;
     SerializedProperty blankSpriteSets;
 
-    SerializedProperty gridSize;
-    SerializedProperty spacing;
+    SerializedProperty gridScale;
+    SerializedProperty backgroundScale;
 
     SerializedProperty boardSkin;
     SerializedProperty boardWidth;
@@ -28,8 +28,8 @@ public class ThemeDataEditor : Editor
         normalSpriteSets = serializedObject.FindProperty("normalSpriteSets");
         blankSpriteSets = serializedObject.FindProperty("blankSpriteSets");
 
-        gridSize = serializedObject.FindProperty("gridSize");
-        spacing = serializedObject.FindProperty("spacing");
+        gridScale = serializedObject.FindProperty("cellScale");
+        backgroundScale = serializedObject.FindProperty("backgroundScale");
 
         boardSkin = serializedObject.FindProperty("boardSkin");
         boardWidth = serializedObject.FindProperty("boardWidth");
@@ -47,17 +47,17 @@ public class ThemeDataEditor : Editor
         EditorGUILayout.PropertyField(themeName);
         EditorGUILayout.PropertyField(textOffset, new GUIContent("텍스트 세로축 보정"));
 
-        DrawHeader("Grid");
-        EditorGUILayout.PropertyField(gridSize);
-        EditorGUILayout.PropertyField(spacing);
+        DrawHeader("Scale");
+        EditorGUILayout.PropertyField(gridScale, new GUIContent("셀 스케일"));
+        EditorGUILayout.PropertyField(backgroundScale, new GUIContent("셀 배경 스케일"));
+
+        DrawHeader("Scale Presets 3x3부터");
+        EditorGUILayout.PropertyField(scale, true);
 
         DrawHeader("Board");
         EditorGUILayout.PropertyField(boardSkin, new GUIContent("보드 스킨"));
         EditorGUILayout.PropertyField(boardWidth, new GUIContent("보드 길이"));
         EditorGUILayout.PropertyField(boardOffset, new GUIContent("보드 세로축 보정"));
-
-        DrawHeader("Scale Presets 3x3부터");
-        EditorGUILayout.PropertyField(scale, true);
 
         DrawHeader("Cell");
         EditorGUILayout.PropertyField(cellBackground, new GUIContent("셀 배경"));

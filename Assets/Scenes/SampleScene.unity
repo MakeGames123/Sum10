@@ -1672,6 +1672,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3575358715276565290, guid: 5f6f0c9e07b6d6c409548a2c392e8199, type: 3}
   m_PrefabInstance: {fileID: 498741426413349788}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &1747127925 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7620364104290867291, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
+  m_PrefabInstance: {fileID: 3745441372945620}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1800247903
 GameObject:
   m_ObjectHideFlags: 0
@@ -2298,10 +2303,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 197248517}
     - target: {fileID: 2269068392969360052, guid: 8d4be81f3386df04aa0b672008483785, type: 3}
-      propertyPath: gameDuration
-      value: 3333
-      objectReference: {fileID: 0}
-    - target: {fileID: 2269068392969360052, guid: 8d4be81f3386df04aa0b672008483785, type: 3}
       propertyPath: scoreManager
       value: 
       objectReference: {fileID: 101460698}
@@ -2310,9 +2311,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 101460700}
     - target: {fileID: 7653623642847559619, guid: 8d4be81f3386df04aa0b672008483785, type: 3}
+      propertyPath: Size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7653623642847559619, guid: 8d4be81f3386df04aa0b672008483785, type: 3}
       propertyPath: boardRoot
       value: 
       objectReference: {fileID: 849609299}
+    - target: {fileID: 7653623642847559619, guid: 8d4be81f3386df04aa0b672008483785, type: 3}
+      propertyPath: boardSkin
+      value: 
+      objectReference: {fileID: 1747127925}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2632,10 +2641,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7666776025940911519}
-    - target: {fileID: 8163493277801969235, guid: 136e75452c2f77649bf9816f67923243, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
