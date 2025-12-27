@@ -9,7 +9,7 @@ using Unity.Mathematics;
 public class BoardSettingManager : MonoBehaviour
 {
     public int n;
-    public CellView[,] cells;
+    public List<CellView> cells = new();
     public int[,] boardValues;
     private GridLayoutGroup gridLayout;
     public RectTransform boardRoot;
@@ -21,12 +21,13 @@ public class BoardSettingManager : MonoBehaviour
     {
         gridLayout = boardRoot.GetComponent<GridLayoutGroup>();
         boardManager = GetComponent<BoardManager>();
+
+        cells = boardRoot.GetComponentsInChildren<CellView>().ToList();
     }
     public int Size;
     public void SetupBoardWithSize(int size)
     {
-        n = Size;
-        cells = new CellView[n, n];
+        n = size;
         boardValues = new int[n, n];
 
         GenerateBoardValuesUntilValid();
@@ -321,24 +322,23 @@ public class BoardSettingManager : MonoBehaviour
         boardSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardWidth);
         boardSkin.anchoredPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.boardOffset);
 
-        // 3. 기존 셀 제거
-        for (int i = boardRoot.childCount - 1; i >= 0; i--)
-            Destroy(boardRoot.GetChild(i).gameObject);
-
-        cells = new CellView[n, n];
 
         // 5. 셀 생성 및 초기화
         for (int y = 0; y < n; y++)
         {
             for (int x = 0; x < n; x++)
             {
-                var cell = Instantiate(cellPrefab, boardRoot);
+                var cell = cells[y * n + x];
+                cell.gameObject.SetActive(true);
                 int v = boardValues[x, y];
 
                 // 먼저 Init 호출
                 cell.Init(boardManager, x, y, v);
-                cells[x, y] = cell;
             }
+        }
+        for(int i = n*n; i < 36; i++)
+        {
+            cells[i].gameObject.SetActive(false);
         }
         boardRoot.localScale = Vector3.one * ThemeManager.Instance.selectedTheme.scale[n - 3];
     }

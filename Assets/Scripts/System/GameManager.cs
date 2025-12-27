@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
             remainingTime = Mathf.Min(3000, value);
         }
     }
+    private float timeProgress = 0;
     private bool isRunning = false;
 
     private int currentBoardSize = 3;   // 3x3 시작
@@ -80,6 +81,7 @@ public class GameManager : MonoBehaviour
         // 자동으로 게임을 시작하지 않는다.
         isRunning = false;
         score = 0;
+        timeProgress = 0;
         RemainingTime = gameDuration;
 
         OnScoreChanged?.Invoke(score);
@@ -93,6 +95,7 @@ public class GameManager : MonoBehaviour
 
         // ----- 게임 타이머 -----
         RemainingTime -= Time.deltaTime;
+        timeProgress += Time.deltaTime;
         if (RemainingTime < 0f)
             RemainingTime = 0f;
 
@@ -201,10 +204,10 @@ public class GameManager : MonoBehaviour
         }
 
 
-        RemainingTime += 1 - (currentBoardSize - 3) * 0.05f;
+        RemainingTime += Mathf.Max(1 - (int)timeProgress / 60 * 0.25f, 0.3f);
         GameObject timetext = Instantiate(floatingText, textGroup.transform);
         timetext.GetComponent<RectTransform>().anchoredPosition = timeTextPosition;
-        timetext.GetComponent<TextFloating>().SetCondition("+" + (1 - (currentBoardSize - 3) * 0.05f).ToString());
+        timetext.GetComponent<TextFloating>().SetCondition("+" + Mathf.Max(1 - (int)timeProgress / 60 * 0.25f, 0.3f).ToString());
         OnComboChanged?.Invoke((int)combo);
 
 

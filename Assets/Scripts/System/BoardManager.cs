@@ -123,7 +123,7 @@ public class BoardManager : MonoBehaviour
         {
             for (int x = 0; x < boardSettingManager.n; x++)
             {
-                var cell = boardSettingManager.cells[x, y];
+                var cell = boardSettingManager.cells[y * boardSettingManager.n + x];
 
                 if (cell == null || !cell.HasNumber)
                     continue;
@@ -197,7 +197,7 @@ public class BoardManager : MonoBehaviour
         {
             for (int x = 0; x < boardSettingManager.n; x++)
             {
-                var cell = boardSettingManager.cells[x, y];
+                var cell = boardSettingManager.cells[y * boardSettingManager.n + x];
                 if (cell == null)
                     continue;
 
@@ -238,7 +238,7 @@ public class BoardManager : MonoBehaviour
             if (!IsInside(currentX, currentY))
                 return null;
 
-            var cell = boardSettingManager.cells[currentX, currentY];
+            var cell = boardSettingManager.cells[currentY * boardSettingManager.n + currentX];
 
             if (currentPath.Contains(cell))
                 continue;
@@ -253,7 +253,7 @@ public class BoardManager : MonoBehaviour
             if (!IsInside(currentX, currentY))
                 return null;
 
-            var cell = boardSettingManager.cells[currentX, currentY];
+            var cell = boardSettingManager.cells[currentY * boardSettingManager.n + currentX];
 
             if (currentPath.Contains(cell))
                 continue;
@@ -372,7 +372,7 @@ public class BoardManager : MonoBehaviour
                 int by1 = cell.Y;
                 if (IsInside(bx1, by1))
                 {
-                    var c1 = boardSettingManager.cells[bx1, by1];
+                    var c1 = boardSettingManager.cells[bx1 + by1 * boardSettingManager.n];
                     if (!c1.HasNumber && !currentPath.Contains(c1))
                         bridgeCandidates.Add(c1);
                 }
@@ -381,7 +381,7 @@ public class BoardManager : MonoBehaviour
                 int by2 = last.Y;
                 if (IsInside(bx2, by2))
                 {
-                    var c2 = boardSettingManager.cells[bx2, by2];
+                    var c2 = boardSettingManager.cells[bx1 + by1 * boardSettingManager.n];
                     if (!c2.HasNumber && !currentPath.Contains(c2))
                         bridgeCandidates.Add(c2);
                 }
@@ -552,7 +552,7 @@ public class BoardManager : MonoBehaviour
         var result = new List<CellView>(pathPositions.Count);
         foreach (var pos in pathPositions)
         {
-            var cell = boardSettingManager.cells[pos.x, pos.y];
+            var cell = boardSettingManager.cells[pos.x + pos.y * boardSettingManager.n];
             if (cell != null)
                 result.Add(cell);
         }

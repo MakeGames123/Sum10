@@ -2307,6 +2307,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 101460698}
     - target: {fileID: 2269068392969360052, guid: 8d4be81f3386df04aa0b672008483785, type: 3}
+      propertyPath: timeTextPosition.y
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 2269068392969360052, guid: 8d4be81f3386df04aa0b672008483785, type: 3}
       propertyPath: personalScoreManager
       value: 
       objectReference: {fileID: 101460700}
