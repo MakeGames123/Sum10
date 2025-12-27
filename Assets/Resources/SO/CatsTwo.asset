@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ff26c4546c9f20498ddea60a84094fa, type: 3}
-  m_Name: Cats
+  m_Name: CatsTwo
   m_EditorClassIdentifier: 
   themeName: Cats
   textOffset: 5
-  themeThumbnail: {fileID: 21300000, guid: a24667e90fe4aef488939d42ecfde69f, type: 3}
+  themeThumbnail: {fileID: 21300000, guid: 3d4fd1c5d705cb340a9101ac680d52f3, type: 3}
   normalSpriteSets:
-  - normalSprite: {fileID: 21300000, guid: a24667e90fe4aef488939d42ecfde69f, type: 3}
-    hintSprite: {fileID: 21300000, guid: 183a9156ced03ca448e7641f06719971, type: 3}
-    selectedSprite: {fileID: 21300000, guid: 832acbd1db08d224fb96c481d0a27970, type: 3}
+  - normalSprite: {fileID: 21300000, guid: 3d4fd1c5d705cb340a9101ac680d52f3, type: 3}
+    hintSprite: {fileID: 21300000, guid: 32ee9091f3b2fd74cbb199e361f3b87b, type: 3}
+    selectedSprite: {fileID: 21300000, guid: 9c6df296dbb60064dae32f00eede40cf, type: 3}
   blankSpriteSets:
-  - normalSprite: {fileID: 21300000, guid: defa5b5f48ccab640832e5336834cb56, type: 3}
-    hintSprite: {fileID: 21300000, guid: 88571f5aa5447ca4d972a339e8879134, type: 3}
-    selectedSprite: {fileID: 21300000, guid: 2696fd3aec5d2ff409a2375926295416, type: 3}
+  - normalSprite: {fileID: 21300000, guid: 904821b632594a248b2b98e7ccb3c57e, type: 3}
+    hintSprite: {fileID: 21300000, guid: db6ccb210d6d1f54ebf60424adaea25e, type: 3}
+    selectedSprite: {fileID: 21300000, guid: de93db7672cca3e44bfa74c7e8382a7d, type: 3}
   cellScale: 1.1
   backgroundScale: 1.1
-  boardSkin: {fileID: 21300000, guid: dd6799bacc21ffe439195c3e1ce21421, type: 3}
+  boardSkin: {fileID: 21300000, guid: 6f9025c003038734f8e3297b7dbc1ecc, type: 3}
   background: {fileID: 21300000, guid: 31d2577af3b518649ab72dc3f5c7e86b, type: 3}
   boardWidth: 1100
   boardOffset: -33

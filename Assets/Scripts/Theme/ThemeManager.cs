@@ -19,11 +19,12 @@ public class ThemeManager : MonoBehaviour
         }
         else { Destroy(gameObject); }
 
-        ChangeTheme();
+        ChangeTheme(selectedTheme);
     }
 
-    public void ChangeTheme()
+    public void ChangeTheme(ThemeData newTheme)
     {
+        selectedTheme = newTheme;
         board.sprite = selectedTheme.boardSkin;
     }
 }
