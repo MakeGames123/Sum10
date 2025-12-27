@@ -1698,6 +1698,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 482413672}
     m_Modifications:
+    - target: {fileID: 273688842149201134, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: themeDatas.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 273688842149201134, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: themeDatas.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 63baf312739daed4589ff18b412c612c, type: 2}
+    - target: {fileID: 442373300168627445, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 442373300168627445, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 442373300168627445, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6070536318320013071, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1781,6 +1801,10 @@ PrefabInstance:
     - target: {fileID: 8409565275586187418, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
       propertyPath: m_Name
       value: ThemePanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 8409565275586187418, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
