@@ -175,7 +175,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         float elapsed = 0f;
         Vector3 startScale = Vector3.one * selectScalePunch;
-        Vector3 endScale = Vector3.one * selectScaleHold;  // 최종 배율 (살짝 작게)
+        Vector3 endScale = Vector3.one;  // 최종 배율 (살짝 작게)
 
         // 처음에 바로 커지게
         transform.localScale = startScale;
@@ -266,6 +266,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        Debug.Log("123");
         board.OnCellPointerDown(this);
     }
 

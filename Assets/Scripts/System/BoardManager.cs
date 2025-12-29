@@ -125,7 +125,7 @@ public class BoardManager : MonoBehaviour
             {
                 var cell = boardSettingManager.cells[y * boardSettingManager.n + x];
 
-                if (cell == null || !cell.HasNumber)
+                if (cell == null)
                     continue;
 
                 var cellRect = cell.GetComponent<RectTransform>();
@@ -331,7 +331,6 @@ public class BoardManager : MonoBehaviour
         {
             pathSum += cell.Value;
         }
-
         currentPath.Add(cell);
         cell.SetHighlight(true);
         return true;
