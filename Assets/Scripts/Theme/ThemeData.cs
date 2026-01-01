@@ -13,9 +13,11 @@ public class ThemeData : ScriptableObject
     public List<CellSprite> blankSpriteSets;
     public float cellScale;
     public float backgroundScale;
+    public Sprite boardLowSkin;//판떼기
     public Sprite boardSkin;//판떼기
     public Sprite background;//판떼기
     public float boardWidth;
+    public float boardHeight;
     public float boardOffset;
     public Sprite cellBackground;
     public List<float> scale;

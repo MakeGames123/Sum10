@@ -10,6 +10,8 @@ public class ThemeManager : MonoBehaviour
     // 현재 선택된 테마 데이터
     public ThemeData selectedTheme;
     public Image board;
+    public Image boardLowSkin;
+    public Image background;
     private void Awake()
     {
         if (Instance == null)
@@ -26,5 +28,7 @@ public class ThemeManager : MonoBehaviour
     {
         selectedTheme = newTheme;
         board.sprite = selectedTheme.boardSkin;
+        boardLowSkin.sprite = selectedTheme.boardLowSkin;
+        background.sprite = selectedTheme.background;
     }
 }

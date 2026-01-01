@@ -157,6 +157,18 @@ public class BoardManager : MonoBehaviour
         if (nearestCell == null)
             return;
 
+        if (currentPath.Count > 0)
+        {
+            int idx = currentPath.IndexOf(nearestCell);
+            if (idx != -1)
+            {
+                if (idx == currentPath.Count - 1)
+                    return;
+                BacktrackToIndex(idx);
+                return;
+            }
+        }
+
         var lastCell = currentPath[currentPath.Count - 1];
 
         if (currentPath.Contains(nearestCell) || nearestCell == lastCell)
@@ -286,6 +298,7 @@ public class BoardManager : MonoBehaviour
 
     public void OnCellPointerEnter(CellView cell)
     {
+        Debug.Log("1");
         if (!isDragging || cell == null)
             return;
 
@@ -345,7 +358,6 @@ public class BoardManager : MonoBehaviour
             {
                 if (idx == currentPath.Count - 1)
                     return false;
-
                 BacktrackToIndex(idx);
                 return true;
             }

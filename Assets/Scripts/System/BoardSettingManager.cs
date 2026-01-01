@@ -14,6 +14,7 @@ public class BoardSettingManager : MonoBehaviour
     private GridLayoutGroup gridLayout;
     public RectTransform boardRoot;
     public RectTransform boardSkin;
+    public RectTransform boardLowSkin;
     [SerializeField] private CellView cellPrefab;
     private PathFinder pathFinder = new();
     BoardManager boardManager;
@@ -319,8 +320,10 @@ public class BoardSettingManager : MonoBehaviour
             gridLayout.constraintCount = n;
         }
 
-        boardSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardWidth);
+        boardSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardHeight);
+        boardLowSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardHeight);
         boardSkin.anchoredPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.boardOffset);
+        boardLowSkin.anchoredPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.boardOffset);
 
 
         // 5. 셀 생성 및 초기화

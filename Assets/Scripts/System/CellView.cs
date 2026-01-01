@@ -19,7 +19,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
     [Header("Animation Settings")]
     [SerializeField] private float selectAnimDuration = 0.3f;
-    [SerializeField] private float selectScalePunch = 1.15f;     // 처음 커지는 정도
+    [SerializeField] private float selectScalePunch = 1.3f;     // 처음 커지는 정도
     [SerializeField] private float selectScaleHold = 0.92f;      // 누르고 있을 때 최종 배율
     [SerializeField] private float hintWiggleAngle = 12f;        // 흔들림 각도
     [SerializeField] private float hintWiggleSpeed = 25f;        // 흔들림 속도
@@ -32,7 +32,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     public int Value => value;
 
     private bool isSelected = false;
-    private bool isHint     = false;
+    private bool isHint = false;
 
     // 애니메이션 관련
     private Coroutine selectAnimCoroutine;
@@ -50,7 +50,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         cellBackground.transform.localScale = new Vector2(ThemeManager.Instance.selectedTheme.backgroundScale, ThemeManager.Instance.selectedTheme.backgroundScale);
         SetValue(initialValue);
     }
-    
+
     public void SetValue(int newValue)
     {
         value = newValue;
@@ -96,7 +96,8 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
     private void UpdateVisualState()
     {
-        if(ThemeManager.Instance.selectedTheme.cellBackground != null) {
+        if (ThemeManager.Instance.selectedTheme.cellBackground != null)
+        {
             cellBackground.sprite = ThemeManager.Instance.selectedTheme.cellBackground;
             cellBackground.enabled = true;
         }
@@ -134,7 +135,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         if (selectAnimCoroutine != null)
             StopCoroutine(selectAnimCoroutine);
 
-        if(!gameObject.activeSelf) return;
+        if (!gameObject.activeSelf) return;
         selectAnimCoroutine = StartCoroutine(SelectBounceCoroutine());
     }
 
@@ -174,11 +175,11 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     private IEnumerator SelectBounceCoroutine()
     {
         float elapsed = 0f;
-        Vector3 startScale = Vector3.one * selectScalePunch;
-        Vector3 endScale = Vector3.one;  // 최종 배율 (살짝 작게)
+        Vector3 startScale = Vector3.one * selectScalePunch * ThemeManager.Instance.selectedTheme.cellScale;
+        Vector3 endScale = Vector3.one * ThemeManager.Instance.selectedTheme.cellScale;  // 최종 배율 (살짝 작게)
 
         // 처음에 바로 커지게
-        transform.localScale = startScale;
+        cellImage.transform.localScale = startScale;
 
         while (elapsed < selectAnimDuration)
         {
@@ -187,12 +188,12 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
             // Elastic Ease Out - 보잉 효과
             float elasticT = ElasticEaseOut(t);
-            transform.localScale = Vector3.LerpUnclamped(startScale, endScale, elasticT);
+            cellImage.transform.localScale = Vector3.LerpUnclamped(startScale, endScale, elasticT);
 
             yield return null;
         }
 
-        transform.localScale = endScale;
+        cellImage.transform.localScale = endScale;
         selectAnimCoroutine = null;
     }
 
@@ -266,12 +267,12 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("123");
         board.OnCellPointerDown(this);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        Debug.Log("123");
         board.OnCellPointerEnter(this);
     }
 }

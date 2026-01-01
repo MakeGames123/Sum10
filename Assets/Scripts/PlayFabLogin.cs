@@ -21,7 +21,6 @@ public class PlayFabLoginManager : MonoBehaviour
             CreateAccount = true 
         };
 
-        Debug.Log("1");
         // 2. PlayFab API 호출
         PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
     }

@@ -11,6 +11,7 @@ public class ThemePanel : MonoBehaviour
     public List<ThemeData> themeDatas = new();
     public Image themeThumbnail;
     public Image background;
+    public Image gameBackground;
     private int index = 0;
 
     void Awake()
