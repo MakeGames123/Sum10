@@ -91,6 +91,23 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        // ========== AB 테스트: T키로 사라짐 연출 전환 (현재 Pop 고정) ==========
+        // #if UNITY_EDITOR
+        //         if (Input.GetKeyDown(KeyCode.T))
+        //         {
+        //             if (CellView.CurrentDisappearMode == CellView.DisappearMode.Ghost)
+        //             {
+        //                 CellView.CurrentDisappearMode = CellView.DisappearMode.Pop;
+        //                 Debug.Log("[AB Test] 사라짐 모드: Pop (팡팡 터지기)");
+        //             }
+        //             else
+        //             {
+        //                 CellView.CurrentDisappearMode = CellView.DisappearMode.Ghost;
+        //                 Debug.Log("[AB Test] 사라짐 모드: Ghost (빨려들어가기)");
+        //             }
+        //         }
+        // #endif
+
         if (!isRunning)
             return;
 

@@ -68,6 +68,14 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     // Ghost 애니메이션 관리용 ID
     private const string GHOST_TWEEN_ID = "DisappearGhost";
 
+    // ========== AB 테스트용 (현재 Pop 사용) ==========
+    public enum DisappearMode
+    {
+        Pop,        // 팡팡 터지는 연출 (기본값)
+        Ghost       // 빨려들어가는 연출 (미사용)
+    }
+    public static DisappearMode CurrentDisappearMode = DisappearMode.Pop;
+
     /// <summary>
     /// 모든 Ghost 애니메이션을 즉시 중단하고 제거 (게임 종료 시 호출)
     /// </summary>
@@ -509,11 +517,24 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     }
 
     /// <summary>
-    /// 사라짐 애니메이션 (고스트 방식: 애니메이션과 상태 분리)
-    /// - 고스트 복사본이 날아가는 애니메이션 (독립적, Init에 영향 안 받음)
-    /// - 실제 셀은 즉시 공백으로 변경
+    /// 사라짐 애니메이션 (AB 테스트: Ghost vs Pop 모드)
     /// </summary>
     public void PlayDisappearAndTransform(System.Action onComplete)
+    {
+        if (CurrentDisappearMode == DisappearMode.Pop)
+        {
+            PlayDisappearPop(onComplete);
+        }
+        else
+        {
+            PlayDisappearGhost(onComplete);
+        }
+    }
+
+    /// <summary>
+    /// Ghost 모드: 빨려들어가는 연출
+    /// </summary>
+    private void PlayDisappearGhost(System.Action onComplete)
     {
         // 파티클 생성
         SpawnKillParticles();
@@ -535,6 +556,80 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
         // 젤리발 등장 애니메이션
         PlayAppearAnimation(onComplete);
+    }
+
+    /// <summary>
+    /// Pop 모드: 팡팡 터지는 연출 (제자리에서 커졌다 사라짐)
+    /// </summary>
+    private void PlayDisappearPop(System.Action onComplete)
+    {
+        KillTileEffectTweens();
+
+        float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
+        Vector3 originalPos = cellImage.transform.localPosition;
+        Vector3 originalTextPos = numberText.transform.localPosition;
+
+        Sequence disappearSeq = DOTween.Sequence();
+
+        // Phase 1: 살짝 커지면서 위로 점프
+        disappearSeq.Append(
+            cellImage.transform.DOScale(disappearScalePeak * themeScale, disappearDuration * 0.3f)
+                .SetEase(Ease.OutQuad)
+        );
+        disappearSeq.Join(
+            cellImage.transform.DOLocalMoveY(originalPos.y + disappearJumpHeight, disappearDuration * 0.3f)
+                .SetEase(Ease.OutQuad)
+        );
+        if (numberText != null && numberText.enabled)
+        {
+            disappearSeq.Join(
+                numberText.transform.DOLocalMoveY(originalTextPos.y + disappearJumpHeight, disappearDuration * 0.3f)
+                    .SetEase(Ease.OutQuad)
+            );
+        }
+
+        // Phase 2: 파티클 + 스케일 0으로 사라짐
+        disappearSeq.AppendCallback(() => SpawnKillParticles());
+        disappearSeq.Append(
+            cellImage.transform.DOScale(0f, disappearDuration * 0.7f)
+                .SetEase(Ease.InBack)
+        );
+        disappearSeq.Join(
+            cellImage.transform.DOLocalMoveY(originalPos.y + disappearJumpHeight * 0.5f, disappearDuration * 0.7f)
+                .SetEase(Ease.InQuad)
+        );
+        if (numberText != null && numberText.enabled)
+        {
+            disappearSeq.Join(
+                numberText.transform.DOLocalMoveY(originalTextPos.y + disappearJumpHeight * 0.5f, disappearDuration * 0.7f)
+                    .SetEase(Ease.InQuad)
+            );
+            disappearSeq.Join(
+                numberText.DOFade(0f, disappearDuration * 0.5f)
+            );
+        }
+
+        currentDisappearTween = disappearSeq;
+
+        disappearSeq.OnComplete(() =>
+        {
+            // 값 변경 (공백셀로)
+            value = -1;
+            numberText.text = "";
+            numberText.enabled = false;
+            numberText.alpha = 1f;
+
+            // 위치 복원
+            cellImage.transform.localPosition = originalPos;
+            numberText.transform.localPosition = originalTextPos;
+
+            // 젤리발 스프라이트로 변경
+            blankSprite = ThemeManager.Instance.selectedTheme.blankSpriteSets[Random.Range(0, ThemeManager.Instance.selectedTheme.blankSpriteSets.Count)];
+            cellImage.sprite = blankSprite.normalSprite;
+
+            // 젤리발 등장 애니메이션
+            PlayAppearAnimation(onComplete);
+        });
     }
 
     /// <summary>
