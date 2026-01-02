@@ -257,12 +257,7 @@ MonoBehaviour:
   appearDelay: 0.1
   appearDuration: 0.15
   appearScalePeak: 1.1
-  particleSprite: {fileID: 21300000, guid: 7e3e0dc6b24eb2e46af75fd6412f9f54, type: 3}
-  particleCount: 6
-  particleSpreadRadius: 80
-  particleDuration: 0.4
-  particleStartScale: 0.5
-  particleEndScale: 0.1
+  particle: {fileID: 8632307044415939975, guid: 0cc116672d56eed4d881ecf0fe7361a0, type: 3}
   spawnDuration: 0.25
   spawnScalePeak: 1.15
   spawnDropHeight: 30

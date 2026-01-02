@@ -40,13 +40,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     [SerializeField] private float appearDuration = 0.15f;          // 젤리발 등장 시간
     [SerializeField] private float appearScalePeak = 1.1f;          // 등장 시 톡 튀어나오는 정도
 
-    [Header("Kill Particle Settings")]
-    [SerializeField] private Sprite particleSprite;                   // 파티클 스프라이트
-    [SerializeField] private int particleCount = 5;                   // 파티클 개수
-    [SerializeField] private float particleSpreadRadius = 60f;        // 퍼지는 반경
-    [SerializeField] private float particleDuration = 0.35f;          // 파티클 지속 시간
-    [SerializeField] private float particleStartSize = 30f;           // 시작 크기 (픽셀)
-    [SerializeField] private float particleEndSize = 5f;              // 끝 크기 (픽셀)
+    [SerializeField] private ParticleSystem particle;                   // 파티클 스프라이트
 
     [Header("Spawn Animation Settings")]
     [SerializeField] private float spawnDuration = 0.25f;           // 생성 애니메이션 시간
@@ -67,7 +61,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     private Sequence hintTween;
     private Vector3 selectOriginalPos;
     private Vector3 textOriginalPos;
-
+    
     // 캐싱
     private static Transform cachedCanvasTransform;
 
@@ -708,59 +702,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     /// </summary>
     private void SpawnKillParticles()
     {
-        if (particleSprite == null)
-        {
-            return;
-        }
-
-        // 셀의 월드 위치
-        Vector3 cellWorldPos = cellImage.transform.position;
-
-        // Canvas 캐싱 (처음 한 번만 찾음)
-        if (cachedCanvasTransform == null)
-        {
-            Canvas canvas = GetComponentInParent<Canvas>();
-            if (canvas == null) return;
-            cachedCanvasTransform = canvas.transform;
-        }
-
-        for (int i = 0; i < particleCount; i++)
-        {
-            // 파티클 오브젝트 생성 - Canvas의 자식으로
-            GameObject particleObj = new GameObject($"KillParticle_{i}");
-            particleObj.transform.SetParent(cachedCanvasTransform, false);
-
-            // Canvas의 맨 위로 (다른 UI 요소 위에 렌더링)
-            particleObj.transform.SetAsLastSibling();
-
-            // Image 추가
-            Image img = particleObj.AddComponent<Image>();
-            img.sprite = particleSprite;
-            img.raycastTarget = false;
-
-            // RectTransform 설정
-            RectTransform rt = particleObj.GetComponent<RectTransform>();
-            rt.position = cellWorldPos;
-            rt.sizeDelta = new Vector2(particleStartSize, particleStartSize);
-            rt.localScale = Vector3.one;
-
-            // 랜덤 방향
-            float angle = (360f / particleCount) * i + Random.Range(-30f, 30f);
-            float rad = angle * Mathf.Deg2Rad;
-            Vector2 dir = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
-
-            // 목표 위치
-            Vector3 startPos = rt.position;
-            Vector3 endPos = startPos + (Vector3)(dir * particleSpreadRadius);
-
-            // 애니메이션
-            Sequence seq = DOTween.Sequence();
-            seq.Append(rt.DOMove(endPos, particleDuration).SetEase(Ease.OutQuad));
-            seq.Join(rt.DOSizeDelta(new Vector2(particleEndSize, particleEndSize), particleDuration).SetEase(Ease.InQuad));
-            seq.Join(rt.DORotate(new Vector3(0, 0, Random.Range(-180f, 180f)), particleDuration).SetEase(Ease.OutQuad));
-            seq.Join(img.DOFade(0f, particleDuration * 0.7f).SetDelay(particleDuration * 0.3f));
-
-            seq.OnComplete(() => Destroy(particleObj));
-        }
+        ParticleSystem particleCpy = Instantiate(particle, transform.position, Quaternion.identity);
+        particleCpy.transform.SetParent(transform.parent.parent.parent);
     }
 }
