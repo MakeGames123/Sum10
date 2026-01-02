@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ff26c4546c9f20498ddea60a84094fa, type: 3}
+  m_Name: Default
+  m_EditorClassIdentifier: 
+  themeName: Default
+  textOffset: 5
+  themeThumbnail: {fileID: 21300000, guid: a24667e90fe4aef488939d42ecfde69f, type: 3}
+  normalSpriteSets:
+  - normalSprite: {fileID: 21300000, guid: a24667e90fe4aef488939d42ecfde69f, type: 3}
+    hintSprite: {fileID: 21300000, guid: 183a9156ced03ca448e7641f06719971, type: 3}
+    selectedSprite: {fileID: 21300000, guid: 832acbd1db08d224fb96c481d0a27970, type: 3}
+  blankSpriteSets:
+  - normalSprite: {fileID: 21300000, guid: defa5b5f48ccab640832e5336834cb56, type: 3}
+    hintSprite: {fileID: 21300000, guid: 88571f5aa5447ca4d972a339e8879134, type: 3}
+    selectedSprite: {fileID: 21300000, guid: 2696fd3aec5d2ff409a2375926295416, type: 3}
+  cellScale: 1.1
+  backgroundScale: 1.1
+  boardLowSkin: {fileID: 21300000, guid: 5d9cf4b614dad4944b1affa874188b60, type: 3}
+  boardSkin: {fileID: 21300000, guid: 51074b01679c0e641aad6947c16d68dd, type: 3}
+  background: {fileID: 21300000, guid: 245b41aff36c38b41b3ba57dcd4d60ca, type: 3}
+  boardWidth: 1080
+  boardHeight: 1311
+  boardOffset: -160
+  cellBackground: {fileID: 21300000, guid: 9734c47fd6abe1b41968e9336be4ca17, type: 3}
+  scale:
+  - 3.53
+  - 2.65
+  - 2.13
+  - 1.77

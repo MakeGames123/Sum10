@@ -242,12 +242,30 @@ MonoBehaviour:
   cellImage: {fileID: 2584376840985255833}
   cellBackground: {fileID: 8876088604804430833}
   numberText: {fileID: 809113159804618023}
-  selectAnimDuration: 0.3
-  selectScalePunch: 1.15
-  selectScaleHold: 0.92
-  hintWiggleAngle: 12
-  hintWiggleSpeed: 25
+  selectAnimDuration: 0.25
+  selectScalePunch: 1.12
+  selectJumpHeight: 8
+  selectRotation: 6
+  hintBounceDuration: 0.2
+  hintScalePunch: 1.15
+  hintJumpHeight: 12
+  hintBounceCount: 3
   hintPauseDuration: 0.8
+  disappearDuration: 0.18
+  disappearScalePeak: 1.2
+  disappearJumpHeight: 25
+  appearDelay: 0.1
+  appearDuration: 0.15
+  appearScalePeak: 1.1
+  particleSprite: {fileID: 21300000, guid: 7e3e0dc6b24eb2e46af75fd6412f9f54, type: 3}
+  particleCount: 6
+  particleSpreadRadius: 80
+  particleDuration: 0.4
+  particleStartScale: 0.5
+  particleEndScale: 0.1
+  spawnDuration: 0.25
+  spawnScalePeak: 1.15
+  spawnDropHeight: 30
 --- !u!1 &7854203044422103449
 GameObject:
   m_ObjectHideFlags: 0

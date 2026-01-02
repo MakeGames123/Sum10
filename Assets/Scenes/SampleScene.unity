@@ -498,7 +498,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 31d2577af3b518649ab72dc3f5c7e86b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 245b41aff36c38b41b3ba57dcd4d60ca, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -876,7 +876,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac05e56343d813044aa917624bb8e020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedTheme: {fileID: 11400000, guid: 68db8e7f2a7d62d4e8cff85801dbe938, type: 2}
+  selectedTheme: {fileID: 11400000, guid: b245025fa5e9bb847b1d4d1ec5f71862, type: 2}
   board: {fileID: 857052774}
   boardLowSkin: {fileID: 3745441372945622}
   background: {fileID: 541455511}
@@ -1420,9 +1420,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 197248517}
     - target: {fileID: 2269068392969360052, guid: 8d4be81f3386df04aa0b672008483785, type: 3}
+      propertyPath: gameDuration
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2269068392969360052, guid: 8d4be81f3386df04aa0b672008483785, type: 3}
       propertyPath: scoreManager
       value: 
       objectReference: {fileID: 101460698}
+    - target: {fileID: 2269068392969360052, guid: 8d4be81f3386df04aa0b672008483785, type: 3}
+      propertyPath: hintIdleThreshold
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2269068392969360052, guid: 8d4be81f3386df04aa0b672008483785, type: 3}
       propertyPath: timeTextPosition.y
       value: 650
@@ -1730,12 +1738,20 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 273688842149201134, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
       propertyPath: themeDatas.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 273688842149201134, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: themeDatas.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: b245025fa5e9bb847b1d4d1ec5f71862, type: 2}
     - target: {fileID: 273688842149201134, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
       propertyPath: themeDatas.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 63baf312739daed4589ff18b412c612c, type: 2}
+      objectReference: {fileID: 11400000, guid: b245025fa5e9bb847b1d4d1ec5f71862, type: 2}
+    - target: {fileID: 273688842149201134, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: themeDatas.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: b245025fa5e9bb847b1d4d1ec5f71862, type: 2}
     - target: {fileID: 442373300168627445, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
       propertyPath: m_Color.b
       value: 1

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour
@@ -456,18 +457,26 @@ public class BoardManager : MonoBehaviour
         if (ShouldClearCurrentPath())
         {
             var removed = new List<CellView>();
+            var cellsToAnimate = new List<CellView>();
 
             foreach (var cell in currentPath)
             {
                 if (cell.HasNumber)
                 {
                     boardSettingManager.boardValues[cell.X, cell.Y] = -1;
-                    cell.SetValue(-1);
+                    cellsToAnimate.Add(cell);
                     removed.Add(cell);
                 }
                 cell.SetHighlight(false);
             }
 
+            // 애니메이션 먼저 시작 (fire and forget - 보드 리셋 시 Init에서 kill됨)
+            if (cellsToAnimate.Count > 0)
+            {
+                PlayCellRemoveAnimations(cellsToAnimate);
+            }
+
+            // 게임 로직 처리 (애니메이션 시작 후)
             OnCellsRemoved?.Invoke(removed);
             InvalidateCache();
             CheckEndConditions();
@@ -480,6 +489,17 @@ public class BoardManager : MonoBehaviour
 
         currentPath.Clear();
         pathSum = 0;
+    }
+
+    /// <summary>
+    /// 셀 제거 애니메이션 실행 (시각적 효과만, fire and forget)
+    /// </summary>
+    private void PlayCellRemoveAnimations(List<CellView> cells)
+    {
+        foreach (var cell in cells)
+        {
+            cell.PlayDisappearAndTransform(null);
+        }
     }
 
     private bool ShouldClearCurrentPath()

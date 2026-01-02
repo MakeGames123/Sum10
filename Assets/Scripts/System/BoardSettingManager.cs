@@ -18,6 +18,10 @@ public class BoardSettingManager : MonoBehaviour
     [SerializeField] private CellView cellPrefab;
     private PathFinder pathFinder = new();
     BoardManager boardManager;
+
+    [Header("Spawn Animation Settings")]
+    [SerializeField] private float spawnDelayPerCell = 0.03f;   // 셀 간 딜레이
+    [SerializeField] private bool useWaveSpawn = true;          // 웨이브 형태로 생성
     void Awake()
     {
         gridLayout = boardRoot.GetComponent<GridLayoutGroup>();
@@ -337,6 +341,10 @@ public class BoardSettingManager : MonoBehaviour
 
                 // 먼저 Init 호출
                 cell.Init(boardManager, x, y, v);
+
+                // 생성 애니메이션 (웨이브 or 순차)
+                float delay = CalculateSpawnDelay(x, y);
+                cell.PlaySpawnAnimation(delay);
             }
         }
         for(int i = n*n; i < 36; i++)
@@ -344,5 +352,21 @@ public class BoardSettingManager : MonoBehaviour
             cells[i].gameObject.SetActive(false);
         }
         boardRoot.localScale = Vector3.one * ThemeManager.Instance.selectedTheme.scale[n - 3];
+    }
+
+    /// <summary>
+    /// 셀 생성 딜레이 계산 (웨이브 효과: 중앙에서 바깥으로 퍼지거나 대각선으로)
+    /// </summary>
+    private float CalculateSpawnDelay(int x, int y)
+    {
+        if (!useWaveSpawn)
+        {
+            // 순차 생성 (왼쪽 위에서 오른쪽 아래로)
+            return (y * n + x) * spawnDelayPerCell;
+        }
+
+        // 웨이브 생성: 대각선 방향으로 (왼쪽 위 → 오른쪽 아래)
+        int diagonal = x + y;
+        return diagonal * spawnDelayPerCell;
     }
 }
