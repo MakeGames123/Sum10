@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     private bool isRunning = false;
 
     private int currentBoardSize = 3;   // 3x3 시작
+    private int stageIndex = 0;         // 스테이지 인덱스 (테스트용)
     private int score = 0;
     private int bestScore = 0;
 
@@ -155,7 +156,8 @@ public class GameManager : MonoBehaviour
 
         isRunning = true;
 
-        currentBoardSize = 3;
+        stageIndex = 0;
+        currentBoardSize = GetBoardSizeForStage(stageIndex);
         boardSettingManager.SetupBoardWithSize(currentBoardSize);
 
         ResetIdleTimer();
@@ -165,11 +167,12 @@ public class GameManager : MonoBehaviour
     {
         isRunning = false;
 
+        // 남아있는 Ghost 애니메이션 정리
+        CellView.KillAllGhostAnimations();
+
         scoreManager.SubmitScore(score, maxCombo);
         personalScoreManager.SubmitScore(score, maxCombo);
         OnGameOver?.Invoke(score);
-
-        Debug.Log($"Game Over. Final Score = {score}, Best = {bestScore}");
     }
 
     private void ResetIdleTimer()
@@ -189,25 +192,26 @@ public class GameManager : MonoBehaviour
 
         combo++;
         if (maxCombo < combo) maxCombo = combo;
-        score += gained + Mathf.CeilToInt(combo / 10f);
-        Debug.Log($"기본 점수:{gained}, 콤보점수 {Mathf.CeilToInt(combo / 10f)}");
-
+        int comboBonus = (int)(combo / 10);  // 0~9: 0점, 10~19: 1점, 20~29: 2점...
+        int scoreGain = gained + comboBonus;
+        score += scoreGain;
 
         GameObject text = Instantiate(floatingText, textGroup.transform);
         text.GetComponent<RectTransform>().anchoredPosition = scoreTextPosition;
-        text.GetComponent<TextFloating>().SetCondition("+" + (gained + combo).ToString());
+        text.GetComponent<TextFloating>().SetCondition("+" + scoreGain.ToString());
 
-        if (combo % 10 == 0)
-        {
-            GameObject comboTextCpy = Instantiate(comboText, textGroup.transform);
-            comboTextCpy.GetComponent<ComboTextFade>().SetCondition("Combo " + combo.ToString() + "!");
-        }
+        // TODO: 10콤보마다 화면 중앙 텍스트 (임시 비활성화)
+        // if (combo % 10 == 0)
+        // {
+        //     GameObject comboTextCpy = Instantiate(comboText, textGroup.transform);
+        //     comboTextCpy.GetComponent<ComboTextFade>().SetCondition("Combo " + combo.ToString() + "!");
+        // }
 
-
-        RemainingTime += Mathf.Max(1 - (int)timeProgress / 60 * 0.25f, 0.3f);
+        float timeBonus = Mathf.Max(1 - (int)timeProgress / 60 * 0.25f, 0.3f);
+        RemainingTime += timeBonus;
         GameObject timetext = Instantiate(floatingText, textGroup.transform);
         timetext.GetComponent<RectTransform>().anchoredPosition = timeTextPosition;
-        timetext.GetComponent<TextFloating>().SetCondition("+" + Mathf.Max(1 - (int)timeProgress / 60 * 0.25f, 0.3f).ToString());
+        timetext.GetComponent<TextFloating>().SetCondition("+" + timeBonus.ToString("0.#") + "s", true);
         OnComboChanged?.Invoke((int)combo);
 
 
@@ -220,9 +224,23 @@ public class GameManager : MonoBehaviour
     {
         if (!isRunning)
             return;
-        currentBoardSize = UnityEngine.Random.Range(3, 7);
 
+        stageIndex++;
+        currentBoardSize = GetBoardSizeForStage(stageIndex);
         boardSettingManager.SetupBoardWithSize(currentBoardSize);
         ResetIdleTimer();
+    }
+
+    // 스테이지별 보드 크기: 3, 3, 4, 4, 5, 5, 6, 6, 6...
+    private int GetBoardSizeForStage(int stage)
+    {
+        // stage 0-1: 3
+        // stage 2-3: 4
+        // stage 4-5: 5
+        // stage 6+: 6
+        if (stage <= 1) return 3;
+        if (stage <= 3) return 4;
+        if (stage <= 5) return 5;
+        return 6;
     }
 }

@@ -65,6 +65,17 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     // 캐싱
     private static Transform cachedCanvasTransform;
 
+    // Ghost 애니메이션 관리용 ID
+    private const string GHOST_TWEEN_ID = "DisappearGhost";
+
+    /// <summary>
+    /// 모든 Ghost 애니메이션을 즉시 중단하고 제거 (게임 종료 시 호출)
+    /// </summary>
+    public static void KillAllGhostAnimations()
+    {
+        DOTween.Kill(GHOST_TWEEN_ID);
+    }
+
     public void Init(BoardManager board, int x, int y, int initialValue)
     {
         this.board = board;
@@ -372,7 +383,6 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("123");
         board.OnCellPointerEnter(this);
     }
 
@@ -499,79 +509,108 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     }
 
     /// <summary>
-    /// 콜백 방식 사라짐 애니메이션
+    /// 사라짐 애니메이션 (고스트 방식: 애니메이션과 상태 분리)
+    /// - 고스트 복사본이 날아가는 애니메이션 (독립적, Init에 영향 안 받음)
+    /// - 실제 셀은 즉시 공백으로 변경
     /// </summary>
     public void PlayDisappearAndTransform(System.Action onComplete)
     {
-        KillTileEffectTweens();
+        // 파티클 생성
+        SpawnKillParticles();
 
+        // 고스트 애니메이션 생성 (독립적으로 날아감)
+        SpawnDisappearGhost();
+
+        // 즉시 공백 셀로 변경 (애니메이션과 분리)
         float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
-        Vector3 originalPos = cellImage.transform.localPosition;
-        Vector3 originalTextPos = numberText.transform.localPosition;
+        value = -1;
+        numberText.text = "";
+        numberText.enabled = false;
+        numberText.alpha = 1f;
 
-        Sequence disappearSeq = DOTween.Sequence();
+        // 젤리발 스프라이트로 변경
+        blankSprite = ThemeManager.Instance.selectedTheme.blankSpriteSets[Random.Range(0, ThemeManager.Instance.selectedTheme.blankSpriteSets.Count)];
+        cellImage.sprite = blankSprite.normalSprite;
+        cellImage.transform.localScale = Vector3.one * themeScale;
 
-        // Phase 1: 살짝 커지면서 위로 점프 시작
-        disappearSeq.Append(
-            cellImage.transform.DOScale(disappearScalePeak * themeScale, disappearDuration * 0.3f)
-                .SetEase(Ease.OutQuad)
+        // 젤리발 등장 애니메이션
+        PlayAppearAnimation(onComplete);
+    }
+
+    /// <summary>
+    /// 사라지는 고스트 복사본 생성 (독립 애니메이션)
+    /// </summary>
+    private void SpawnDisappearGhost()
+    {
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas == null) return;
+
+        // 목표 지점: 절대 위치 (0, 800)를 월드 좌표로 변환
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+        Vector2 targetAnchoredPos = new Vector2(0, 800);
+        Vector2 canvasSize = canvasRect.sizeDelta;
+
+        Vector2 normalizedPos = new Vector2(
+            targetAnchoredPos.x / canvasSize.x + 0.5f,
+            targetAnchoredPos.y / canvasSize.y + 0.5f
         );
-        disappearSeq.Join(
-            cellImage.transform.DOLocalMoveY(originalPos.y + disappearJumpHeight, disappearDuration * 0.3f)
-                .SetEase(Ease.OutQuad)
-        );
-        // 숫자도 같이 점프
-        if (numberText != null && numberText.enabled)
+        Vector3 targetWorldPos = canvasRect.TransformPoint(new Vector3(
+            (normalizedPos.x - canvasRect.pivot.x) * canvasSize.x,
+            (normalizedPos.y - canvasRect.pivot.y) * canvasSize.y,
+            0
+        ));
+
+        // 고스트 오브젝트 생성
+        GameObject ghostObj = new GameObject("DisappearGhost");
+        ghostObj.transform.SetParent(canvas.transform, false);
+        ghostObj.transform.SetAsLastSibling();
+
+        // 셀 이미지 복사
+        Image ghostImage = ghostObj.AddComponent<Image>();
+        ghostImage.sprite = cellImage.sprite;
+        ghostImage.raycastTarget = false;
+
+        RectTransform cellRt = (RectTransform)cellImage.transform;
+        RectTransform ghostRt = ghostObj.GetComponent<RectTransform>();
+        ghostRt.position = cellImage.transform.position;
+        ghostRt.sizeDelta = cellRt.rect.size;
+        ghostRt.localScale = cellImage.transform.lossyScale;
+
+        // 숫자 텍스트도 복사 (고스트의 자식으로)
+        if (numberText != null && numberText.enabled && !string.IsNullOrEmpty(numberText.text))
         {
-            disappearSeq.Join(
-                numberText.transform.DOLocalMoveY(originalTextPos.y + disappearJumpHeight, disappearDuration * 0.3f)
-                    .SetEase(Ease.OutQuad)
-            );
+            GameObject numberGhost = new GameObject("NumberGhost");
+            numberGhost.transform.SetParent(ghostObj.transform, false);
+
+            var textGhost = numberGhost.AddComponent<TextMeshProUGUI>();
+            textGhost.text = numberText.text;
+            textGhost.font = numberText.font;
+            textGhost.fontSize = numberText.fontSize;
+            textGhost.alignment = numberText.alignment;
+            textGhost.color = numberText.color;
+            textGhost.raycastTarget = false;
+
+            RectTransform textRt = numberGhost.GetComponent<RectTransform>();
+            textRt.anchoredPosition = Vector2.zero;
+            textRt.sizeDelta = ((RectTransform)numberText.transform).rect.size;
+            textRt.localScale = Vector3.one;
         }
 
-        // Phase 2: 스케일 0으로 줄어들면서 사라짐 + 파티클 생성
-        disappearSeq.AppendCallback(() => SpawnKillParticles());
-        disappearSeq.Append(
-            cellImage.transform.DOScale(0f, disappearDuration * 0.7f)
-                .SetEase(Ease.InBack)
-        );
-        disappearSeq.Join(
-            cellImage.transform.DOLocalMoveY(originalPos.y + disappearJumpHeight * 0.5f, disappearDuration * 0.7f)
-                .SetEase(Ease.InQuad)
-        );
-        // 숫자도 같이 내려오면서 페이드아웃
-        if (numberText != null && numberText.enabled)
-        {
-            disappearSeq.Join(
-                numberText.transform.DOLocalMoveY(originalTextPos.y + disappearJumpHeight * 0.5f, disappearDuration * 0.7f)
-                    .SetEase(Ease.InQuad)
-            );
-            disappearSeq.Join(
-                numberText.DOFade(0f, disappearDuration * 0.5f)
-            );
-        }
+        // 애니메이션
+        float flyDuration = 0.35f;
+        Vector3 originalScale = ghostRt.localScale;
 
-        currentDisappearTween = disappearSeq;
+        Sequence ghostSeq = DOTween.Sequence();
+        ghostSeq.SetId(GHOST_TWEEN_ID);
 
-        disappearSeq.OnComplete(() =>
-        {
-            // 값 변경 (공백셀로)
-            value = -1;
-            numberText.text = "";
-            numberText.enabled = false;
-            numberText.alpha = 1f;
+        ghostSeq.Append(ghostRt.DOScale(originalScale * 1.15f, 0.08f).SetEase(Ease.OutQuad));
+        ghostSeq.Append(ghostRt.DOScale(originalScale * 0.35f, flyDuration - 0.08f).SetEase(Ease.InQuad));
+        ghostSeq.Insert(0f, ghostRt.DOMove(targetWorldPos, flyDuration).SetEase(Ease.InQuad));
+        ghostSeq.Insert(0f, ghostRt.DORotate(new Vector3(0, 0, 360f), flyDuration, RotateMode.FastBeyond360).SetEase(Ease.Linear));
+        ghostSeq.Insert(flyDuration * 0.3f, ghostImage.DOFade(0f, flyDuration * 0.7f));
 
-            // 위치 복원
-            cellImage.transform.localPosition = originalPos;
-            numberText.transform.localPosition = originalTextPos;
-
-            // 젤리발 스프라이트로 변경
-            blankSprite = ThemeManager.Instance.selectedTheme.blankSpriteSets[Random.Range(0, ThemeManager.Instance.selectedTheme.blankSpriteSets.Count)];
-            cellImage.sprite = blankSprite.normalSprite;
-
-            // 젤리발 등장 애니메이션
-            PlayAppearAnimation(onComplete);
-        });
+        ghostSeq.OnKill(() => { if (ghostObj != null) Destroy(ghostObj); });
+        ghostSeq.OnComplete(() => { if (ghostObj != null) Destroy(ghostObj); });
     }
 
     private void KillTileEffectTweens()
@@ -704,5 +743,53 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     {
         ParticleSystem particleCpy = Instantiate(particle, transform.position, Quaternion.identity);
         particleCpy.transform.SetParent(transform.parent.parent.parent);
+    }
+
+    // =========================
+    //  점수 빨려들어가는 효과 (테스트)
+    // =========================
+
+    [Header("Score Fly Effect (테스트)")]
+    [SerializeField] private float scoreFlyDuration = 0.5f;      // 날아가는 시간
+    [SerializeField] private float scoreFlyStartScale = 0.8f;    // 시작 스케일
+    [SerializeField] private float scoreFlyEndScale = 0.2f;      // 끝 스케일
+
+    /// <summary>
+    /// 셀 복사본이 점수 위치로 날아가는 효과
+    /// </summary>
+    private void SpawnScoreFlyEffect()
+    {
+        if (UIHud.ScoreTarget == null) return;
+
+        // Canvas 찾기
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas == null) return;
+
+        // 날아가는 복사본 생성
+        GameObject flyObj = new GameObject("ScoreFlyEffect");
+        flyObj.transform.SetParent(canvas.transform, false);
+        flyObj.transform.SetAsLastSibling();
+
+        // Image 추가
+        Image flyImage = flyObj.AddComponent<Image>();
+        flyImage.sprite = cellImage.sprite;
+        flyImage.raycastTarget = false;
+
+        // RectTransform 설정
+        RectTransform rt = flyObj.GetComponent<RectTransform>();
+        rt.position = cellImage.transform.position;
+        rt.sizeDelta = new Vector2(80f, 80f);  // 적당한 크기
+        rt.localScale = Vector3.one * scoreFlyStartScale;
+
+        // 목표 위치 (Score 텍스트)
+        Vector3 targetPos = UIHud.ScoreTarget.position;
+
+        // 애니메이션: 날아가면서 작아지고 투명해짐
+        Sequence flySeq = DOTween.Sequence();
+        flySeq.Append(rt.DOMove(targetPos, scoreFlyDuration).SetEase(Ease.InQuad));
+        flySeq.Join(rt.DOScale(scoreFlyEndScale, scoreFlyDuration).SetEase(Ease.InQuad));
+        flySeq.Join(flyImage.DOFade(0f, scoreFlyDuration * 0.8f).SetDelay(scoreFlyDuration * 0.2f));
+
+        flySeq.OnComplete(() => Destroy(flyObj));
     }
 }

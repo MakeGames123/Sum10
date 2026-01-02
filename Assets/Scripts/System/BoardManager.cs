@@ -86,8 +86,6 @@ public class BoardManager : MonoBehaviour
             int maxRefreshRate = (int)Screen.currentResolution.refreshRateRatio.value;
             Application.targetFrameRate = maxRefreshRate;
         }
-
-        Debug.Log($"🎮 프레임레이트 설정: {Application.targetFrameRate}fps (배터리 최적화: {batteryOptimizationMode})");
 #endif
     }
 
@@ -299,7 +297,6 @@ public class BoardManager : MonoBehaviour
 
     public void OnCellPointerEnter(CellView cell)
     {
-        Debug.Log("1");
         if (!isDragging || cell == null)
             return;
 
