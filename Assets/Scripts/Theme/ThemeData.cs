@@ -21,6 +21,10 @@ public class ThemeData : ScriptableObject
     public float boardOffset;
     public Sprite cellBackground;
     public List<float> scale;
+
+    [Header("Font Colors")]
+    public Color normalFontColor = new Color(0.294f, 0.216f, 0.188f, 1f);      // 기본 폰트 색상 (#4B3730)
+    public Color selectedFontColor = new Color(0.294f, 0.216f, 0.188f, 1f);    // 선택 시 폰트 색상 (#4B3730)
 }
 [Serializable]
 public struct CellSprite

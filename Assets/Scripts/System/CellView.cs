@@ -25,6 +25,10 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     [SerializeField] private float selectJumpHeight = 8f;        // 위로 점프 높이
     [SerializeField] private float selectRotation = 6f;          // 살짝 기울어지는 각도
 
+    [Header("Flip Select Animation Settings (B)")]
+    [SerializeField] private float flipDuration = 0.25f;         // 뒤집기 전체 시간 (1.2배 빠르게)
+    [SerializeField] private Color flipSelectedColor = new Color(1f, 0.8f, 0.3f, 1f);  // 선택 시 색상 (주황/노란색)
+
     [Header("Hint Animation Settings")]
     [SerializeField] private float hintBounceDuration = 0.2f;    // 한 번 바운스 시간
     [SerializeField] private float hintScalePunch = 1.15f;       // 커지는 정도
@@ -55,6 +59,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
     private bool isSelected = false;
     private bool isHint = false;
+    private bool wasSelected = false;  // Flip 모드 선택 해제 애니메이션용
 
     // 애니메이션 관련
     private Tween selectTween;
@@ -75,6 +80,14 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         Ghost       // 빨려들어가는 연출 (미사용)
     }
     public static DisappearMode CurrentDisappearMode = DisappearMode.Pop;
+
+    // ========== AB 테스트용: 선택 애니메이션 ==========
+    public enum SelectMode
+    {
+        Bounce,     // 기존: 점프 + 기울어짐 (A)
+        Flip        // 새로운: 뒤집기 + 색상 변경 (B)
+    }
+    public static SelectMode CurrentSelectMode = SelectMode.Flip;  // B 모드 기본값
 
     /// <summary>
     /// 모든 Ghost 애니메이션을 즉시 중단하고 제거 (게임 종료 시 호출)
@@ -169,31 +182,51 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
             cellImage.color = Color.white; // 스프라이트 자체 색상 유지
         }
 
+        // 폰트 색상 적용
+        if (numberText != null && numberText.enabled)
+        {
+            var theme = ThemeManager.Instance.selectedTheme;
+            numberText.color = isSelected ? theme.selectedFontColor : theme.normalFontColor;
+        }
+
         // 애니메이션 처리
         if (isSelected)
         {
+            wasSelected = true;
             StopHintAnimation();
             PlaySelectAnimation();
         }
         else if (isHint)
         {
+            wasSelected = false;
             StopSelectAnimation();
             PlayHintAnimation();
         }
         else
         {
-            StopAllCellAnimations();
-            transform.localScale = Vector3.one;
-            transform.localRotation = Quaternion.identity;
-            // 셀 이미지 위치/회전/스케일 복원
-            float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
-            cellImage.transform.localScale = Vector3.one * themeScale;
-            cellImage.transform.localRotation = Quaternion.identity;
-            cellImage.transform.localPosition = selectOriginalPos;
-            // 숫자 위치도 복원
-            if (numberText != null)
+            // Flip 모드에서 선택 해제 시 애니메이션 재생
+            if (wasSelected && CurrentSelectMode == SelectMode.Flip)
             {
-                numberText.transform.localPosition = textOriginalPos;
+                wasSelected = false;
+                StopHintAnimation();
+                PlayDeselectAnimationFlip();
+            }
+            else
+            {
+                wasSelected = false;
+                StopAllCellAnimations();
+                transform.localScale = Vector3.one;
+                transform.localRotation = Quaternion.identity;
+                // 셀 이미지 위치/회전/스케일 복원
+                float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
+                cellImage.transform.localScale = Vector3.one * themeScale;
+                cellImage.transform.localRotation = Quaternion.identity;
+                cellImage.transform.localPosition = selectOriginalPos;
+                // 숫자 위치도 복원
+                if (numberText != null)
+                {
+                    numberText.transform.localPosition = textOriginalPos;
+                }
             }
         }
     }
@@ -203,6 +236,20 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         StopSelectAnimation();
         if (!gameObject.activeSelf) return;
 
+        // AB 테스트용 분기 (T키로 전환)
+        if (CurrentSelectMode == SelectMode.Flip)
+        {
+            PlaySelectAnimationFlip();
+        }
+        else
+        {
+            PlaySelectAnimationBounce();
+        }
+    }
+
+    // A 모드: 기존 점프 + 기울어짐
+    private void PlaySelectAnimationBounce()
+    {
         float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
 
         // 랜덤 방향으로 살짝 기울어짐 (-1 or 1)
@@ -257,6 +304,176 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         selectTween = seq;
     }
 
+    // B 모드: 뒤집기 + 바운스 + 기울어짐
+    private void PlaySelectAnimationFlip()
+    {
+        float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
+        float rotDir = Random.value > 0.5f ? 1f : -1f;
+
+        Sequence seq = DOTween.Sequence();
+
+        // Phase 1: 위로 점프 + 기울어짐 + 뒤집기 시작 (ScaleX 0으로)
+        seq.Append(
+            cellImage.transform.DOScaleX(0f, flipDuration * 0.35f)
+                .SetEase(Ease.InQuad)
+        );
+        seq.Join(
+            cellImage.transform.DOLocalMoveY(selectOriginalPos.y + selectJumpHeight, flipDuration * 0.35f)
+                .SetEase(Ease.OutQuad)
+        );
+        seq.Join(
+            cellImage.transform.DOLocalRotate(new Vector3(0, 0, selectRotation * rotDir), flipDuration * 0.35f)
+                .SetEase(Ease.OutQuad)
+        );
+        // 숫자도 같이 점프 + flip + 기울어짐
+        if (numberText != null && numberText.enabled)
+        {
+            seq.Join(
+                numberText.transform.DOScaleX(0f, flipDuration * 0.35f)
+                    .SetEase(Ease.InQuad)
+            );
+            seq.Join(
+                numberText.transform.DOLocalMoveY(textOriginalPos.y + selectJumpHeight, flipDuration * 0.35f)
+                    .SetEase(Ease.OutQuad)
+            );
+            seq.Join(
+                numberText.transform.DOLocalRotate(new Vector3(0, 0, selectRotation * rotDir), flipDuration * 0.35f)
+                    .SetEase(Ease.OutQuad)
+            );
+        }
+
+        // Phase 2: 뒤집기 완료 + 살짝 커짐
+        seq.Append(
+            cellImage.transform.DOScaleX(selectScalePunch * themeScale, flipDuration * 0.35f)
+                .SetEase(Ease.OutBack)
+        );
+        // 숫자도 뒤집기 완료 + 살짝 커짐
+        if (numberText != null && numberText.enabled)
+        {
+            seq.Join(
+                numberText.transform.DOScaleX(selectScalePunch, flipDuration * 0.35f)
+                    .SetEase(Ease.OutBack)
+            );
+        }
+
+        // Phase 3: 탄력있게 착지 + 원래 크기 + 회전 복원
+        seq.Append(
+            cellImage.transform.DOScaleX(themeScale, flipDuration * 0.3f)
+                .SetEase(Ease.OutQuad)
+        );
+        seq.Join(
+            cellImage.transform.DOLocalMoveY(selectOriginalPos.y, flipDuration * 0.3f)
+                .SetEase(Ease.OutBounce)
+        );
+        seq.Join(
+            cellImage.transform.DOLocalRotate(Vector3.zero, flipDuration * 0.3f)
+                .SetEase(Ease.OutBack)
+        );
+        // 숫자도 같이 내려옴 + 원래 크기 + 회전 복원
+        if (numberText != null && numberText.enabled)
+        {
+            seq.Join(
+                numberText.transform.DOScaleX(1f, flipDuration * 0.3f)
+                    .SetEase(Ease.OutQuad)
+            );
+            seq.Join(
+                numberText.transform.DOLocalMoveY(textOriginalPos.y, flipDuration * 0.3f)
+                    .SetEase(Ease.OutBounce)
+            );
+            seq.Join(
+                numberText.transform.DOLocalRotate(Vector3.zero, flipDuration * 0.3f)
+                    .SetEase(Ease.OutBack)
+            );
+        }
+
+        selectTween = seq;
+    }
+
+    // B 모드: 캔슬 시 역방향 뒤집기 애니메이션
+    private void PlayDeselectAnimationFlip()
+    {
+        float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
+        float rotDir = Random.value > 0.5f ? 1f : -1f;
+
+        Sequence seq = DOTween.Sequence();
+
+        // Phase 1: 위로 점프 + 기울어짐 + 뒤집기 시작 (ScaleX 0으로)
+        seq.Append(
+            cellImage.transform.DOScaleX(0f, flipDuration * 0.35f)
+                .SetEase(Ease.InQuad)
+        );
+        seq.Join(
+            cellImage.transform.DOLocalMoveY(selectOriginalPos.y + selectJumpHeight, flipDuration * 0.35f)
+                .SetEase(Ease.OutQuad)
+        );
+        seq.Join(
+            cellImage.transform.DOLocalRotate(new Vector3(0, 0, selectRotation * rotDir), flipDuration * 0.35f)
+                .SetEase(Ease.OutQuad)
+        );
+        // 숫자도 같이 점프 + flip + 기울어짐
+        if (numberText != null && numberText.enabled)
+        {
+            seq.Join(
+                numberText.transform.DOScaleX(0f, flipDuration * 0.35f)
+                    .SetEase(Ease.InQuad)
+            );
+            seq.Join(
+                numberText.transform.DOLocalMoveY(textOriginalPos.y + selectJumpHeight, flipDuration * 0.35f)
+                    .SetEase(Ease.OutQuad)
+            );
+            seq.Join(
+                numberText.transform.DOLocalRotate(new Vector3(0, 0, selectRotation * rotDir), flipDuration * 0.35f)
+                    .SetEase(Ease.OutQuad)
+            );
+        }
+
+        // Phase 2: 뒤집기 완료 + 살짝 커짐
+        seq.Append(
+            cellImage.transform.DOScaleX(selectScalePunch * themeScale, flipDuration * 0.35f)
+                .SetEase(Ease.OutBack)
+        );
+        // 숫자도 뒤집기 완료 + 살짝 커짐
+        if (numberText != null && numberText.enabled)
+        {
+            seq.Join(
+                numberText.transform.DOScaleX(selectScalePunch, flipDuration * 0.35f)
+                    .SetEase(Ease.OutBack)
+            );
+        }
+
+        // Phase 3: 탄력있게 착지 + 원래 크기 + 회전 복원
+        seq.Append(
+            cellImage.transform.DOScaleX(themeScale, flipDuration * 0.3f)
+                .SetEase(Ease.OutQuad)
+        );
+        seq.Join(
+            cellImage.transform.DOLocalMoveY(selectOriginalPos.y, flipDuration * 0.3f)
+                .SetEase(Ease.OutBounce)
+        );
+        seq.Join(
+            cellImage.transform.DOLocalRotate(Vector3.zero, flipDuration * 0.3f)
+                .SetEase(Ease.OutBack)
+        );
+        // 숫자도 같이 내려옴 + 원래 크기 + 회전 복원
+        if (numberText != null && numberText.enabled)
+        {
+            seq.Join(
+                numberText.transform.DOScaleX(1f, flipDuration * 0.3f)
+                    .SetEase(Ease.OutQuad)
+            );
+            seq.Join(
+                numberText.transform.DOLocalMoveY(textOriginalPos.y, flipDuration * 0.3f)
+                    .SetEase(Ease.OutBounce)
+            );
+            seq.Join(
+                numberText.transform.DOLocalRotate(Vector3.zero, flipDuration * 0.3f)
+                    .SetEase(Ease.OutBack)
+            );
+        }
+
+        selectTween = seq;
+    }
+
     private void StopSelectAnimation()
     {
         if (selectTween != null)
@@ -269,9 +486,12 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
             cellImage.transform.localPosition = selectOriginalPos;
             cellImage.transform.localScale = Vector3.one * themeScale;
             cellImage.transform.localRotation = Quaternion.identity;
+            cellImage.color = Color.white;  // 색상 복원 (Flip 모드용)
             if (numberText != null)
             {
                 numberText.transform.localPosition = textOriginalPos;
+                numberText.transform.localScale = Vector3.one;
+                numberText.transform.localRotation = Quaternion.identity;
             }
         }
     }

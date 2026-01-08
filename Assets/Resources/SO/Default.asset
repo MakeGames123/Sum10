@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   themeName: Default
   textOffset: 5
-  themeThumbnail: {fileID: 21300000, guid: a24667e90fe4aef488939d42ecfde69f, type: 3}
+  themeThumbnail: {fileID: 21300000, guid: 57e1e0abb6f86e44cb61031e765a1d13, type: 3}
   normalSpriteSets:
-  - normalSprite: {fileID: 21300000, guid: a24667e90fe4aef488939d42ecfde69f, type: 3}
-    hintSprite: {fileID: 21300000, guid: 183a9156ced03ca448e7641f06719971, type: 3}
-    selectedSprite: {fileID: 21300000, guid: 832acbd1db08d224fb96c481d0a27970, type: 3}
+  - normalSprite: {fileID: 21300000, guid: 57e1e0abb6f86e44cb61031e765a1d13, type: 3}
+    hintSprite: {fileID: 21300000, guid: 5e3db9b1d7d63e04cbf6d70250010356, type: 3}
+    selectedSprite: {fileID: 21300000, guid: 8339c53d40b56c44c88e827ad5807c14, type: 3}
   blankSpriteSets:
-  - normalSprite: {fileID: 21300000, guid: defa5b5f48ccab640832e5336834cb56, type: 3}
-    hintSprite: {fileID: 21300000, guid: 88571f5aa5447ca4d972a339e8879134, type: 3}
-    selectedSprite: {fileID: 21300000, guid: 2696fd3aec5d2ff409a2375926295416, type: 3}
+  - normalSprite: {fileID: 21300000, guid: 5eaca2750b0a6c24e94431f241d32370, type: 3}
+    hintSprite: {fileID: 21300000, guid: fdf68f19f7ba3ed468d591eacbc8abb7, type: 3}
+    selectedSprite: {fileID: 21300000, guid: a47198bc6ced37e4ab9bf051080281a1, type: 3}
   cellScale: 1.1
   backgroundScale: 1.1
   boardLowSkin: {fileID: 21300000, guid: 5d9cf4b614dad4944b1affa874188b60, type: 3}
   boardSkin: {fileID: 21300000, guid: 51074b01679c0e641aad6947c16d68dd, type: 3}
-  background: {fileID: 21300000, guid: 245b41aff36c38b41b3ba57dcd4d60ca, type: 3}
+  background: {fileID: 21300000, guid: 2b31dc2aead0bb74bb6eb9f52ef03ef0, type: 3}
   boardWidth: 1080
   boardHeight: 1311
   boardOffset: -160
@@ -37,3 +37,5 @@ MonoBehaviour:
   - 2.65
   - 2.13
   - 1.77
+  normalFontColor: {r: 0.294, g: 0.216, b: 0.188, a: 1}
+  selectedFontColor: {r: 0.9607843, g: 0.7294118, b: 0.7254902, a: 1}

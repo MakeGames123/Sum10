@@ -24,6 +24,9 @@ public class ThemeDataEditor : Editor
     SerializedProperty cellBackground;
     SerializedProperty scale;
 
+    SerializedProperty normalFontColor;
+    SerializedProperty selectedFontColor;
+
     void OnEnable()
     {
         themeName = serializedObject.FindProperty("themeName");
@@ -45,6 +48,9 @@ public class ThemeDataEditor : Editor
         themeThumbnail = serializedObject.FindProperty("themeThumbnail");
         cellBackground = serializedObject.FindProperty("cellBackground");
         scale = serializedObject.FindProperty("scale");
+
+        normalFontColor = serializedObject.FindProperty("normalFontColor");
+        selectedFontColor = serializedObject.FindProperty("selectedFontColor");
     }
 
     public override void OnInspectorGUI()
@@ -79,6 +85,10 @@ public class ThemeDataEditor : Editor
 
         DrawHeader("Blank Cell Sprites");
         DrawCellSpriteList(blankSpriteSets);
+
+        DrawHeader("Font Colors");
+        EditorGUILayout.PropertyField(normalFontColor, new GUIContent("기본 폰트 색상"));
+        EditorGUILayout.PropertyField(selectedFontColor, new GUIContent("선택 시 폰트 색상"));
 
         serializedObject.ApplyModifiedProperties();
     }

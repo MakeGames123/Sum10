@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Hint Settings")]
     [SerializeField] private float hintIdleThreshold = 5f;
-    [SerializeField] private float hintFlashDuration = 1.0f;
+    [SerializeField] private float hintFlashDuration = 3.0f;
     public Vector2 scoreTextPosition = new();
     public Vector2 timeTextPosition = new();
 
@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
         get { return remainingTime; }
         set
         {
-            remainingTime = Mathf.Min(3000, value);
+            remainingTime = Mathf.Min(30, value);  // 최대 30초 제한
         }
     }
     private float timeProgress = 0;
@@ -91,22 +91,22 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        // ========== AB 테스트: T키로 사라짐 연출 전환 (현재 Pop 고정) ==========
-        // #if UNITY_EDITOR
-        //         if (Input.GetKeyDown(KeyCode.T))
-        //         {
-        //             if (CellView.CurrentDisappearMode == CellView.DisappearMode.Ghost)
-        //             {
-        //                 CellView.CurrentDisappearMode = CellView.DisappearMode.Pop;
-        //                 Debug.Log("[AB Test] 사라짐 모드: Pop (팡팡 터지기)");
-        //             }
-        //             else
-        //             {
-        //                 CellView.CurrentDisappearMode = CellView.DisappearMode.Ghost;
-        //                 Debug.Log("[AB Test] 사라짐 모드: Ghost (빨려들어가기)");
-        //             }
-        //         }
-        // #endif
+        // ========== AB 테스트: T키로 선택 애니메이션 전환 ==========
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if (CellView.CurrentSelectMode == CellView.SelectMode.Bounce)
+            {
+                CellView.CurrentSelectMode = CellView.SelectMode.Flip;
+                Debug.Log("[AB Test] 선택 모드: Flip (뒤집기 + 색상 변경)");
+            }
+            else
+            {
+                CellView.CurrentSelectMode = CellView.SelectMode.Bounce;
+                Debug.Log("[AB Test] 선택 모드: Bounce (점프 + 기울어짐)");
+            }
+        }
+#endif
 
         if (!isRunning)
             return;
@@ -187,6 +187,8 @@ public class GameManager : MonoBehaviour
         // 남아있는 Ghost 애니메이션 정리
         CellView.KillAllGhostAnimations();
 
+        Debug.Log($"[GameOver] 최종 플레이타임: {timeProgress:F1}초 | 점수: {score} | 최대콤보: {maxCombo}");
+
         scoreManager.SubmitScore(score, maxCombo);
         personalScoreManager.SubmitScore(score, maxCombo);
         OnGameOver?.Invoke(score);
@@ -224,7 +226,13 @@ public class GameManager : MonoBehaviour
         //     comboTextCpy.GetComponent<ComboTextFade>().SetCondition("Combo " + combo.ToString() + "!");
         // }
 
-        float timeBonus = Mathf.Max(1 - (int)timeProgress / 60 * 0.25f, 0.3f);
+        // 시간 추가 규칙 (경과 시간에 따라 감소)
+        float timeBonus;
+        if (timeProgress < 30) timeBonus = 3f;
+        else if (timeProgress < 90) timeBonus = 2f;
+        else if (timeProgress < 150) timeBonus = 1f;
+        else timeBonus = 0.5f;
+
         RemainingTime += timeBonus;
         GameObject timetext = Instantiate(floatingText, textGroup.transform);
         timetext.GetComponent<RectTransform>().anchoredPosition = timeTextPosition;

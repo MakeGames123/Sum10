@@ -283,7 +283,7 @@ public class BoardManager : MonoBehaviour
 
     public void OnCellPointerDown(CellView cell)
     {
-        CancelHint();
+        // CancelHint();  // 임시 비활성화: 클릭해도 힌트 유지
 
         if (cell == null)
             return;
@@ -448,7 +448,7 @@ public class BoardManager : MonoBehaviour
     {
         if (!isDragging) return;
 
-        CancelHint();
+        // CancelHint();  // 임시 비활성화: 드래그 종료해도 힌트 유지
         isDragging = false;
 
         if (ShouldClearCurrentPath())
@@ -475,6 +475,20 @@ public class BoardManager : MonoBehaviour
 
             // 게임 로직 처리 (애니메이션 시작 후)
             OnCellsRemoved?.Invoke(removed);
+
+            // 힌트 경로에 포함된 셀이 제거되면 힌트 취소
+            if (currentHintCells != null && currentHintCells.Count > 0)
+            {
+                foreach (var cell in removed)
+                {
+                    if (currentHintCells.Contains(cell))
+                    {
+                        CancelHint();
+                        break;
+                    }
+                }
+            }
+
             InvalidateCache();
             CheckEndConditions();
         }
@@ -623,9 +637,13 @@ public class BoardManager : MonoBehaviour
         foreach (var cell in currentHintCells)
             cell.SetHintHighlight(true);
 
-        yield return new WaitForSeconds(duration);
+        // 힌트 무한 루프: 애니메이션이 계속 반복됨 (CellView에서 SetLoops(-1) 설정)
+        // duration 후 자동 취소 비활성화
+        yield break;
 
-        CancelHint();
+        // 기존 로직 (임시 비활성화)
+        // yield return new WaitForSeconds(duration);
+        // CancelHint();
     }
 }
 
