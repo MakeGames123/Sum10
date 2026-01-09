@@ -50,13 +50,17 @@ public class BottomNav : MonoBehaviour
             panel.anchoredPosition = disablePos;
         }
 
+        if (target.TryGetComponent(out IMainPanel ipanel))
+        {
+            ipanel.SetCondition();
+        }
         target.anchoredPosition = Vector2.zero;
     }
     private void UpdateButtonUI(BottomNavButton target)
     {
         foreach (BottomNavButton button in allButtons)
         {
-            if(target != button) button.UpdateUI(false);
+            if (target != button) button.UpdateUI(false);
         }
 
         target.UpdateUI(true);
