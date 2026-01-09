@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,7 +16,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float hintFlashDuration = 3.0f;
     public Vector2 scoreTextPosition = new();
     public Vector2 timeTextPosition = new();
-
     private float remainingTime;
     public float RemainingTime
     {
@@ -31,7 +31,6 @@ public class GameManager : MonoBehaviour
     private int currentBoardSize = 3;   // 3x3 시작
     private int stageIndex = 0;         // 스테이지 인덱스 (테스트용)
     private int score = 0;
-    private int bestScore = 0;
 
     private float idleTimer = 0f;
     private bool hintShownForCurrentIdle = false;
@@ -39,15 +38,13 @@ public class GameManager : MonoBehaviour
     public Action<int> OnScoreChanged;
     public Action<int> OnComboChanged;
     public Action<float> OnTimeChanged;
-    public Action<int> OnGameOver;
+    public UnityEvent<int> OnGameOver;
 
     public int CurrentScore => score;
-    public int BestScore => bestScore;
     public GameObject floatingText;
     public GameObject comboText;
     public GameObject textGroup;
-    public ScoreManager scoreManager;
-    public PersonalScoreManager personalScoreManager;
+    public GameOverPanel gameOverPanel;
 
     public int combo = 0;
     public int maxCombo = 0;
@@ -64,19 +61,8 @@ public class GameManager : MonoBehaviour
 
         boardManager.OnNoMoreMoves += HandleNoMoreMoves;
         boardManager.OnCellsRemoved += HandleCellsRemoved;
-
-        bestScore = PlayerPrefs.GetInt("BestScore", 0);
+        gameOverPanel.replayButton.onClick.AddListener(StartNewRun);
     }
-
-    private void OnDestroy()
-    {
-        if (boardManager != null)
-        {
-            boardManager.OnNoMoreMoves -= HandleNoMoreMoves;
-            boardManager.OnCellsRemoved -= HandleCellsRemoved;
-        }
-    }
-
     private void Start()
     {
         // 모바일 프레임레이트 최적화 (120Hz 디바이스 지원)
@@ -191,20 +177,9 @@ public class GameManager : MonoBehaviour
     private void EndRun()
     {
         isRunning = false;
-
         // 남아있는 Ghost 애니메이션 정리
         CellView.KillAllGhostAnimations();
 
-        // 최고점수 갱신
-        if (score > bestScore)
-        {
-            bestScore = score;
-            PlayerPrefs.SetInt("BestScore", bestScore);
-            PlayerPrefs.Save();
-        }
-
-        scoreManager.SubmitScore(score, maxCombo);
-        personalScoreManager.SubmitScore(score, maxCombo);
         OnGameOver?.Invoke(score);
     }
 
