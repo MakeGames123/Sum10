@@ -97,6 +97,21 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         DOTween.Kill(GHOST_TWEEN_ID);
     }
 
+    /// <summary>
+    /// 모든 활성 파티클 제거 (리플레이 시 호출)
+    /// </summary>
+    public static void DestroyAllActiveParticles()
+    {
+        var particles = FindObjectsOfType<ParticleSystem>();
+        foreach (var p in particles)
+        {
+            if (p != null && p.gameObject.name.Contains("(Clone)"))
+            {
+                Destroy(p.gameObject);
+            }
+        }
+    }
+
     public void Init(BoardManager board, int x, int y, int initialValue)
     {
         this.board = board;
@@ -107,7 +122,12 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         KillTileEffectTweens();
         cellImage.transform.localPosition = Vector3.zero;
         cellImage.transform.localRotation = Quaternion.identity;
-        if (numberText != null) numberText.alpha = 1f;
+        if (numberText != null)
+        {
+            numberText.alpha = 1f;
+            numberText.transform.localScale = Vector3.one;
+            numberText.transform.localRotation = Quaternion.identity;
+        }
 
         normalSprite = ThemeManager.Instance.selectedTheme.normalSpriteSets[Random.Range(0, ThemeManager.Instance.selectedTheme.normalSpriteSets.Count)];
         blankSprite = ThemeManager.Instance.selectedTheme.blankSpriteSets[Random.Range(0, ThemeManager.Instance.selectedTheme.blankSpriteSets.Count)];
@@ -953,6 +973,8 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
             if (numberText != null)
             {
                 numberText.transform.localPosition = textOriginalPos;
+                numberText.transform.localScale = Vector3.one;
+                numberText.transform.localRotation = Quaternion.identity;
             }
         }
     }

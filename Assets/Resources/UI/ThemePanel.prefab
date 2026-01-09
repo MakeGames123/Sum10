@@ -1031,7 +1031,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.11764707, g: 0.11764707, b: 0.13333334, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1064,7 +1064,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6070536318320013071
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1106,9 +1106,10 @@ MonoBehaviour:
   leftButton: {fileID: 2174386983869854406}
   applyButton: {fileID: 7034490758031300040}
   themeDatas:
-  - {fileID: 11400000, guid: 68db8e7f2a7d62d4e8cff85801dbe938, type: 2}
+  - {fileID: 11400000, guid: b245025fa5e9bb847b1d4d1ec5f71862, type: 2}
   themeThumbnail: {fileID: 7075532102553845092}
   background: {fileID: 442373300168627445}
+  gameBackground: {fileID: 0}
 --- !u!1 &8956651163284040550
 GameObject:
   m_ObjectHideFlags: 0

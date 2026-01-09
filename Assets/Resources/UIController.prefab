@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6407875833251232571}
   - component: {fileID: 82025596048230148}
   - component: {fileID: 6982340759165470953}
+  - component: {fileID: 8352245093095510782}
   m_Layer: 0
   m_Name: UIController
   m_TagString: Untagged
@@ -66,9 +67,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f061fb4951d72f41a21332dd16e5c76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startButton: {fileID: 0}
+--- !u!114 &8352245093095510782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7767561982726342471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f29268ef79e25664ba5423fdee3ae0c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
+  lobbyUIRoot: {fileID: 0}
   inGameUIRoot: {fileID: 0}
-  gameOverRoot: {fileID: 0}
+  topBar: {fileID: 0}
+  bottomNavBar: {fileID: 0}
+  startButton: {fileID: 0}
   scoreButton: {fileID: 0}
   fastRestartButton: {fileID: 0}
-  startButton: {fileID: 0}
+  gameOverPanel: {fileID: 0}

@@ -79,6 +79,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // 모바일 프레임레이트 최적화 (120Hz 디바이스 지원)
+        Application.targetFrameRate = 120;
+
         // 자동으로 게임을 시작하지 않는다.
         isRunning = false;
         score = 0;
@@ -162,9 +165,14 @@ public class GameManager : MonoBehaviour
 
     private void StartNewRun()
     {
+        // 이전 게임의 파티클/고스트 정리
+        CellView.KillAllGhostAnimations();
+        CellView.DestroyAllActiveParticles();
+
         score = 0;
         combo = 0;
         maxCombo = 0;
+        timeProgress = 0;
         OnScoreChanged?.Invoke(score);
         OnComboChanged?.Invoke(score);
 
@@ -187,7 +195,13 @@ public class GameManager : MonoBehaviour
         // 남아있는 Ghost 애니메이션 정리
         CellView.KillAllGhostAnimations();
 
-        Debug.Log($"[GameOver] 최종 플레이타임: {timeProgress:F1}초 | 점수: {score} | 최대콤보: {maxCombo}");
+        // 최고점수 갱신
+        if (score > bestScore)
+        {
+            bestScore = score;
+            PlayerPrefs.SetInt("BestScore", bestScore);
+            PlayerPrefs.Save();
+        }
 
         scoreManager.SubmitScore(score, maxCombo);
         personalScoreManager.SubmitScore(score, maxCombo);
@@ -228,9 +242,9 @@ public class GameManager : MonoBehaviour
 
         // 시간 추가 규칙 (경과 시간에 따라 감소)
         float timeBonus;
-        if (timeProgress < 30) timeBonus = 3f;
-        else if (timeProgress < 90) timeBonus = 2f;
-        else if (timeProgress < 150) timeBonus = 1f;
+        if (timeProgress < 30) timeBonus = 2f;
+        else if (timeProgress < 60) timeBonus = 1.5f;
+        else if (timeProgress < 120) timeBonus = 1f;
         else timeBonus = 0.5f;
 
         RemainingTime += timeBonus;
