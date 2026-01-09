@@ -6,16 +6,15 @@ using System;
 using UnityEngine.UI;
 using System.Drawing;
 using Unity.Mathematics;
-public class BoardSettingManager : MonoBehaviour
+public class ThemeBoardSetting : MonoBehaviour
 {
-    public int n;
+    public int n = 3;
     public List<CellView> cells = new();
     public int[,] boardValues;
     private GridLayoutGroup gridLayout;
     public RectTransform boardRoot;
     public RectTransform boardSkin;
     public RectTransform boardLowSkin;
-    [SerializeField] private CellView cellPrefab;
     private PathFinder pathFinder = new();
 
     [Header("Spawn Animation Settings")]
@@ -27,15 +26,12 @@ public class BoardSettingManager : MonoBehaviour
 
         cells = boardRoot.GetComponentsInChildren<CellView>().ToList();
     }
-    public int Size;
-    public void SetupBoardWithSize(int size)
+    public void SetupBoardWithSize()
     {
-        n = size;
         boardValues = new int[n, n];
 
         GenerateBoardValuesUntilValid();
         CreateVisualBoard();
-        //ApplyBoardLayout();
     }
 
     // =========================
@@ -345,7 +341,7 @@ public class BoardSettingManager : MonoBehaviour
                 cell.PlaySpawnAnimation(delay);
             }
         }
-        for(int i = n*n; i < 36; i++)
+        for(int i = n*n; i < 9; i++)
         {
             cells[i].gameObject.SetActive(false);
         }

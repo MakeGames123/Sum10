@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class BoardManager : MonoBehaviour
+public class ThemeBoard : MonoBehaviour
 {
     private Vector2 lastProcessedTouchPosition;
     private const float TOUCH_POSITION_THRESHOLD = 50f;
@@ -33,18 +33,16 @@ public class BoardManager : MonoBehaviour
     // 이벤트
     public event Action<List<CellView>> OnCellsRemoved;
     public event Action OnNoMoreMoves;
-    public BoardSettingManager boardSettingManager;
+    public ThemeBoardSetting boardSettingManager;
 
     private PathFinder pathFinder = new();
 
     // =========================
     //  Unity 라이프사이클
     // =========================
-
-    private void Awake()
-    {
-        SetupFrameRate();
-    }
+    private float hintIdleThreshold = 5f;
+    private bool hintShownForCurrentIdle = false;
+    private float timeProgress = 0;
 
     private void Update()
     {
@@ -68,23 +66,19 @@ public class BoardManager : MonoBehaviour
         {
             TrySmartFirstTouchOutsideBoard();
         }
-    }
 
-    private void SetupFrameRate()
-    {
-#if UNITY_ANDROID || UNITY_IOS
-        QualitySettings.vSyncCount = 0;
+        // ----- 힌트용 idle 타이머 -----
+        timeProgress += Time.deltaTime;
 
-        if (batteryOptimizationMode)
+        if (!hintShownForCurrentIdle && timeProgress >= hintIdleThreshold)
         {
-            Application.targetFrameRate = 30;
+            var hintPath = FindHintPath();
+            if (hintPath != null && hintPath.Count > 0)
+            {
+                ShowHint(1);
+                hintShownForCurrentIdle = true;
+            }
         }
-        else
-        {
-            int maxRefreshRate = (int)Screen.currentResolution.refreshRateRatio.value;
-            Application.targetFrameRate = maxRefreshRate;
-        }
-#endif
     }
 
     private void TrySmartFirstTouchOutsideBoard()
@@ -546,13 +540,13 @@ public class BoardManager : MonoBehaviour
 
         if (!anyNumber)
         {
-            OnNoMoreMoves?.Invoke();
+            boardSettingManager.SetupBoardWithSize();
             return;
         }
 
         if (!HasAnyValidMove())
         {
-            OnNoMoreMoves?.Invoke();
+            boardSettingManager.SetupBoardWithSize();
         }
     }
 
@@ -642,22 +636,5 @@ public class BoardManager : MonoBehaviour
         // 기존 로직 (임시 비활성화)
         // yield return new WaitForSeconds(duration);
         // CancelHint();
-    }
-}
-
-public class PathState
-{
-    public int x, y;
-    public int sum;
-    public List<Vector2Int> path;
-    public bool[,] visited;
-
-    public PathState(int x, int y, int sum, bool[,] visited, List<Vector2Int> path)
-    {
-        this.x = x;
-        this.y = y;
-        this.sum = sum;
-        this.visited = visited;
-        this.path = path;
     }
 }

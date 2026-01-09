@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: af25114db007fe24381140fb0ddc0aa0, type: 2}
   m_sharedMaterial: {fileID: -8346104808172761906, guid: af25114db007fe24381140fb0ddc0aa0, type: 2}
@@ -246,6 +246,8 @@ MonoBehaviour:
   selectScalePunch: 1.12
   selectJumpHeight: 8
   selectRotation: 6
+  flipDuration: 0.25
+  flipSelectedColor: {r: 1, g: 0.8, b: 0.3, a: 1}
   hintBounceDuration: 0.2
   hintScalePunch: 1.15
   hintJumpHeight: 12
@@ -401,7 +403,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: dc5305955be72864aac666bc09762c20, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 57e1e0abb6f86e44cb61031e765a1d13, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
