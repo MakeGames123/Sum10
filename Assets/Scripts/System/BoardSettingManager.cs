@@ -17,6 +17,7 @@ public class BoardSettingManager : MonoBehaviour
     public RectTransform boardLowSkin;
     [SerializeField] private CellView cellPrefab;
     private PathFinder pathFinder = new();
+    public BoardManager board;
 
     [Header("Spawn Animation Settings")]
     [SerializeField] private float spawnDelayPerCell = 0.03f;   // 셀 간 딜레이
@@ -338,7 +339,7 @@ public class BoardSettingManager : MonoBehaviour
                 // 생성 애니메이션 (웨이브 or 순차)
                 float delay = CalculateSpawnDelay(x, y);
                 cell.PlaySpawnAnimation(delay);
-                cell.Init(boardManager, x, y, v);
+                cell.Init(board, x, y, v);
             }
         }
 

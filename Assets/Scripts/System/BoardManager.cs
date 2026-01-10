@@ -85,15 +85,8 @@ public class BoardManager : MonoBehaviour
 #if UNITY_ANDROID || UNITY_IOS
         QualitySettings.vSyncCount = 0;
 
-        if (batteryOptimizationMode)
-        {
-            Application.targetFrameRate = 30;
-        }
-        else
-        {
-            int maxRefreshRate = (int)Screen.currentResolution.refreshRateRatio.value;
-            Application.targetFrameRate = maxRefreshRate;
-        }
+        int maxRefreshRate = (int)Screen.currentResolution.refreshRateRatio.value;
+        Application.targetFrameRate = maxRefreshRate;
 #endif
     }
 
