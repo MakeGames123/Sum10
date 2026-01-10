@@ -29,6 +29,6 @@ public class ThemeManager : MonoBehaviour
         selectedTheme = newTheme;
         board.sprite = selectedTheme.boardSkin;
         boardLowSkin.sprite = selectedTheme.boardLowSkin;
-        background.sprite = selectedTheme.background;
+        //background.sprite = selectedTheme.background;
     }
 }

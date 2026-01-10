@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
+public class CellView : MonoBehaviour
 {
     public int X { get; private set; }
     public int Y { get; private set; }
@@ -52,7 +52,6 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     [SerializeField] private float spawnDropHeight = 30f;           // 위에서 떨어지는 높이
 
     private int value;          // -1 = 공백, 1~k = 숫자
-    private BoardManager board;
 
     // 파괴 대기 중 플래그 (매칭 성공 후 애니메이션 중 재선택 방지)
     private bool isPendingDestruction = false;
@@ -122,9 +121,8 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         }
     }
 
-    public void Init(BoardManager board, int x, int y, int initialValue)
+    public void Init(int x, int y, int initialValue)
     {
-        this.board = board;
         this.X = x;
         this.Y = y;
 
@@ -675,17 +673,6 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
             return normalSprite.normalSprite;
         }
     }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        board.OnCellPointerDown(this);
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        board.OnCellPointerEnter(this);
-    }
-
     // =========================
     //  타일 이펙트 애니메이션
     // =========================
@@ -1139,51 +1126,4 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         particleCpy.transform.SetParent(transform.parent.parent.parent);
     }
 
-    // =========================
-    //  점수 빨려들어가는 효과 (테스트)
-    // =========================
-
-    [Header("Score Fly Effect (테스트)")]
-    [SerializeField] private float scoreFlyDuration = 0.5f;      // 날아가는 시간
-    [SerializeField] private float scoreFlyStartScale = 0.8f;    // 시작 스케일
-    [SerializeField] private float scoreFlyEndScale = 0.2f;      // 끝 스케일
-
-    /// <summary>
-    /// 셀 복사본이 점수 위치로 날아가는 효과
-    /// </summary>
-    private void SpawnScoreFlyEffect()
-    {
-        if (UIHud.ScoreTarget == null) return;
-
-        // Canvas 찾기
-        Canvas canvas = GetComponentInParent<Canvas>();
-        if (canvas == null) return;
-
-        // 날아가는 복사본 생성
-        GameObject flyObj = new GameObject("ScoreFlyEffect");
-        flyObj.transform.SetParent(canvas.transform, false);
-        flyObj.transform.SetAsLastSibling();
-
-        // Image 추가
-        Image flyImage = flyObj.AddComponent<Image>();
-        flyImage.sprite = cellImage.sprite;
-        flyImage.raycastTarget = false;
-
-        // RectTransform 설정
-        RectTransform rt = flyObj.GetComponent<RectTransform>();
-        rt.position = cellImage.transform.position;
-        rt.sizeDelta = new Vector2(80f, 80f);  // 적당한 크기
-        rt.localScale = Vector3.one * scoreFlyStartScale;
-
-        // 목표 위치 (Score 텍스트)
-        Vector3 targetPos = UIHud.ScoreTarget.position;
-
-        // 애니메이션: 날아가면서 작아지고 투명해짐
-        Sequence flySeq = DOTween.Sequence();
-        flySeq.Append(rt.DOMove(targetPos, scoreFlyDuration).SetEase(Ease.InQuad));
-        flySeq.Join(rt.DOScale(scoreFlyEndScale, scoreFlyDuration).SetEase(Ease.InQuad));
-        flySeq.Join(flyImage.DOFade(0f, scoreFlyDuration * 0.8f).SetDelay(scoreFlyDuration * 0.2f));
-
-        flySeq.OnComplete(() => Destroy(flyObj));
-    }
 }

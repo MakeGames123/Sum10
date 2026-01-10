@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ThemePanel : MonoBehaviour
+public class ThemePanel : MonoBehaviour, IMainPanel
 {
     public Button rightButton;
     public Button leftButton;
     public Button applyButton;
     public List<ThemeData> themeDatas = new();
-    public Image themeThumbnail;
-    public Image background;
-    public Image gameBackground;
+    public Image boardBackground;
+    public Image boardLowSpecial;
+    public ThemeBoardSetting setting;
     private int index = 0;
 
     void Awake()
@@ -20,6 +20,10 @@ public class ThemePanel : MonoBehaviour
         leftButton.onClick.AddListener(MoveToLeft);
         applyButton.onClick.AddListener(Apply);
 
+        UpdateUI();
+    }
+    public void SetCondition()
+    {
         UpdateUI();
     }
     private void MoveToRight()
@@ -38,8 +42,10 @@ public class ThemePanel : MonoBehaviour
     }
     private void UpdateUI()
     {
-        themeThumbnail.sprite = themeDatas[index].themeThumbnail;
-        background.sprite = themeDatas[index].background;
+        boardBackground.sprite = themeDatas[index].boardSkin;
+        boardLowSpecial.sprite = themeDatas[index].boardLowSkin;
+
+        setting.SetupBoardWithSize();
     }
     private void Apply()
     {
