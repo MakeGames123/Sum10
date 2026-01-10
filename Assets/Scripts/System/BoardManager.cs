@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class BoardManager : MonoBehaviour
+public class BoardManager : MonoBehaviour, IBoard
 {
     private Vector2 lastProcessedTouchPosition;
     private const float TOUCH_POSITION_THRESHOLD = 50f;
@@ -550,11 +550,29 @@ public class BoardManager : MonoBehaviour
                 AudioManager.Instance.PlayDeselectSFX(0); // 0 = 전부 해제
             }
 
+            // 힌트 셀이 포함되어 있는지 체크
+            bool hasHintCells = false;
+            if (currentHintCells != null)
+            {
+                foreach (var cell in currentPath)
+                {
+                    if (currentHintCells.Contains(cell))
+                    {
+                        hasHintCells = true;
+                        break;
+                    }
+                }
+            }
+
             foreach (var cell in currentPath)
                 cell.SetHighlight(false);
 
-            // 전체 해제 시에는 ResyncHintAnimations 불필요
-            // (모든 셀이 동시에 해제되어 이미 싱크 맞음, 각 셀의 UpdateVisualState에서 playSound:false로 처리됨)
+            // 힌트 셀이 선택되었다가 해제되면 playSound:false로 처리되므로
+            // ResyncHintAnimations로 사운드 콜백 복원 필요
+            if (hasHintCells)
+            {
+                ResyncHintAnimations();
+            }
         }
 
         currentPath.Clear();

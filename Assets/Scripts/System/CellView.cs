@@ -52,7 +52,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     [SerializeField] private float spawnDropHeight = 30f;           // 위에서 떨어지는 높이
 
     private int value;          // -1 = 공백, 1~k = 숫자
-    private BoardManager board;
+    private IBoard board;
 
     // 파괴 대기 중 플래그 (매칭 성공 후 애니메이션 중 재선택 방지)
     private bool isPendingDestruction = false;
@@ -122,7 +122,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         }
     }
 
-    public void Init(BoardManager board, int x, int y, int initialValue)
+    public void Init(IBoard board, int x, int y, int initialValue)
     {
         this.board = board;
         this.X = x;
@@ -574,7 +574,9 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
             {
                 // 동적 체크: 현재 활성 힌트 셀 중 첫 번째인 경우에만 재생
                 if (AudioManager.Instance != null && board != null && board.IsFirstActiveHintCell(this))
+                {
                     AudioManager.Instance.PlayHintSFX();
+                }
             });
         }
 

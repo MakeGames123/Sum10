@@ -17,6 +17,9 @@ public class ThemeBoardSetting : MonoBehaviour
     public RectTransform boardLowSkin;
     private PathFinder pathFinder = new();
 
+    [Header("Board Reference")]
+    [SerializeField] private ThemeBoard themeBoard;
+
     [Header("Spawn Animation Settings")]
     [SerializeField] private float spawnDelayPerCell = 0.03f;   // 셀 간 딜레이
     [SerializeField] private bool useWaveSpawn = true;          // 웨이브 형태로 생성
@@ -334,7 +337,7 @@ public class ThemeBoardSetting : MonoBehaviour
                 int v = boardValues[x, y];
 
                 // 먼저 Init 호출
-                cell.Init(null, x, y, v);
+                cell.Init(themeBoard, x, y, v);
 
                 // 생성 애니메이션 (웨이브 or 순차)
                 float delay = CalculateSpawnDelay(x, y);

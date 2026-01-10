@@ -323,6 +323,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9025761742383439448}
   - component: {fileID: 3940723006521664053}
+  - component: {fileID: 5093268286891614748}
+  - component: {fileID: 8475089069415346992}
   m_Layer: 0
   m_Name: Button_Replay
   m_TagString: Untagged
@@ -394,6 +396,35 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5093268286891614748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671194832054169023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19107e453cea61c449a2a06e6598e042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8475089069415346992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671194832054169023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dfbb49b45ef8944393e9a5d65b24753, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressScale: 0.9
+  pressDuration: 0.1
+  releaseDuration: 0.15
+  pressEase: 6
+  releaseEase: 27
 --- !u!1 &1878529478584131960
 GameObject:
   m_ObjectHideFlags: 0
@@ -1522,6 +1553,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7173462057130462188}
   - component: {fileID: 542374252512010509}
+  - component: {fileID: 7010492269462535516}
+  - component: {fileID: 1037405426314308171}
+  - component: {fileID: 2161569039964554148}
   m_Layer: 0
   m_Name: Button_Home
   m_TagString: Untagged
@@ -1594,6 +1628,60 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7010492269462535516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6737328231319244755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45d8bdb47186d6a498f4a517e6f61aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  background: {fileID: 0}
+  icon: {fileID: 0}
+  label: {fileID: 0}
+  selectedScale: 1.2
+  selectedYOffset: 20
+  animDuration: 0.25
+  selectEase: 27
+  deselectEase: 6
+  labelFadeDuration: 0.15
+  labelYOffset: 10
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1037405426314308171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6737328231319244755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dfbb49b45ef8944393e9a5d65b24753, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressScale: 0.9
+  pressDuration: 0.1
+  releaseDuration: 0.15
+  pressEase: 6
+  releaseEase: 27
+--- !u!114 &2161569039964554148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6737328231319244755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19107e453cea61c449a2a06e6598e042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7893523552033553325
 GameObject:
   m_ObjectHideFlags: 0

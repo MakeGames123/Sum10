@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class ThemeBoard : MonoBehaviour
+public class ThemeBoard : MonoBehaviour, IBoard
 {
     private Vector2 lastProcessedTouchPosition;
     private const float TOUCH_POSITION_THRESHOLD = 50f;
@@ -277,6 +277,9 @@ public class ThemeBoard : MonoBehaviour
     {
         // CancelHint();  // 임시 비활성화: 클릭해도 힌트 유지
 
+        // 힌트 타이머 리셋
+        ResetHintTimer();
+
         if (cell == null)
             return;
 
@@ -336,6 +339,13 @@ public class ThemeBoard : MonoBehaviour
         }
         currentPath.Add(cell);
         cell.SetHighlight(true);
+
+        // 셀 선택 효과음
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayPopSFX(currentPath.Count);
+        }
+
         return true;
     }
 
@@ -415,6 +425,8 @@ public class ThemeBoard : MonoBehaviour
         if (idx < 0 || idx >= currentPath.Count)
             return;
 
+        int removedCount = currentPath.Count - 1 - idx;
+
         for (int i = currentPath.Count - 1; i > idx; i--)
         {
             var c = currentPath[i];
@@ -423,6 +435,12 @@ public class ThemeBoard : MonoBehaviour
         }
 
         RecalculatePathState();
+
+        // 셀 해제 효과음
+        if (removedCount > 0 && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayDeselectSFX(currentPath.Count);
+        }
     }
 
     private void RecalculatePathState()
@@ -445,6 +463,9 @@ public class ThemeBoard : MonoBehaviour
 
         if (ShouldClearCurrentPath())
         {
+            // 매치 성공 시 힌트 타이머 리셋 (다음 힌트를 위해)
+            ResetHintTimer();
+
             var removed = new List<CellView>();
             var cellsToAnimate = new List<CellView>();
 
@@ -486,8 +507,35 @@ public class ThemeBoard : MonoBehaviour
         }
         else
         {
+            // 합이 10이 아닌 채로 놓으면 해제 효과음
+            if (currentPath.Count > 0 && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayDeselectSFX(0);
+            }
+
+            // 힌트 셀이 포함되어 있는지 체크
+            bool hasHintCells = false;
+            if (currentHintCells != null)
+            {
+                foreach (var cell in currentPath)
+                {
+                    if (currentHintCells.Contains(cell))
+                    {
+                        hasHintCells = true;
+                        break;
+                    }
+                }
+            }
+
             foreach (var cell in currentPath)
                 cell.SetHighlight(false);
+
+            // 힌트 셀이 선택되었다가 해제되면 playSound:false로 처리되므로
+            // ResyncHintAnimations로 사운드 콜백 복원 필요
+            if (hasHintCells)
+            {
+                ResyncHintAnimations();
+            }
         }
 
         currentPath.Clear();
@@ -499,6 +547,10 @@ public class ThemeBoard : MonoBehaviour
     /// </summary>
     private void PlayCellRemoveAnimations(List<CellView> cells)
     {
+        // 매치 성공 효과음
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayCellDestroySFX();
+
         foreach (var cell in cells)
         {
             cell.PlayDisappearAndTransform(null);
@@ -540,12 +592,16 @@ public class ThemeBoard : MonoBehaviour
 
         if (!anyNumber)
         {
+            CancelHint();
+            ResetHintTimer();
             boardSettingManager.SetupBoardWithSize();
             return;
         }
 
         if (!HasAnyValidMove())
         {
+            CancelHint();
+            ResetHintTimer();
             boardSettingManager.SetupBoardWithSize();
         }
     }
@@ -621,6 +677,46 @@ public class ThemeBoard : MonoBehaviour
                 cell.SetHintHighlight(false);
 
             currentHintCells = null;
+        }
+    }
+
+    /// <summary>
+    /// 힌트 타이머 리셋 (사용자 상호작용 시 호출)
+    /// </summary>
+    private void ResetHintTimer()
+    {
+        timeProgress = 0;
+        hintShownForCurrentIdle = false;
+    }
+
+    /// <summary>
+    /// 주어진 셀이 현재 활성 힌트 셀 중 첫 번째인지 확인 (사운드 리더 동적 결정)
+    /// </summary>
+    public bool IsFirstActiveHintCell(CellView cell)
+    {
+        if (currentHintCells == null || currentHintCells.Count == 0)
+            return false;
+
+        // 힌트 상태이면서 선택되지 않은 첫 번째 셀 찾기
+        foreach (var hintCell in currentHintCells)
+        {
+            if (hintCell.IsHint && !hintCell.IsSelected)
+                return hintCell == cell;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 모든 힌트 셀의 애니메이션을 동기화 (선택 해제 후 싱크 맞추기)
+    /// </summary>
+    private void ResyncHintAnimations()
+    {
+        if (currentHintCells == null || currentHintCells.Count == 0)
+            return;
+
+        foreach (var cell in currentHintCells)
+        {
+            cell.ForceRestartHintAnimation();
         }
     }
 

@@ -27,6 +27,12 @@ public class BoardSettingManager : MonoBehaviour
         gridLayout = boardRoot.GetComponent<GridLayoutGroup>();
 
         cells = boardRoot.GetComponentsInChildren<CellView>().ToList();
+
+        // board가 할당되지 않았으면 자동으로 찾기
+        if (board == null)
+        {
+            board = FindObjectOfType<BoardManager>();
+        }
     }
     public int Size;
     public void SetupBoardWithSize(int size)
