@@ -54,12 +54,22 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     private int value;          // -1 = 공백, 1~k = 숫자
     private BoardManager board;
 
-    public bool HasNumber => value > 0;
+    // 파괴 대기 중 플래그 (매칭 성공 후 애니메이션 중 재선택 방지)
+    private bool isPendingDestruction = false;
+
+    public bool HasNumber => value > 0 && !isPendingDestruction;
+    public bool IsPendingDestruction => isPendingDestruction;
     public int Value => value;
 
     private bool isSelected = false;
     private bool isHint = false;
     private bool wasSelected = false;  // Flip 모드 선택 해제 애니메이션용
+
+    public bool IsSelected => isSelected;
+    public bool IsHint => isHint;
+
+    // 힌트 사운드 리더 (여러 힌트 셀 중 하나만 사운드 재생)
+    private bool isHintSoundLeader = false;
 
     // 애니메이션 관련
     private Tween selectTween;
@@ -145,8 +155,9 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     public void SetValue(int newValue)
     {
         value = newValue;
+        isPendingDestruction = false;  // 새 값 설정 시 파괴 대기 해제
 
-        if (HasNumber)
+        if (value > 0 && !isPendingDestruction)
         {
             numberText.text = value.ToString();
             numberText.enabled = true;
@@ -160,6 +171,14 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         isSelected = false;
         isHint = false;
         UpdateVisualState();
+    }
+
+    /// <summary>
+    /// 파괴 대기 상태 설정 (매칭 성공 후 즉시 호출하여 재선택 방지)
+    /// </summary>
+    public void SetPendingDestruction(bool pending)
+    {
+        isPendingDestruction = pending;
     }
 
     // 기존 SetHighlight → 선택 하이라이트로 사용
@@ -183,6 +202,26 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
     public void SetHint(bool on)
     {
         SetHintHighlight(on);
+    }
+
+    /// <summary>
+    /// 힌트 애니메이션을 강제로 재시작 (싱크 맞추기용)
+    /// </summary>
+    public void ForceRestartHintAnimation()
+    {
+        if (isHint && !isSelected)
+        {
+            StopHintAnimation();
+            PlayHintAnimation(playSound: true);
+        }
+    }
+
+    /// <summary>
+    /// 힌트 사운드 리더 설정 (이 셀만 힌트 효과음 재생)
+    /// </summary>
+    public void SetHintSoundLeader(bool isLeader)
+    {
+        isHintSoundLeader = isLeader;
     }
 
     private void UpdateVisualState()
@@ -218,9 +257,11 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         }
         else if (isHint)
         {
+            // 선택 → 힌트 전환 시에는 사운드 스킵
+            bool wasJustDeselected = wasSelected;
             wasSelected = false;
             StopSelectAnimation();
-            PlayHintAnimation();
+            PlayHintAnimation(playSound: !wasJustDeselected);
         }
         else
         {
@@ -516,7 +557,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         }
     }
 
-    private void PlayHintAnimation()
+    private void PlayHintAnimation(bool playSound = true)
     {
         StopHintAnimation();
         if (!gameObject.activeSelf) return;
@@ -525,6 +566,17 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 
         // 메인 시퀀스 (무한 루프)
         hintTween = DOTween.Sequence();
+
+        // 모든 힌트 셀에 콜백 추가, 실제 재생은 동적으로 결정
+        if (playSound)
+        {
+            hintTween.AppendCallback(() =>
+            {
+                // 동적 체크: 현재 활성 힌트 셀 중 첫 번째인 경우에만 재생
+                if (AudioManager.Instance != null && board != null && board.IsFirstActiveHintCell(this))
+                    AudioManager.Instance.PlayHintSFX();
+            });
+        }
 
         // 연속 바운스 (hintBounceCount번)
         for (int i = 0; i < hintBounceCount; i++)
@@ -702,6 +754,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         {
             // 값 변경 (공백셀로)
             value = -1;
+            isPendingDestruction = false;  // 파괴 완료 - 공백셀 선택 가능하도록 리셋
             numberText.text = "";
             numberText.enabled = false;
             numberText.alpha = 1f; // 알파값 복원
@@ -785,6 +838,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         // 즉시 공백 셀로 변경 (애니메이션과 분리)
         float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
         value = -1;
+        isPendingDestruction = false;  // 파괴 완료 - 공백셀 선택 가능하도록 리셋
         numberText.text = "";
         numberText.enabled = false;
         numberText.alpha = 1f;
@@ -855,6 +909,7 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         {
             // 값 변경 (공백셀로)
             value = -1;
+            isPendingDestruction = false;  // 파괴 완료 - 공백셀 선택 가능하도록 리셋
             numberText.text = "";
             numberText.enabled = false;
             numberText.alpha = 1f;
@@ -994,8 +1049,10 @@ public class CellView : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
         currentSpawnTween?.Kill();
 
         float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
-        Vector3 originalPos = cellImage.transform.localPosition;
-        Vector3 originalTextPos = numberText.transform.localPosition;
+
+        // 저장된 원래 위치 사용 (이전 애니메이션 중단 상태 복구)
+        Vector3 originalPos = selectOriginalPos;
+        Vector3 originalTextPos = textOriginalPos;
 
         // 시작 상태: 위에 있고 스케일 0
         cellImage.transform.localPosition = originalPos + Vector3.up * spawnDropHeight;

@@ -192,8 +192,9 @@ public class GameManager : MonoBehaviour
     {
         isRunning = false;
 
-        // 남아있는 Ghost 애니메이션 정리
+        // 남아있는 Ghost 애니메이션 및 파티클 정리
         CellView.KillAllGhostAnimations();
+        CellView.DestroyAllActiveParticles();
 
         // 최고점수 갱신
         if (score > bestScore)

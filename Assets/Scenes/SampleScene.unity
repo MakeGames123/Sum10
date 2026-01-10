@@ -1127,6 +1127,93 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1722559470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1722559472}
+  - component: {fileID: 1722559471}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1722559471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722559470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc6b16ae4d8ada649b6511bd3751f23a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgmSource: {fileID: 0}
+  sfxSource: {fileID: 0}
+  lobbyBGM: {fileID: 8300000, guid: d491d93b06d8a174a9e63373b4aa5ee6, type: 3}
+  ingameBGM: {fileID: 8300000, guid: 1cf83ba08bbd86a4e8e9a53329e7d939, type: 3}
+  bgmVolume: 0.3
+  masterSfxVolume: 0.3
+  buttonClips:
+  - {fileID: 8300000, guid: 6d98bb09d0a43d6459df654613b2b4b9, type: 3}
+  - {fileID: 8300000, guid: a981e6d57d9c56e489dd5e880fc7cc36, type: 3}
+  currentButtonIndex: 1
+  buttonVolume: 1
+  popClips:
+  - {fileID: 8300000, guid: 3f6f5e4b2109ff849b61525c76caceb4, type: 3}
+  currentPopIndex: 0
+  popVolume: 0.8
+  enablePopPitchIncrease: 1
+  popBasePitch: 1
+  popPitchIncrement: 0.05
+  popMaxPitch: 1.5
+  enableDeselectSound: 1
+  deselectVolume: 0.7
+  deselectPitchMultiplier: 0.85
+  cellDestroyClips:
+  - {fileID: 8300000, guid: 033ba01af2048924c87e54a5d7924a20, type: 3}
+  currentCellDestroyIndex: 0
+  cellDestroyVolume: 1.2
+  enableCellDestroy2: 1
+  cellDestroyClips2:
+  - {fileID: 8300000, guid: 33db60b39e1f9ba47bd6afa655588500, type: 3}
+  currentCellDestroyIndex2: 0
+  cellDestroyVolume2: 1.2
+  gameStartClip: {fileID: 0}
+  gameStartVolume: 1
+  gameOverClip: {fileID: 8300000, guid: 618003605ea428347a9b2bfb77e11df5, type: 3}
+  gameOverVolume: 0.738
+  hintClips:
+  - {fileID: 8300000, guid: feb8fc57680f9a341ab77f40ab515ff5, type: 3}
+  currentHintIndex: 0
+  hintVolume: 0.8
+  gameOverUseLobbyBGM: 1
+  gameOverLoopSFX: {fileID: 0}
+  testInfo: "1:Button 2:Pop 3:Destroy 4:Start 5:Over \u2190\u2192:Pop Index \u2191\u2193:Pop
+    Pitch Test"
+--- !u!4 &1722559472
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722559470}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 441.45645, y: 1140.1279, z: 23.862318}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1747127925 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7620364104290867291, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
@@ -1515,6 +1602,7 @@ GameObject:
   - component: {fileID: 2069645353}
   - component: {fileID: 2069645357}
   - component: {fileID: 2069645356}
+  - component: {fileID: 2069645358}
   m_Layer: 5
   m_Name: btn_Settings
   m_TagString: Untagged
@@ -1538,7 +1626,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 47.36365, y: 1070}
+  m_AnchoredPosition: {x: 47.36377, y: 1070}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &2069645353
@@ -1652,6 +1740,18 @@ MonoBehaviour:
   referenceWidth: 1080
   referenceHeight: 2340
   allowScaleUp: 1
+--- !u!114 &2069645358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069645351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19107e453cea61c449a2a06e6598e042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3745441372945620
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3100,3 +3200,4 @@ SceneRoots:
   - {fileID: 1800247905}
   - {fileID: 3476156319980384549}
   - {fileID: 1508906012}
+  - {fileID: 1722559472}
