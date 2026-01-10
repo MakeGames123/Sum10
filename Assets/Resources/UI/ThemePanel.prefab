@@ -1013,6 +1013,7 @@ MonoBehaviour:
   smartFirstTouchMaxDistance: 150
   smartRecoveryMinDistance: 2
   boardSettingManager: {fileID: 1520260038812880542}
+  panelTransform: {fileID: 6070536318320013071}
 --- !u!1 &8409565275586187418
 GameObject:
   m_ObjectHideFlags: 0

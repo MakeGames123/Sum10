@@ -1314,8 +1314,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: feb8fc57680f9a341ab77f40ab515ff5, type: 3}
   currentHintIndex: 0
   hintVolume: 0.8
-  gameOverUseLobbyBGM: 1
-  gameOverLoopSFX: {fileID: 0}
+  gameOverAudioMode: 2
+  gameOverIngameVolumeMultiplier: 0.7
+  gameOverBGM: {fileID: 8300000, guid: e400bcefd675fdb45b2e36dc47372396, type: 3}
+  gameOverBGMStartOffset: 0.5
   testInfo: "1:Button 2:Pop 3:Destroy 4:Start 5:Over \u2190\u2192:Pop Index \u2191\u2193:Pop
     Pitch Test"
 --- !u!4 &1722559472

@@ -63,10 +63,18 @@ public class AudioManager : MonoBehaviour
     [SerializeField] [Range(0, 4)] private int currentHintIndex = 0;
     [SerializeField] [Range(0f, 2f)] private float hintVolume = 0.5f;
 
-    [Header("=== Game Over Panel A/B Test ===")]
-    [Tooltip("true: 로비 BGM 재생, false: 루프 효과음만")]
-    [SerializeField] private bool gameOverUseLobbyBGM = true;
-    [SerializeField] private AudioClip gameOverLoopSFX;
+    [Header("=== Game Over Panel A/B/C Test ===")]
+    [SerializeField] private GameOverAudioMode gameOverAudioMode = GameOverAudioMode.LobbyBGM;
+    [SerializeField] [Range(0.3f, 1f)] private float gameOverIngameVolumeMultiplier = 0.7f;
+    [SerializeField] private AudioClip gameOverBGM;
+    [SerializeField] [Range(0f, 3f)] private float gameOverBGMStartOffset = 0f;
+
+    public enum GameOverAudioMode
+    {
+        LobbyBGM,       // A: 로비 BGM 재생
+        IngameBGM,      // B: 인게임 BGM 볼륨 낮춰서 유지
+        GameOverBGM     // C: 게임오버 전용 BGM
+    }
 
     // Pop pitch tracking
     private int currentPopCount = 0;
@@ -143,7 +151,7 @@ public class AudioManager : MonoBehaviour
 
             case UIController.UIState.InGame:
                 PlayGameStartSFX();
-                PlayBGM(ingameBGM);
+                PlayBGM(ingameBGM, forceRestart: true);  // 리플레이 시 처음부터 재생
                 break;
 
             case UIController.UIState.GameOver:
@@ -155,24 +163,36 @@ public class AudioManager : MonoBehaviour
 
     private void HandleGameOverAudio()
     {
-        if (gameOverUseLobbyBGM)
+        switch (gameOverAudioMode)
         {
-            // A: 로비 BGM 재생
-            PlayBGM(lobbyBGM);
-        }
-        else
-        {
-            // B: 루프 효과음 재생
-            if (gameOverLoopSFX != null)
-            {
-                bgmSource.clip = gameOverLoopSFX;
-                bgmSource.loop = true;
-                bgmSource.Play();
-            }
-            else
-            {
-                bgmSource.Stop();
-            }
+            case GameOverAudioMode.LobbyBGM:
+                // A: 로비 BGM 재생
+                PlayBGM(lobbyBGM);
+                break;
+
+            case GameOverAudioMode.IngameBGM:
+                // B: 인게임 BGM 볼륨 낮춰서 유지
+                bgmSource.volume = bgmVolume * gameOverIngameVolumeMultiplier;
+                // 이미 인게임 BGM이 재생 중이므로 그대로 유지
+                break;
+
+            case GameOverAudioMode.GameOverBGM:
+                // C: 게임오버 전용 BGM 재생
+                if (gameOverBGM != null)
+                {
+                    PlayBGM(gameOverBGM);
+                    // 시작 offset 적용
+                    if (gameOverBGMStartOffset > 0f)
+                    {
+                        bgmSource.time = gameOverBGMStartOffset;
+                    }
+                }
+                else
+                {
+                    // 게임오버 BGM 없으면 로비 BGM으로 폴백
+                    PlayBGM(lobbyBGM);
+                }
+                break;
         }
     }
 
@@ -180,11 +200,12 @@ public class AudioManager : MonoBehaviour
 
     #region BGM
 
-    public void PlayBGM(AudioClip clip)
+    public void PlayBGM(AudioClip clip, bool forceRestart = false)
     {
         if (clip == null) return;
 
-        if (bgmSource.clip == clip && bgmSource.isPlaying)
+        // 같은 곡이 재생 중이면 스킵 (forceRestart가 true면 강제 재시작)
+        if (bgmSource.clip == clip && bgmSource.isPlaying && !forceRestart)
             return;
 
         bgmSource.clip = clip;

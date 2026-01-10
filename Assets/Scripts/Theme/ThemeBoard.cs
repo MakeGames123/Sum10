@@ -35,7 +35,22 @@ public class ThemeBoard : MonoBehaviour, IBoard
     public event Action OnNoMoreMoves;
     public ThemeBoardSetting boardSettingManager;
 
+    [Header("Panel Reference")]
+    [SerializeField] private RectTransform panelTransform;  // 테마 패널의 RectTransform
+
     private PathFinder pathFinder = new();
+
+    /// <summary>
+    /// 테마 패널이 화면에 보이는지 확인 (위치 기반)
+    /// </summary>
+    private bool IsPanelVisible()
+    {
+        if (panelTransform == null) return true;  // 참조 없으면 항상 true
+
+        // 패널 위치가 (0,0) 근처면 보이는 상태
+        Vector2 pos = panelTransform.anchoredPosition;
+        return Mathf.Abs(pos.x) < 1000f && Mathf.Abs(pos.y) < 1000f;
+    }
 
     // =========================
     //  Unity 라이프사이클
@@ -694,6 +709,10 @@ public class ThemeBoard : MonoBehaviour, IBoard
     /// </summary>
     public bool IsFirstActiveHintCell(CellView cell)
     {
+        // 패널이 화면에 없으면 힌트 사운드 재생 안 함
+        if (!IsPanelVisible())
+            return false;
+
         if (currentHintCells == null || currentHintCells.Count == 0)
             return false;
 
