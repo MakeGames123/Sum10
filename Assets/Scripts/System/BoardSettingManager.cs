@@ -32,10 +32,8 @@ public class BoardSettingManager : MonoBehaviour
     {
         n = size;
         boardValues = new int[n, n];
-
         GenerateBoardValuesUntilValid();
         CreateVisualBoard();
-        //ApplyBoardLayout();
     }
 
     // =========================
@@ -328,7 +326,7 @@ public class BoardSettingManager : MonoBehaviour
         boardLowSkin.anchoredPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.boardOffset);
 
 
-        // 5. 셀 생성 및 초기화
+        // 셀 생성 및 초기화
         for (int y = 0; y < n; y++)
         {
             for (int x = 0; x < n; x++)
@@ -337,19 +335,43 @@ public class BoardSettingManager : MonoBehaviour
                 cell.gameObject.SetActive(true);
                 int v = boardValues[x, y];
 
-                // 먼저 Init 호출
-                cell.Init(x, y, v);
-
                 // 생성 애니메이션 (웨이브 or 순차)
                 float delay = CalculateSpawnDelay(x, y);
                 cell.PlaySpawnAnimation(delay);
+                cell.Init(boardManager, x, y, v);
             }
         }
+
+        // 1프레임 대기 후 스폰 애니메이션 시작 (Canvas 레이아웃 안정화)
+        StartCoroutine(PlaySpawnAnimationsNextFrame());
         for(int i = n*n; i < 36; i++)
         {
             cells[i].gameObject.SetActive(false);
         }
         boardRoot.localScale = Vector3.one * ThemeManager.Instance.selectedTheme.scale[n - 3];
+    }
+
+    /// <summary>
+    /// 1프레임 대기 후 셀 스폰 애니메이션 재생
+    /// Canvas 레이아웃이 안정화된 후 애니메이션 시작
+    /// </summary>
+    private IEnumerator PlaySpawnAnimationsNextFrame()
+    {
+        // 1프레임 대기 (Canvas 레이아웃 rebuild 완료 대기)
+        yield return null;
+
+        for (int y = 0; y < n; y++)
+        {
+            for (int x = 0; x < n; x++)
+            {
+                var cell = cells[y * n + x];
+                if (cell.gameObject.activeSelf)
+                {
+                    float delay = CalculateSpawnDelay(x, y);
+                    cell.PlaySpawnAnimation(delay);
+                }
+            }
+        }
     }
 
     /// <summary>

@@ -134,10 +134,12 @@ public class UIController : MonoBehaviour
     /// </summary>
     public void RequestStartGame()
     {
+        // UI 먼저 전환 (panelBoard 활성화)
+        TransitionToInGame();
+
+        // 그 다음 게임 시작 (보드 생성 + 스폰 애니메이션)
         if (gameManager != null)
             gameManager.StartGame();
-
-        TransitionToInGame();
     }
 
     /// <summary>

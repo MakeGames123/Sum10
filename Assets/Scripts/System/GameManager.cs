@@ -177,8 +177,9 @@ public class GameManager : MonoBehaviour
     private void EndRun()
     {
         isRunning = false;
-        // 남아있는 Ghost 애니메이션 정리
+
         CellView.KillAllGhostAnimations();
+        CellView.DestroyAllActiveParticles();
 
         OnGameOver?.Invoke(score);
     }
