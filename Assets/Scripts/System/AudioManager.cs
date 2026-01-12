@@ -138,6 +138,15 @@ public class AudioManager : MonoBehaviour
             UIController.Instance.OnUIStateChanged -= HandleUIStateChanged;
         }
     }
+    public void SetSFX(float volume)
+    {
+        masterSfxVolume = Mathf.Clamp01(volume);
+    }
+
+    public void SetBGM(float value)
+    {
+        bgmSource.volume = bgmVolume * value;
+    }
 
     #region UI State Handling
 
@@ -214,17 +223,6 @@ public class AudioManager : MonoBehaviour
         bgmSource.Play();
     }
 
-    public void StopBGM()
-    {
-        bgmSource.Stop();
-    }
-
-    public void SetBGMVolume(float volume)
-    {
-        bgmVolume = Mathf.Clamp01(volume);
-        bgmSource.volume = bgmVolume;
-    }
-
     #endregion
 
     #region SFX
@@ -258,10 +256,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void SetMasterSFXVolume(float volume)
-    {
-        masterSfxVolume = Mathf.Clamp01(volume);
-    }
 
     // === 버튼 효과음 ===
     public void PlayButtonSFX()
