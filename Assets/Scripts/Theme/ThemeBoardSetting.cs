@@ -122,7 +122,7 @@ public class ThemeBoardSetting : MonoBehaviour
                 Array.Clear(visited, 0, visited.Length);
                 currentPath.Clear();
 
-                pathFinder.DFSFindAllPaths(x, y, n, value, visited, boardValues, currentPath, allPaths);
+                //pathFinder.DFSFindAllPaths(x, y, n, value, visited, boardValues, currentPath, allPaths);
             }
         }
 
@@ -337,7 +337,7 @@ public class ThemeBoardSetting : MonoBehaviour
                 int v = boardValues[x, y];
 
                 // 먼저 Init 호출
-                cell.Init(themeBoard, x, y, v);
+                cell.Init(themeBoard, x, y, null);
 
                 // 생성 애니메이션 (웨이브 or 순차)
                 float delay = CalculateSpawnDelay(x, y);

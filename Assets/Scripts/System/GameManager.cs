@@ -58,9 +58,8 @@ public class GameManager : MonoBehaviour
             Debug.LogError("GameManager: BoardManager를 찾을 수 없습니다.");
             return;
         }
-
-        boardManager.OnNoMoreMoves += HandleNoMoreMoves;
-        boardManager.OnCellsRemoved += HandleCellsRemoved;
+        SetupFrameRate();
+        //boardManager.OnCellsRemoved += HandleCellsRemoved;
         gameOverPanel.replayButton.onClick.AddListener(StartNewRun);
     }
     private void Start()
@@ -80,22 +79,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        // ========== AB 테스트: T키로 선택 애니메이션 전환 ==========
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            if (CellView.CurrentSelectMode == CellView.SelectMode.Bounce)
-            {
-                CellView.CurrentSelectMode = CellView.SelectMode.Flip;
-                Debug.Log("[AB Test] 선택 모드: Flip (뒤집기 + 색상 변경)");
-            }
-            else
-            {
-                CellView.CurrentSelectMode = CellView.SelectMode.Bounce;
-                Debug.Log("[AB Test] 선택 모드: Bounce (점프 + 기울어짐)");
-            }
-        }
-#endif
 
         if (!isRunning)
             return;
@@ -169,6 +152,7 @@ public class GameManager : MonoBehaviour
 
         stageIndex = 0;
         currentBoardSize = GetBoardSizeForStage(stageIndex);
+        boardManager.SetupBoardWithSize(currentBoardSize);
         boardSettingManager.SetupBoardWithSize(currentBoardSize);
 
         ResetIdleTimer();
@@ -190,13 +174,9 @@ public class GameManager : MonoBehaviour
         hintShownForCurrentIdle = false;
     }
 
-    private void HandleCellsRemoved(List<CellView> removedCells)
+    public void HandleCellsRemoved(int gained)
     {
-        if (!isRunning || removedCells == null)
-            return;
-
-        int gained = removedCells.Count;
-        if (gained <= 0)
+        if (gained <= 0 || !isRunning)
             return;
 
         combo++;
@@ -235,13 +215,15 @@ public class GameManager : MonoBehaviour
         ResetIdleTimer();
     }
 
-    private void HandleNoMoreMoves()
+    public void HandleNoMoreMoves()
     {
+        
         if (!isRunning)
             return;
 
         stageIndex++;
         currentBoardSize = GetBoardSizeForStage(stageIndex);
+        boardManager.SetupBoardWithSize(currentBoardSize);
         boardSettingManager.SetupBoardWithSize(currentBoardSize);
         ResetIdleTimer();
     }
@@ -257,5 +239,14 @@ public class GameManager : MonoBehaviour
         if (stage <= 3) return 4;
         if (stage <= 5) return 5;
         return 6;
+    }
+    private void SetupFrameRate()
+    {
+#if UNITY_ANDROID || UNITY_IOS
+        QualitySettings.vSyncCount = 0;
+
+        int maxRefreshRate = (int)Screen.currentResolution.refreshRateRatio.value;
+        Application.targetFrameRate = maxRefreshRate;
+#endif
     }
 }

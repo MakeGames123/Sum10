@@ -9,14 +9,12 @@ using Unity.Mathematics;
 public class BoardSettingManager : MonoBehaviour
 {
     public int n;
-    public List<CellView> cells = new();
-    public int[,] boardValues;
+
     private GridLayoutGroup gridLayout;
     public RectTransform boardRoot;
     public RectTransform boardSkin;
     public RectTransform boardLowSkin;
     [SerializeField] private CellView cellPrefab;
-    private PathFinder pathFinder = new();
     public BoardManager board;
 
     [Header("Spawn Animation Settings")]
@@ -25,8 +23,6 @@ public class BoardSettingManager : MonoBehaviour
     void Awake()
     {
         gridLayout = boardRoot.GetComponent<GridLayoutGroup>();
-
-        cells = boardRoot.GetComponentsInChildren<CellView>().ToList();
 
         // board가 할당되지 않았으면 자동으로 찾기
         if (board == null)
@@ -38,14 +34,78 @@ public class BoardSettingManager : MonoBehaviour
     public void SetupBoardWithSize(int size)
     {
         n = size;
-        boardValues = new int[n, n];
-        GenerateBoardValuesUntilValid();
         CreateVisualBoard();
     }
 
     // =========================
     //  보드 생성
     // =========================
+
+
+
+    // =========================
+    //  비주얼 생성 - 🔧 수정된 부분
+    // =========================
+
+    private void CreateVisualBoard()
+    {
+        if (gridLayout != null)
+        {
+            gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            gridLayout.constraintCount = n;
+        }
+
+        boardSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardHeight);
+        boardLowSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardHeight);
+        boardSkin.anchoredPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.boardOffset);
+        boardLowSkin.anchoredPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.boardOffset);
+
+
+        boardRoot.localScale = Vector3.one * ThemeManager.Instance.selectedTheme.scale[n - 3];
+    }
+
+    /// <summary>
+    /// 1프레임 대기 후 셀 스폰 애니메이션 재생
+    /// Canvas 레이아웃이 안정화된 후 애니메이션 시작
+    /// </summary>
+    private IEnumerator PlaySpawnAnimationsNextFrame()
+    {
+        yield return null;
+        /*
+        // 1프레임 대기 (Canvas 레이아웃 rebuild 완료 대기)
+        yield return null;
+
+        for (int y = 0; y < n; y++)
+        {
+            for (int x = 0; x < n; x++)
+            {
+                var cell = cellUIs[y * n + x];
+                if (cell.gameObject.activeSelf)
+                {
+                    float delay = CalculateSpawnDelay(x, y);
+                    cell.PlaySpawnAnimation(delay);
+                }
+            }
+        }*/
+    }
+
+    /// <summary>
+    /// 셀 생성 딜레이 계산 (웨이브 효과: 중앙에서 바깥으로 퍼지거나 대각선으로)
+    /// </summary>
+    private float CalculateSpawnDelay(int x, int y)
+    {
+        if (!useWaveSpawn)
+        {
+            // 순차 생성 (왼쪽 위에서 오른쪽 아래로)
+            return (y * n + x) * spawnDelayPerCell;
+        }
+
+        // 웨이브 생성: 대각선 방향으로 (왼쪽 위 → 오른쪽 아래)
+        int diagonal = x + y;
+        return diagonal * spawnDelayPerCell;
+    }
+}
+/*
 
     private void GenerateBoardValuesUntilValid()
     {
@@ -65,7 +125,6 @@ public class BoardSettingManager : MonoBehaviour
             _ = planted;
         }
     }
-
     private int CalculateTargetPathCount()
     {
         if (n <= 3) return 2;
@@ -74,10 +133,10 @@ public class BoardSettingManager : MonoBehaviour
         return 5;
     }
 
-    private List<List<Vector2Int>> FindIndependentPaths()
+    private List<List<Cell>> FindIndependentPaths()
     {
-        var independentPaths = new List<List<Vector2Int>>();
-        var usedCells = new HashSet<Vector2Int>();
+        var independentPaths = new List<List<Cell>>();
+        var usedCells = new HashSet<Cell>();
 
         var allPaths = FindAllPossiblePaths();
 
@@ -85,7 +144,7 @@ public class BoardSettingManager : MonoBehaviour
 
         foreach (var path in allPaths)
         {
-            var pathNumberCells = path.Where(pos => boardValues[pos.x, pos.y] > 0).ToList();
+            var pathNumberCells = path.Where(pos => cells[pos.x, pos.y] > 0).ToList();
 
             bool hasOverlap = pathNumberCells.Any(cell => usedCells.Contains(cell));
 
@@ -103,47 +162,44 @@ public class BoardSettingManager : MonoBehaviour
         return independentPaths;
     }
 
-    private List<List<Vector2Int>> FindAllPossiblePaths()
+    private List<List<Cell>> FindAllPossiblePaths()
     {
-        var allPaths = new List<List<Vector2Int>>();
+        var allPaths = new List<List<Cell>>();
         var startTime = Time.realtimeSinceStartup;
         const float TIMEOUT = 0.1f;
 
         bool[,] visited = new bool[n, n];
-        List<Vector2Int> currentPath = new List<Vector2Int>();
+        List<Cell> currentPath = new List<Cell>();
 
-        for (int y = 0; y < n; y++)
+        for (int x = 0; x < n; x++)
         {
-            for (int x = 0; x < n; x++)
+            if (Time.realtimeSinceStartup - startTime > TIMEOUT)
             {
-                if (Time.realtimeSinceStartup - startTime > TIMEOUT)
-                {
-                    return allPaths;
-                }
-
-                int value = boardValues[x, y];
-                if (value <= 0 || value > ImportantValues.TARGET_SUM)
-                    continue;
-
-                Array.Clear(visited, 0, visited.Length);
-                currentPath.Clear();
-
-                pathFinder.DFSFindAllPaths(x, y, n, value, visited, boardValues, currentPath, allPaths);
+                return allPaths;
             }
+
+            int value = cells[x].ReturnNum();
+            if (value <= 0 || value > ImportantValues.TARGET_SUM)
+                continue;
+
+            Array.Clear(visited, 0, visited.Length);
+            currentPath.Clear();
+
+            pathFinder.DFSFindAllPaths(x % n, x / n, value, visited, cells, currentPath, allPaths);
         }
 
         return allPaths;
     }
 
-    private HashSet<Vector2Int> GetUsedCellsFromPaths(List<List<Vector2Int>> paths)
+    private HashSet<Cell> GetUsedCellsFromPaths(List<List<Cell>> paths)
     {
-        var usedCells = new HashSet<Vector2Int>();
+        var usedCells = new HashSet<Cell>();
 
         foreach (var path in paths)
         {
             foreach (var pos in path)
             {
-                if (boardValues[pos.x, pos.y] > 0)
+                if (cells[pos.x, pos.y] > 0)
                 {
                     usedCells.Add(pos);
                 }
@@ -240,7 +296,7 @@ public class BoardSettingManager : MonoBehaviour
 
         for (int i = 0; i < path.Count && i < numbers.Count; i++)
         {
-            boardValues[path[i].x, path[i].y] = numbers[i];
+            cells[path[i].x + path[i].y * n].SetNum(numbers[i]);
             usedCells.Add(path[i]);
         }
 
@@ -287,113 +343,4 @@ public class BoardSettingManager : MonoBehaviour
         }
 
         return result;
-    }
-
-    private void FillBoardRandom()
-    {
-        Vector2Int? centerHole = null;
-        if (n % 2 == 1)
-        {
-            int c = n / 2;
-            centerHole = new Vector2Int(c, c);
-        }
-
-        for (int y = 0; y < n; y++)
-        {
-            for (int x = 0; x < n; x++)
-            {
-                if (centerHole.HasValue && centerHole.Value.x == x && centerHole.Value.y == y)
-                {
-                    boardValues[x, y] = -1;
-                }
-                else
-                {
-                    boardValues[x, y] = UnityEngine.Random.Range(1, ImportantValues.MaxValue + 1);
-                }
-            }
-        }
-    }
-
-
-    // =========================
-    //  비주얼 생성 - 🔧 수정된 부분
-    // =========================
-
-    private void CreateVisualBoard()
-    {
-        if (gridLayout != null)
-        {
-            gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            gridLayout.constraintCount = n;
-        }
-
-        boardSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardHeight);
-        boardLowSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardHeight);
-        boardSkin.anchoredPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.boardOffset);
-        boardLowSkin.anchoredPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.boardOffset);
-
-
-        // 셀 생성 및 초기화
-        for (int y = 0; y < n; y++)
-        {
-            for (int x = 0; x < n; x++)
-            {
-                var cell = cells[y * n + x];
-                cell.gameObject.SetActive(true);
-                int v = boardValues[x, y];
-
-                // 생성 애니메이션 (웨이브 or 순차)
-                float delay = CalculateSpawnDelay(x, y);
-                cell.PlaySpawnAnimation(delay);
-                cell.Init(board, x, y, v);
-            }
-        }
-
-        // 1프레임 대기 후 스폰 애니메이션 시작 (Canvas 레이아웃 안정화)
-        StartCoroutine(PlaySpawnAnimationsNextFrame());
-        for(int i = n*n; i < 36; i++)
-        {
-            cells[i].gameObject.SetActive(false);
-        }
-        boardRoot.localScale = Vector3.one * ThemeManager.Instance.selectedTheme.scale[n - 3];
-    }
-
-    /// <summary>
-    /// 1프레임 대기 후 셀 스폰 애니메이션 재생
-    /// Canvas 레이아웃이 안정화된 후 애니메이션 시작
-    /// </summary>
-    private IEnumerator PlaySpawnAnimationsNextFrame()
-    {
-        // 1프레임 대기 (Canvas 레이아웃 rebuild 완료 대기)
-        yield return null;
-
-        for (int y = 0; y < n; y++)
-        {
-            for (int x = 0; x < n; x++)
-            {
-                var cell = cells[y * n + x];
-                if (cell.gameObject.activeSelf)
-                {
-                    float delay = CalculateSpawnDelay(x, y);
-                    cell.PlaySpawnAnimation(delay);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// 셀 생성 딜레이 계산 (웨이브 효과: 중앙에서 바깥으로 퍼지거나 대각선으로)
-    /// </summary>
-    private float CalculateSpawnDelay(int x, int y)
-    {
-        if (!useWaveSpawn)
-        {
-            // 순차 생성 (왼쪽 위에서 오른쪽 아래로)
-            return (y * n + x) * spawnDelayPerCell;
-        }
-
-        // 웨이브 생성: 대각선 방향으로 (왼쪽 위 → 오른쪽 아래)
-        int diagonal = x + y;
-        return diagonal * spawnDelayPerCell;
-    }
-}
+    }*/

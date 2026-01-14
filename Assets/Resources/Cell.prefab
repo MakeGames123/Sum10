@@ -145,6 +145,7 @@ GameObject:
   - component: {fileID: 2909970459380091443}
   - component: {fileID: 4828925704666171587}
   - component: {fileID: 7841668255098092897}
+  - component: {fileID: 2769543941725942381}
   - component: {fileID: 2928456024096394897}
   m_Layer: 5
   m_Name: Cell
@@ -227,6 +228,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2769543941725942381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3945955781506911674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97e20a224688ad14ebeac1b3fa1561fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2928456024096394897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,27 +255,8 @@ MonoBehaviour:
   cellImage: {fileID: 2584376840985255833}
   cellBackground: {fileID: 8876088604804430833}
   numberText: {fileID: 809113159804618023}
-  selectAnimDuration: 0.25
-  selectScalePunch: 1.12
-  selectJumpHeight: 8
-  selectRotation: 6
-  flipDuration: 0.25
-  flipSelectedColor: {r: 1, g: 0.8, b: 0.3, a: 1}
-  hintBounceDuration: 0.2
-  hintScalePunch: 1.15
-  hintJumpHeight: 12
-  hintBounceCount: 3
-  hintPauseDuration: 0.8
-  disappearDuration: 0.18
-  disappearScalePeak: 1.2
-  disappearJumpHeight: 25
-  appearDelay: 0.1
-  appearDuration: 0.15
-  appearScalePeak: 1.1
   particle: {fileID: 8632307044415939975, guid: 0cc116672d56eed4d881ecf0fe7361a0, type: 3}
-  spawnDuration: 0.25
-  spawnScalePeak: 1.15
-  spawnDropHeight: 30
+  config: {fileID: 11400000, guid: 658ec21af919f5744b505bdf3dd6dc50, type: 2}
 --- !u!1 &7854203044422103449
 GameObject:
   m_ObjectHideFlags: 0

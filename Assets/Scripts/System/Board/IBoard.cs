@@ -5,6 +5,4 @@
 public interface IBoard
 {
     bool IsFirstActiveHintCell(CellView cell);
-    void OnCellPointerDown(CellView cell);
-    void OnCellPointerEnter(CellView cell);
 }

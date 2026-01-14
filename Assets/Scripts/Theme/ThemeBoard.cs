@@ -321,9 +321,9 @@ public class ThemeBoard : MonoBehaviour, IBoard
     private void ResetPath()
     {
         foreach (var c in currentPath)
-            c.SetHighlight(false);
+            //c.SetHighlight(false);
 
-        currentPath.Clear();
+            currentPath.Clear();
         isDragging = false;
         pathSum = 0;
     }
@@ -348,12 +348,12 @@ public class ThemeBoard : MonoBehaviour, IBoard
         if (currentPath.Contains(cell))
             return false;
 
-        if (cell.HasNumber)
-        {
-            pathSum += cell.Value;
-        }
+        //if (cell.HasNumber)
+        //{
+        //    pathSum += cell.Value;
+        //}
         currentPath.Add(cell);
-        cell.SetHighlight(true);
+        //cell.SetHighlight(true);
 
         // 셀 선택 효과음
         if (AudioManager.Instance != null)
@@ -399,8 +399,8 @@ public class ThemeBoard : MonoBehaviour, IBoard
                 if (IsInside(bx1, by1))
                 {
                     var c1 = boardSettingManager.cells[bx1 + by1 * boardSettingManager.n];
-                    if (!c1.HasNumber && !currentPath.Contains(c1))
-                        bridgeCandidates.Add(c1);
+                    //if (!c1.HasNumber && !currentPath.Contains(c1))
+                    //    bridgeCandidates.Add(c1);
                 }
 
                 int bx2 = cell.X;
@@ -408,8 +408,8 @@ public class ThemeBoard : MonoBehaviour, IBoard
                 if (IsInside(bx2, by2))
                 {
                     var c2 = boardSettingManager.cells[bx1 + by1 * boardSettingManager.n];
-                    if (!c2.HasNumber && !currentPath.Contains(c2))
-                        bridgeCandidates.Add(c2);
+                    //if (!c2.HasNumber && !currentPath.Contains(c2))
+                    //    bridgeCandidates.Add(c2);
                 }
 
                 if (bridgeCandidates.Count > 0)
@@ -445,7 +445,7 @@ public class ThemeBoard : MonoBehaviour, IBoard
         for (int i = currentPath.Count - 1; i > idx; i--)
         {
             var c = currentPath[i];
-            c.SetHighlight(false);
+            //c.SetHighlight(false);
             currentPath.RemoveAt(i);
         }
 
@@ -464,8 +464,8 @@ public class ThemeBoard : MonoBehaviour, IBoard
 
         foreach (var cell in currentPath)
         {
-            if (!cell.HasNumber) continue;
-            pathSum += cell.Value;
+            //if (!cell.HasNumber) continue;
+            //pathSum += cell.Value;
         }
     }
 
@@ -486,13 +486,13 @@ public class ThemeBoard : MonoBehaviour, IBoard
 
             foreach (var cell in currentPath)
             {
-                if (cell.HasNumber)
-                {
-                    boardSettingManager.boardValues[cell.X, cell.Y] = -1;
-                    cellsToAnimate.Add(cell);
-                    removed.Add(cell);
-                }
-                cell.SetHighlight(false);
+                //if (cell.HasNumber)
+                //{
+                //    boardSettingManager.boardValues[cell.X, cell.Y] = -1;
+                //    cellsToAnimate.Add(cell);
+                //    removed.Add(cell);
+                //}
+                //cell.SetHighlight(false);
             }
 
             // 애니메이션 먼저 시작 (fire and forget - 보드 리셋 시 Init에서 kill됨)
@@ -543,14 +543,14 @@ public class ThemeBoard : MonoBehaviour, IBoard
             }
 
             foreach (var cell in currentPath)
-                cell.SetHighlight(false);
+                //cell.SetHighlight(false);
 
-            // 힌트 셀이 선택되었다가 해제되면 playSound:false로 처리되므로
-            // ResyncHintAnimations로 사운드 콜백 복원 필요
-            if (hasHintCells)
-            {
-                ResyncHintAnimations();
-            }
+                // 힌트 셀이 선택되었다가 해제되면 playSound:false로 처리되므로
+                // ResyncHintAnimations로 사운드 콜백 복원 필요
+                if (hasHintCells)
+                {
+                    ResyncHintAnimations();
+                }
         }
 
         currentPath.Clear();
@@ -568,7 +568,7 @@ public class ThemeBoard : MonoBehaviour, IBoard
 
         foreach (var cell in cells)
         {
-            cell.PlayDisappearAndTransform(null);
+            //cell.PlayDisappearAndTransform(null);
         }
     }
 
@@ -623,6 +623,7 @@ public class ThemeBoard : MonoBehaviour, IBoard
 
     private bool HasAnyValidMove()
     {
+        /*
         if (hasValidMoveCacheValid)
             return hasValidMoveCache;
 
@@ -632,6 +633,8 @@ public class ThemeBoard : MonoBehaviour, IBoard
         hasValidMoveCacheValid = true;
 
         return result;
+        */
+        return false;
     }
 
 
@@ -647,22 +650,25 @@ public class ThemeBoard : MonoBehaviour, IBoard
 
         List<Vector2Int> pathPositions;
 
+        return null;
+        /*
 
-        if (!pathFinder.FindPathBFS(out pathPositions, boardSettingManager.boardValues, boardSettingManager.n))
-            return null;
+                if (!pathFinder.FindPathBFS(out pathPositions, boardSettingManager.boardValues, boardSettingManager.n))
+                    return null;
 
-        if (pathPositions == null || pathPositions.Count == 0)
-            return null;
+                if (pathPositions == null || pathPositions.Count == 0)
+                    return null;
 
-        var result = new List<CellView>(pathPositions.Count);
-        foreach (var pos in pathPositions)
-        {
-            var cell = boardSettingManager.cells[pos.x + pos.y * boardSettingManager.n];
-            if (cell != null)
-                result.Add(cell);
-        }
+                var result = new List<CellView>(pathPositions.Count);
+                foreach (var pos in pathPositions)
+                {
+                    var cell = boardSettingManager.cells[pos.x + pos.y * boardSettingManager.n];
+                    if (cell != null)
+                        result.Add(cell);
+                }
 
-        return result;
+                return result;
+                */
     }
 
     public void ShowHint(float flashDuration = 1.0f)
@@ -689,9 +695,9 @@ public class ThemeBoard : MonoBehaviour, IBoard
         if (currentHintCells != null)
         {
             foreach (var cell in currentHintCells)
-                cell.SetHintHighlight(false);
+                //cell.SetHintHighlight(false);
 
-            currentHintCells = null;
+                currentHintCells = null;
         }
     }
 
@@ -707,8 +713,9 @@ public class ThemeBoard : MonoBehaviour, IBoard
     /// <summary>
     /// 주어진 셀이 현재 활성 힌트 셀 중 첫 번째인지 확인 (사운드 리더 동적 결정)
     /// </summary>
+    /// 
     public bool IsFirstActiveHintCell(CellView cell)
-    {
+    {/*
         // 패널이 화면에 없으면 힌트 사운드 재생 안 함
         if (!IsPanelVisible())
             return false;
@@ -722,9 +729,9 @@ public class ThemeBoard : MonoBehaviour, IBoard
             if (hintCell.IsHint && !hintCell.IsSelected)
                 return hintCell == cell;
         }
+*/
         return false;
     }
-
     /// <summary>
     /// 모든 힌트 셀의 애니메이션을 동기화 (선택 해제 후 싱크 맞추기)
     /// </summary>
@@ -742,11 +749,11 @@ public class ThemeBoard : MonoBehaviour, IBoard
     private IEnumerator HintRoutine(float duration)
     {
         foreach (var cell in currentHintCells)
-            cell.SetHintHighlight(true);
+            //cell.SetHintHighlight(true);
 
-        // 힌트 무한 루프: 애니메이션이 계속 반복됨 (CellView에서 SetLoops(-1) 설정)
-        // duration 후 자동 취소 비활성화
-        yield break;
+            // 힌트 무한 루프: 애니메이션이 계속 반복됨 (CellView에서 SetLoops(-1) 설정)
+            // duration 후 자동 취소 비활성화
+            yield break;
 
         // 기존 로직 (임시 비활성화)
         // yield return new WaitForSeconds(duration);

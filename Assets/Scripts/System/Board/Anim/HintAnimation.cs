@@ -1,0 +1,94 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
+using TMPro;
+using System;
+public class HintAnimation : CellAnim
+{
+    
+    public HintAnimation(CellView cellView, CellAnimConfig config) : base(cellView, config)
+    {
+        this.cellView = cellView;
+        this.config = config;
+
+        cellImage = cellView.cellImage;
+        numberText = cellView.numberText;
+    }
+    public override void PlayAnim(Sprite targetSprite = null, Action onComplete = null)
+    {
+        float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
+
+        // 메인 시퀀스 (무한 루프)
+        seq = DOTween.Sequence();
+/*
+        // 모든 힌트 셀에 콜백 추가, 실제 재생은 동적으로 결정
+        if (playSound)
+        {
+            hintTween.AppendCallback(() =>
+            {
+                // 동적 체크: 현재 활성 힌트 셀 중 첫 번째인 경우에만 재생
+                if (AudioManager.Instance != null && board != null && board.IsFirstActiveHintCell(this))
+                {
+                    AudioManager.Instance.PlayHintSFX();
+                }
+            });
+        }
+*/
+        // 연속 바운스 (hintBounceCount번)
+        for (int i = 0; i < config.hintBounceCount; i++)
+        {
+            float bounceScale = config.hintScalePunch - (i * 0.03f); // 점점 작아지는 바운스
+            float bounceHeight = config.hintJumpHeight - (i * 2f);   // 점점 낮아지는 점프
+
+            // 위로 올라가면서 커지기
+            seq.Append(
+                cellImage.transform.DOScale(bounceScale * themeScale, config.hintBounceDuration * 0.4f)
+                    .SetEase(Ease.OutQuad)
+            );
+            seq.Join(
+                cellImage.transform.DOLocalMoveY(cellView.selectOriginalPos.y + bounceHeight, config.hintBounceDuration * 0.4f)
+                    .SetEase(Ease.OutQuad)
+            );
+            // 숫자도 같이
+            if (numberText != null && numberText.enabled)
+            {
+                seq.Join(
+                    numberText.transform.DOLocalMoveY(cellView.textOriginalPos.y + bounceHeight, config.hintBounceDuration * 0.4f)
+                        .SetEase(Ease.OutQuad)
+                );
+            }
+
+            // 내려오면서 원래 크기로
+            seq.Append(
+                cellImage.transform.DOScale(themeScale, config.hintBounceDuration * 0.6f)
+                    .SetEase(Ease.OutBounce)
+            );
+            seq.Join(
+                cellImage.transform.DOLocalMoveY(cellView.selectOriginalPos.y, config.hintBounceDuration * 0.6f)
+                    .SetEase(Ease.OutBounce)
+            );
+            // 숫자도 같이
+            if (numberText != null && numberText.enabled)
+            {
+                seq.Join(
+                    numberText.transform.DOLocalMoveY(cellView.textOriginalPos.y, config.hintBounceDuration * 0.6f)
+                        .SetEase(Ease.OutBounce)
+                );
+            }
+        }
+
+        // 멈춤
+        seq.AppendInterval(config.hintPauseDuration);
+
+        cellImage.sprite = targetSprite;
+        // 무한 루프
+        seq.SetLoops(-1, LoopType.Restart);
+        seq.OnComplete(() => onComplete?.Invoke());
+    }
+    public override void KillAnim()
+    {
+        seq.Kill();
+    }
+}
