@@ -69,21 +69,25 @@ public class GameOverPanel : MonoBehaviour
                 break;
             }
         }
-        int offset = 0;
-        if (myIndex > 2) offset = myIndex - 2;
 
-        for (int i = 0 + offset; i < 6 + offset; i++)
+        List<PlayerLeaderboardEntry> unitResult = new();
+        for (int i = myIndex - 1, j = 1; i > 0 && j < 4; i--, j++)
         {
-            if (result[i].PlayFabId == myId)
-            {
-                myIndex = i;
-                units[i].SetCondition(result[i].Position + 1, result[i].StatValue, result[i].PlayFabId, true);
-            }
-            else
-            {
-                units[i].SetCondition(result[i].Position + 1, result[i].StatValue, result[i].PlayFabId, false);
-            }
+            unitResult.Add(result[myIndex - j]);
         }
+        unitResult.Reverse();
+
+        int upperCount = unitResult.Count;
+        for (int i = 0; i < 6 - upperCount; i++)
+        {
+            unitResult.Add(result[i + myIndex]);
+        }
+
+        for (int i = 0; i < 6; i++)
+        {
+            units[i].SetCondition(unitResult[i].Position + 1, unitResult[i].StatValue, unitResult[i].PlayFabId, i == upperCount);
+        }
+
 
         if (bestScoreText != null) bestScoreText.text = result[myIndex].StatValue.ToString();
         if (globalRankText != null) globalRankText.text = (result[myIndex].Position + 1).ToString();
