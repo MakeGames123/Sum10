@@ -47,7 +47,14 @@ public class BottomNav : MonoBehaviour
     {
         foreach (RectTransform panel in allPanels)
         {
+            if(target == panel) continue;
+
             panel.anchoredPosition = disablePos;
+
+            if (panel.TryGetComponent(out IMainPanel iDisablePanel))
+            {
+                iDisablePanel.OnDisable();
+            }
         }
 
         if (target.TryGetComponent(out IMainPanel ipanel))

@@ -17,11 +17,9 @@ public class BoardManager : MonoBehaviour, IBoard
     private Coroutine hintCoroutine;
 
     [SerializeField] private float spawnDelayPerCell = 0.03f;   // 셀 간 딜레이
-
-    // 이벤트
-    public event Action<List<Cell>> OnCellsRemoved;
     private SelectionController selection;
     public GameManager gameManager;
+    public ThemePanel themePanel;
     int n;
     private PathFinder pathFinder = new();
 
@@ -32,8 +30,17 @@ public class BoardManager : MonoBehaviour, IBoard
     private void Awake()
     {
         selection = new SelectionController(cellSlots);
-        selection.OnKeyPadBlocked += gameManager.HandleNoMoreMoves;
-        selection.OnCellRemoved += gameManager.HandleCellsRemoved;
+
+        if (gameManager != null)
+        {
+            selection.OnKeyPadBlocked += gameManager.HandleNoMoreMoves;
+            selection.OnCellRemoved += gameManager.HandleCellsRemoved;
+        }
+        
+        if(themePanel != null)
+        {
+            selection.OnKeyPadBlocked += themePanel.SetUp;
+        }
     }
     public void SetupBoardWithSize(int size)
     {
@@ -59,7 +66,7 @@ public class BoardManager : MonoBehaviour, IBoard
 
         GenerateBoardValuesUntilValid();
 
-        for (int x = n * n; x < 36; x++)
+        for (int x = n * n; x < cellSlots.Count; x++)
         {
             var cell = cellUIs[x];
             cell.gameObject.SetActive(false);

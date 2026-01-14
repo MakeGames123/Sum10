@@ -30,7 +30,7 @@ public class SettingsManager : MonoBehaviour
         rect = GetComponent<RectTransform>();
         LoadSettings();
         BindUI();
-        ApplySettings();
+        //ApplySettings();
     }
     public void Show()
     {

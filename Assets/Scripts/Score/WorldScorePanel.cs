@@ -5,6 +5,7 @@ using PlayFab.ClientModels;
 public interface IMainPanel
 {
     void SetCondition();
+    public void OnDisable();
 }
 public class WorldScorePanel : MonoBehaviour, IMainPanel
 {
@@ -15,6 +16,10 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
     {
         UpdateRank();
     }
+    public void OnDisable()
+    {
+    }
+
     public void UpdateRank()
     {
         ClearUI();

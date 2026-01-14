@@ -37,8 +37,8 @@ public class BottomNavButton : MonoBehaviour, IPointerClickHandler
 
     private void Awake()
     {
-        originalScale = icon.transform.localScale;
-        originalPosition = icon.rectTransform.anchoredPosition;
+        if(icon != null) originalScale = icon.transform.localScale;
+        if(icon != null) originalPosition = icon.rectTransform.anchoredPosition;
 
         // 라벨 초기 상태: 숨김
         if (label != null)

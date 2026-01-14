@@ -4009,9 +4009,6 @@ MonoBehaviour:
   boardLowSkin: {fileID: 3745441372945621}
   cellPrefab: {fileID: 0}
   board: {fileID: 1471298999}
-  spawnDelayPerCell: 0.03
-  useWaveSpawn: 1
-  Size: 0
 --- !u!114 &1471298999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4098,9 +4095,9 @@ MonoBehaviour:
   - {fileID: 518013027}
   - {fileID: 1887300630}
   - {fileID: 1272998889}
-  smartFirstTouchMaxDistance: 150
-  smartRecoveryMinDistance: 2
+  spawnDelayPerCell: 0.03
   gameManager: {fileID: 2128613649}
+  themePanel: {fileID: 0}
 --- !u!1 &1473936765
 GameObject:
   m_ObjectHideFlags: 0
@@ -7055,7 +7052,7 @@ PrefabInstance:
     - target: {fileID: 8134161518682501308, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
       propertyPath: gameManager
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2128613649}
     - target: {fileID: 8134161518682501308, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
       propertyPath: scoreManager
       value: 
@@ -7652,18 +7649,6 @@ PrefabInstance:
     - target: {fileID: 7318629402929564717, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844092051785388999, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844092051785388999, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844092051785388999, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 1300
       objectReference: {fileID: 0}
     - target: {fileID: 8306768006511809527, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
       propertyPath: m_AnchorMax.y

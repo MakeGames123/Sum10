@@ -35,7 +35,7 @@ public class PathFinder
 
     public List<Cell> FindPathBFS(List<Cell> cells, int target)
     {
-        // 시작점이 될 수 있는 모든 셀 (숫자 > 0 혹은 조커 < 0)
+        // 시작점이 될 수 있는 모든 셀
         var startPoints = cells.Where(c => c.ReturnNum() != 0).ToList();
 
         foreach (var startCell in startPoints)
@@ -86,64 +86,6 @@ public class PathFinder
 
         return null; // 모든 시작점에서 찾아봤으나 경로가 없는 경우
     }
-    public void DFSFindAllPaths(
-        int x, int y,
-        int currentSum,
-        bool[,] visited, List<Cell> cells,
-        List<Cell> currentPath,
-        List<List<Cell>> allPaths)
-    {
-        visited[x, y] = true;
-        currentPath.Add(cells[x + y * size]);
-
-        if (currentSum == ImportantValues.TARGET_SUM)
-        {
-            allPaths.Add(new List<Cell>(currentPath));
-            visited[x, y] = false;
-            currentPath.RemoveAt(currentPath.Count - 1);
-            return;
-        }
-
-        if (currentSum >= ImportantValues.TARGET_SUM)
-        {
-            visited[x, y] = false;
-            currentPath.RemoveAt(currentPath.Count - 1);
-            return;
-        }
-
-        int[] dx = { 1, -1, 0, 0 };
-        int[] dy = { 0, 0, 1, -1 };
-
-        for (int dir = 0; dir < 4; dir++)
-        {
-            int nx = x + dx[dir];
-            int ny = y + dy[dir];
-
-            if (nx < 0 || nx >= size || ny < 0 || ny >= size)
-                continue;
-            if (visited[nx, ny])
-                continue;
-
-            int nextValue = cells[nx + ny * size].ReturnNum();
-
-            if (nextValue <= 0)
-            {
-                DFSFindAllPaths(nx, ny, currentSum, visited, cells, currentPath, allPaths);
-            }
-            else
-            {
-                int nextSum = currentSum + nextValue;
-                if (nextSum <= ImportantValues.TARGET_SUM)
-                {
-                    DFSFindAllPaths(nx, ny, nextSum, visited, cells, currentPath, allPaths);
-                }
-            }
-        }
-
-        visited[x, y] = false;
-        currentPath.RemoveAt(currentPath.Count - 1);
-    }
-
     public Cell FindNearestCellToScreenPoint(Vector2 screenPos, List<CellSlot> cellSlots)
     {
         CellSlot nearest = null;

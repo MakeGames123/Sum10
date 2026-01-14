@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,8 @@ public class ThemePanel : MonoBehaviour, IMainPanel
     public List<ThemeData> themeDatas = new();
     public Image boardBackground;
     public Image boardLowSpecial;
-    public ThemeBoardSetting setting;
+    public BoardSettingManager setting;
+    public BoardManager board;
     private int index = 0;
 
     void Awake()
@@ -19,12 +21,14 @@ public class ThemePanel : MonoBehaviour, IMainPanel
         rightButton.onClick.AddListener(MoveToRight);
         leftButton.onClick.AddListener(MoveToLeft);
         applyButton.onClick.AddListener(Apply);
-
-        UpdateUI();
     }
     public void SetCondition()
     {
         UpdateUI();
+    }
+    public void OnDisable()
+    {
+        board.gameObject.SetActive(false);
     }
     private void MoveToRight()
     {
@@ -45,7 +49,13 @@ public class ThemePanel : MonoBehaviour, IMainPanel
         boardBackground.sprite = themeDatas[index].boardSkin;
         boardLowSpecial.sprite = themeDatas[index].boardLowSkin;
 
-        setting.SetupBoardWithSize();
+        SetUp();
+    }
+    public void SetUp()
+    {
+        board.gameObject.SetActive(true);
+        setting.SetupBoardWithSize(3);
+        board.SetupBoardWithSize(3);
     }
     private void Apply()
     {

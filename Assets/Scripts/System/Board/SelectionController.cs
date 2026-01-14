@@ -11,7 +11,7 @@ public class SelectionController
     private readonly List<Cell> selectedCells = new();
     private bool isDragging;
     public Action OnKeyPadBlocked; //판 엎기
-    public Action<int> OnCellRemoved; //판 엎기
+    public Action<int> OnCellRemoved;
 
     public SelectionController(List<CellSlot> cellSlots)
     {
@@ -32,7 +32,7 @@ public class SelectionController
     {
         if (!isDragging) return;
 
-        Cell cell = pathFinder.FindNearestCellToScreenPoint(pointerScreenPos, cellSlots);
+        Cell cell = pathFinder.FindNearestCellToScreenPoint(pointerScreenPos, cellSlots); //셀 클릭이 조건이 아닌 그냥 클릭중 가장 가까운 셀을 매 프레임마다 받는다
         if (cell == null)
         {
             End();
@@ -42,6 +42,7 @@ public class SelectionController
         AddCell(cell);
     }
 
+    //드래그 종료
     public void End()
     {
         if (!isDragging) return;
@@ -53,6 +54,7 @@ public class SelectionController
         {
             sum += cell.ReturnNum() > 0 ? cell.ReturnNum() : 0;
         }
+        
         if (sum == 10)
         {
             foreach (var cell in selectedCells)
