@@ -337,7 +337,7 @@ public class ThemeBoardSetting : MonoBehaviour
                 int v = boardValues[x, y];
 
                 // 먼저 Init 호출
-                cell.Init(themeBoard, x, y, null);
+                cell.Init(themeBoard, null);
 
                 // 생성 애니메이션 (웨이브 or 순차)
                 float delay = CalculateSpawnDelay(x, y);

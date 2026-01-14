@@ -154,6 +154,7 @@ public class ThemeBoard : MonoBehaviour, IBoard
 
     private void TrySmartPathRecovery()
     {
+        /*
         if (currentPath.Count == 0)
             return;
 
@@ -201,6 +202,7 @@ public class ThemeBoard : MonoBehaviour, IBoard
                 }
             }
         }
+        */
     }
 
     private CellView FindNearestCellToScreenPoint(Vector2 screenPos)
@@ -244,6 +246,7 @@ public class ThemeBoard : MonoBehaviour, IBoard
 
         var path = new List<CellView>();
 
+        /*
         int currentX = from.X;
         int currentY = from.Y;
         int targetX = to.X;
@@ -279,6 +282,7 @@ public class ThemeBoard : MonoBehaviour, IBoard
             path.Add(cell);
         }
 
+        */
         return path;
     }
 
@@ -335,9 +339,11 @@ public class ThemeBoard : MonoBehaviour, IBoard
 
     private bool IsAdjacent(CellView a, CellView b)
     {
-        int dx = Mathf.Abs(a.X - b.X);
-        int dy = Mathf.Abs(a.Y - b.Y);
-        return dx + dy == 1;
+        return true;
+
+        //int dx = Mathf.Abs(a.X - b.X);
+        //int dy = Mathf.Abs(a.Y - b.Y);
+       // return dx + dy == 1;
     }
 
     private bool AddCellToPathCore(CellView cell)
@@ -366,6 +372,7 @@ public class ThemeBoard : MonoBehaviour, IBoard
 
     private bool TryAddCellToPath(CellView cell)
     {
+        /*
         if (currentPath.Count > 0)
         {
             int idx = currentPath.IndexOf(cell);
@@ -433,6 +440,8 @@ public class ThemeBoard : MonoBehaviour, IBoard
             return false;
 
         return AddCellToPathCore(cell);
+        */
+        return false;
     }
 
     private void BacktrackToIndex(int idx)

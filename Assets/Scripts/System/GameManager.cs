@@ -135,7 +135,6 @@ public class GameManager : MonoBehaviour
     private void StartNewRun()
     {
         // 이전 게임의 파티클/고스트 정리
-        CellView.KillAllGhostAnimations();
         CellView.DestroyAllActiveParticles();
 
         score = 0;
@@ -162,7 +161,6 @@ public class GameManager : MonoBehaviour
     {
         isRunning = false;
 
-        CellView.KillAllGhostAnimations();
         CellView.DestroyAllActiveParticles();
 
         OnGameOver?.Invoke(score);

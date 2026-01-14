@@ -50,7 +50,7 @@ public class BoardManager : MonoBehaviour, IBoard
             cellSlots[i].SetCondition(info);
 
             CellView cell = cellUIs[i];
-            cell.Init(this, i % 5, i / 5, info);
+            cell.Init(this, info);
             float delay = CalculateSpawnDelay(i % 5, i / 5);
             StartCoroutine(cell.PlaySpawnAnimation(delay));
 
@@ -64,10 +64,6 @@ public class BoardManager : MonoBehaviour, IBoard
             var cell = cellUIs[x];
             cell.gameObject.SetActive(false);
         }
-        /*
-                // 1프레임 대기 후 스폰 애니메이션 시작 (Canvas 레이아웃 안정화)
-                StartCoroutine(PlaySpawnAnimationsNextFrame());
-        */
         selection.UpdateCells(cells);
     }
     void Update()

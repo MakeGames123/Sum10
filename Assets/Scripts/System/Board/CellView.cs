@@ -20,29 +20,17 @@ public enum CellAnimState
 }
 public class CellView : MonoBehaviour
 {
-    public int X { get; private set; }
-    public int Y { get; private set; }
-
     [Header("References")]
     public Image cellImage;
     public Image cellBackground;
     public TextMeshProUGUI numberText;
-
     private CellSprite normalSprite;
     private CellSprite blankSprite;
 
     [SerializeField] private ParticleSystem particle;                   // 파티클 스프라이트
 
     private IBoard board;
-
-    // 파괴 대기 중 플래그 (매칭 성공 후 애니메이션 중 재선택 방지)
-    private bool isPendingDestruction = false;
-
-    public bool IsPendingDestruction => isPendingDestruction;
-
-    private bool isSelected = false;
     private bool isHint = false;
-    private bool wasSelected = false;  // Flip 모드 선택 해제 애니메이션용
 
     public bool IsHint => isHint;
 
@@ -51,17 +39,11 @@ public class CellView : MonoBehaviour
 
     private Dictionary<CellAnimState, CellAnim> animMap = new();
     // 애니메이션 관련
-    private Tween selectTween;
     private Sequence hintTween;
     public Vector3 selectOriginalPos { get; private set; }
     public Vector3 textOriginalPos { get; private set; }
 
-    // 캐싱
-    private static Transform cachedCanvasTransform;
     public CellAnimConfig config;
-
-    // Ghost 애니메이션 관리용 ID
-    private const string GHOST_TWEEN_ID = "DisappearGhost";
 
     void Awake()
     {
@@ -71,13 +53,6 @@ public class CellView : MonoBehaviour
         animMap.Add(CellAnimState.Hint, new HintAnimation(this, config));
         animMap.Add(CellAnimState.Select, new SelectAnimation(this, config));
         animMap.Add(CellAnimState.Spawn, new SpawnAnimation(this, config));
-    }
-    /// <summary>
-    /// 모든 Ghost 애니메이션을 즉시 중단하고 제거 (게임 종료 시 호출)
-    /// </summary>
-    public static void KillAllGhostAnimations()
-    {
-        DOTween.Kill(GHOST_TWEEN_ID);
     }
 
     Cell cellInfo;
@@ -97,11 +72,9 @@ public class CellView : MonoBehaviour
         }
     }
 
-    public void Init(IBoard board, int x, int y, Cell cellInfo)
+    public void Init(IBoard board, Cell cellInfo)
     {
         this.board = board;
-        this.X = x;
-        this.Y = y;
         this.cellInfo = cellInfo;
 
         // 기존 애니메이션 정리 및 위치/상태 초기화
@@ -166,7 +139,7 @@ public class CellView : MonoBehaviour
     /// </summary>
     public void ForceRestartHintAnimation()
     {
-        if (isHint && !isSelected)
+        if (isHint)
         {
             StopHintAnimation();
             PlayHintAnimation(playSound: true);
@@ -191,7 +164,7 @@ public class CellView : MonoBehaviour
         else cellBackground.enabled = false;
 
         int value = cellInfo.ReturnNum();
-        if (value > 0 && !isPendingDestruction)
+        if (value > 0)
         {
             numberText.text = value.ToString();
             numberText.enabled = true;
@@ -200,6 +173,7 @@ public class CellView : MonoBehaviour
         {
             numberText.text = "";
             numberText.enabled = false;
+            //매칭된 빈 셀은 뒤집기, 일반셀은 제거
             if (!isAlreadyBlank) PlayAnimation(CellAnimState.Disappear, GetNormalSprite(), () => PlayAnimation(CellAnimState.BlankAppear, blankSprite.normalSprite));
             else PlayAnimation(CellAnimState.Deselect, GetNormalSprite());
         }
@@ -208,9 +182,68 @@ public class CellView : MonoBehaviour
         if (numberText != null && numberText.enabled)
         {
             var theme = ThemeManager.Instance.selectedTheme;
-            numberText.color = isSelected ? theme.selectedFontColor : theme.normalFontColor;
+            //numberText.color = isSelected ? theme.selectedFontColor : theme.normalFontColor;
         }
     }
+
+    private void PlayHintAnimation(bool playSound = true)
+    {
+    }
+
+    private void StopHintAnimation()
+    {
+        if (hintTween != null)
+        {
+            hintTween.Kill();
+            hintTween = null;
+
+            // 위치 복원
+            float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
+            cellImage.transform.localPosition = selectOriginalPos;
+            cellImage.transform.localScale = Vector3.one * themeScale;
+            if (numberText != null)
+            {
+                numberText.transform.localPosition = textOriginalPos;
+            }
+        }
+    }
+    private Sprite GetNormalSprite()
+    {
+        bool isBlankCell = cellInfo.ReturnNum() <= 0;
+
+        if (isBlankCell) return blankSprite.normalSprite;
+        else return normalSprite.normalSprite;
+    }
+    private Sprite GetHintSprite()
+    {
+        bool isBlankCell = cellInfo.ReturnNum() <= 0;
+
+        if (isBlankCell) return blankSprite.hintSprite;
+        else return normalSprite.hintSprite;
+    }
+    private Sprite GetSelectSprite()
+    {
+        bool isBlankCell = cellInfo.ReturnNum() <= 0;
+
+        if (isBlankCell) return blankSprite.selectedSprite;
+        else return normalSprite.selectedSprite;
+    }
+    /// <summary>
+    /// 셀 생성 애니메이션 (위에서 떨어지면서 톡 튀어나오는 느낌)
+    /// </summary>
+    /// <param name="delay">애니메이션 시작 전 딜레이</param>
+    public IEnumerator PlaySpawnAnimation(float delay = 0f)
+    {
+        yield return new WaitForSeconds(delay);
+        PlayAnimation(CellAnimState.Spawn, GetNormalSprite());
+    }
+    private void SpawnKillParticles()
+    {
+        ParticleSystem particleCpy = Instantiate(particle, transform.position, Quaternion.identity);
+        particleCpy.transform.SetParent(transform.parent.parent.parent);
+    }
+}
+
 
     /*
 
@@ -282,63 +315,3 @@ public class CellView : MonoBehaviour
         SetHintHighlight(on);
     }
     */
-
-    private void PlayHintAnimation(bool playSound = true)
-    {
-    }
-
-    private void StopHintAnimation()
-    {
-        if (hintTween != null)
-        {
-            hintTween.Kill();
-            hintTween = null;
-
-            // 위치 복원
-            float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
-            cellImage.transform.localPosition = selectOriginalPos;
-            cellImage.transform.localScale = Vector3.one * themeScale;
-            if (numberText != null)
-            {
-                numberText.transform.localPosition = textOriginalPos;
-            }
-        }
-    }
-    private Sprite GetNormalSprite()
-    {
-        bool isBlankCell = cellInfo.ReturnNum() <= 0;
-
-        if (isBlankCell) return blankSprite.normalSprite;
-        else return normalSprite.normalSprite;
-    }
-    private Sprite GetHintSprite()
-    {
-        bool isBlankCell = cellInfo.ReturnNum() <= 0;
-
-        if (isBlankCell) return blankSprite.hintSprite;
-        else return normalSprite.hintSprite;
-    }
-    private Sprite GetSelectSprite()
-    {
-        bool isBlankCell = cellInfo.ReturnNum() <= 0;
-
-        if (isBlankCell) return blankSprite.selectedSprite;
-        else return normalSprite.selectedSprite;
-    }
-
-
-    /// <summary>
-    /// 셀 생성 애니메이션 (위에서 떨어지면서 톡 튀어나오는 느낌)
-    /// </summary>
-    /// <param name="delay">애니메이션 시작 전 딜레이</param>
-    public IEnumerator PlaySpawnAnimation(float delay = 0f)
-    {
-        yield return new WaitForSeconds(delay);
-        PlayAnimation(CellAnimState.Spawn, GetNormalSprite());
-    }
-    private void SpawnKillParticles()
-    {
-        ParticleSystem particleCpy = Instantiate(particle, transform.position, Quaternion.identity);
-        particleCpy.transform.SetParent(transform.parent.parent.parent);
-    }
-}
