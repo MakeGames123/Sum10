@@ -69,7 +69,10 @@ public class BoardManager : MonoBehaviour, IBoard
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
+        {
+            CancelHint();
             selection.Begin();
+        }
 
         if (Input.GetMouseButton(0))
             selection.Update(Input.mousePosition);
@@ -152,7 +155,7 @@ public class BoardManager : MonoBehaviour, IBoard
 
     public List<Cell> FindHintPath()
     {
-        List<Cell> result = pathFinder.FindPathBFS(cells, n);
+        List<Cell> result = pathFinder.FindPathBFS(cells, 10);
 
         if (result == null || result.Count == 0)
             return null;
@@ -162,15 +165,18 @@ public class BoardManager : MonoBehaviour, IBoard
 
     public void ShowHint(float flashDuration = 1.0f)
     {
-        CancelHint();
-
         var path = FindHintPath();
 
         if (path == null || path.Count == 0)
             return;
 
         currentHintCells = path;
-        hintCoroutine = StartCoroutine(HintRoutine(flashDuration));
+
+        foreach (var cell in currentHintCells)
+        {
+            cell.EnableHintMode();
+        }
+        //hintCoroutine = StartCoroutine(HintRoutine(flashDuration));
     }
 
     public void CancelHint()
@@ -184,9 +190,9 @@ public class BoardManager : MonoBehaviour, IBoard
         if (currentHintCells != null)
         {
             foreach (var cell in currentHintCells)
-                //cell.SetHintHighlight(false);
-
-                currentHintCells = null;
+            {
+                cell.DisableHintMode();
+            }
         }
     }
 

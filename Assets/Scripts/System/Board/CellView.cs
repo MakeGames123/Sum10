@@ -39,7 +39,6 @@ public class CellView : MonoBehaviour
 
     private Dictionary<CellAnimState, CellAnim> animMap = new();
     // 애니메이션 관련
-    private Sequence hintTween;
     public Vector3 selectOriginalPos { get; private set; }
     public Vector3 textOriginalPos { get; private set; }
 
@@ -102,6 +101,7 @@ public class CellView : MonoBehaviour
         cellInfo.onCellSelectedEvent += () => PlayAnimation(CellAnimState.Select, GetSelectSprite());
         cellInfo.onCellUnSelectedEvent += () => PlayAnimation(CellAnimState.Deselect, GetNormalSprite());
         cellInfo.onEnableHintEvent += () => PlayAnimation(CellAnimState.Hint, GetHintSprite());
+        cellInfo.onDisableHintEvent += StopHintAnimation;
     }
 
     public void PlayAnimation(CellAnimState state, Sprite targetSprite = null, Action onComplete = null)
@@ -133,18 +133,6 @@ public class CellView : MonoBehaviour
         }
     }
 
-
-    /// <summary>
-    /// 힌트 애니메이션을 강제로 재시작 (싱크 맞추기용)
-    /// </summary>
-    public void ForceRestartHintAnimation()
-    {
-        if (isHint)
-        {
-            StopHintAnimation();
-            PlayHintAnimation(playSound: true);
-        }
-    }
 
     /// <summary>
     /// 힌트 사운드 리더 설정 (이 셀만 힌트 효과음 재생)
@@ -185,26 +173,17 @@ public class CellView : MonoBehaviour
             //numberText.color = isSelected ? theme.selectedFontColor : theme.normalFontColor;
         }
     }
-
-    private void PlayHintAnimation(bool playSound = true)
-    {
-    }
-
     private void StopHintAnimation()
     {
-        if (hintTween != null)
-        {
-            hintTween.Kill();
-            hintTween = null;
+        animMap[CellAnimState.Hint].KillAnim();
 
-            // 위치 복원
-            float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
-            cellImage.transform.localPosition = selectOriginalPos;
-            cellImage.transform.localScale = Vector3.one * themeScale;
-            if (numberText != null)
-            {
-                numberText.transform.localPosition = textOriginalPos;
-            }
+        cellImage.sprite = GetNormalSprite();
+        float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
+        cellImage.transform.localPosition = selectOriginalPos;
+        cellImage.transform.localScale = Vector3.one * themeScale;
+        if (numberText != null)
+        {
+            numberText.transform.localPosition = textOriginalPos;
         }
     }
     private Sprite GetNormalSprite()
@@ -245,73 +224,90 @@ public class CellView : MonoBehaviour
 }
 
 
-    /*
+/*
+
 
     /// <summary>
-    /// 공백 셀이 매칭에 포함되어 터질 때 호출 (Flip 롤백 애니메이션 재생)
+    /// 힌트 애니메이션을 강제로 재시작 (싱크 맞추기용)
     /// </summary>
-    public void PlayDeselectForMatch()
+    public void ForceRestartHintAnimation()
     {
-        if (isSelected)
+        if (isHint)
         {
-            isSelected = false;
-            wasSelected = false;
-            isHint = false;
             StopHintAnimation();
-
-            // 스프라이트를 기본으로 변경 (UpdateVisualState 대신 직접 처리)
-            cellImage.sprite = blankSprite.normalSprite;
-
-            PlayDeselectAnimationFlip();
-        }
-        else
-        {
-            SetHighlight(false);
+            PlayHintAnimation(playSound: true);
         }
     }
 
-    */
-
-    /// <summary>
-    /// 파괴 대기 상태 설정 (매칭 성공 후 즉시 호출하여 재선택 방지)
-    /// </summary>\
-
-    /*
-    public void SetValue(int newValue)
+    private void PlayHintAnimation(bool playSound = true)
     {
-        value = newValue;
-        isPendingDestruction = false;  // 새 값 설정 시 파괴 대기 해제
+    }
 
-
+/// <summary>
+/// 공백 셀이 매칭에 포함되어 터질 때 호출 (Flip 롤백 애니메이션 재생)
+/// </summary>
+public void PlayDeselectForMatch()
+{
+    if (isSelected)
+    {
         isSelected = false;
+        wasSelected = false;
         isHint = false;
-        UpdateVisualState();
-    }
-    public void SetPendingDestruction(bool pending)
-    {
-        isPendingDestruction = pending;
-    }
+        StopHintAnimation();
 
-    // 기존 SetHighlight → 선택 하이라이트로 사용
-    public void SetHighlight(bool on)
-    {
-        SetSelectionHighlight(on);
-    }
+        // 스프라이트를 기본으로 변경 (UpdateVisualState 대신 직접 처리)
+        cellImage.sprite = blankSprite.normalSprite;
 
-    public void SetSelectionHighlight(bool on)
-    {
-        isSelected = on;
-        UpdateVisualState();
+        PlayDeselectAnimationFlip();
     }
+    else
+    {
+        SetHighlight(false);
+    }
+}
 
-    public void SetHintHighlight(bool on)
-    {
-        isHint = on;
-        UpdateVisualState();
-    }
+*/
 
-    public void SetHint(bool on)
-    {
-        SetHintHighlight(on);
-    }
-    */
+/// <summary>
+/// 파괴 대기 상태 설정 (매칭 성공 후 즉시 호출하여 재선택 방지)
+/// </summary>\
+
+/*
+public void SetValue(int newValue)
+{
+    value = newValue;
+    isPendingDestruction = false;  // 새 값 설정 시 파괴 대기 해제
+
+
+    isSelected = false;
+    isHint = false;
+    UpdateVisualState();
+}
+public void SetPendingDestruction(bool pending)
+{
+    isPendingDestruction = pending;
+}
+
+// 기존 SetHighlight → 선택 하이라이트로 사용
+public void SetHighlight(bool on)
+{
+    SetSelectionHighlight(on);
+}
+
+public void SetSelectionHighlight(bool on)
+{
+    isSelected = on;
+    UpdateVisualState();
+}
+
+public void SetHintHighlight(bool on)
+{
+    isHint = on;
+    UpdateVisualState();
+}
+
+public void SetHint(bool on)
+{
+    SetHintHighlight(on);
+}
+*/

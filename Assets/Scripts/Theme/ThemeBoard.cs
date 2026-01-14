@@ -751,7 +751,7 @@ public class ThemeBoard : MonoBehaviour, IBoard
 
         foreach (var cell in currentHintCells)
         {
-            cell.ForceRestartHintAnimation();
+            //cell.ForceRestartHintAnimation();
         }
     }
 
