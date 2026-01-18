@@ -9,16 +9,18 @@ using TMPro;
 public abstract class CellAnim
 {
     protected CellView cellView;
-    protected Image cellImage;
+    protected RectTransform rect;
+    protected Image cellIamge;
     protected TextMeshProUGUI numberText;
     protected CellAnimConfig config;
     protected Sequence seq;
-    public CellAnim(CellView cellView, CellAnimConfig config)
+    public CellAnim(CellView cellView, RectTransform rect, CellAnimConfig config)
     {
         this.cellView = cellView;
         this.config = config;
-
-        cellImage = cellView.cellImage;
+        this.rect = rect;
+        
+        cellIamge = cellView.cellImage;
         numberText = cellView.numberText;
     }
     abstract public void PlayAnim(Sprite targetSprite = null, Action onComplete = null);

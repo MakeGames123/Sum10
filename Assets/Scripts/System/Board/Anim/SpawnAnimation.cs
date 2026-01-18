@@ -8,12 +8,13 @@ using System;
 public class SpawnAnimation : CellAnim
 {
     
-    public SpawnAnimation(CellView cellView, CellAnimConfig config) : base(cellView, config)
+    public SpawnAnimation(CellView cellView, RectTransform rect, CellAnimConfig config) : base(cellView, rect, config)
     {
         this.cellView = cellView;
         this.config = config;
-
-        cellImage = cellView.cellImage;
+        this.rect = rect;
+        
+        cellIamge = cellView.cellImage;
         numberText = cellView.numberText;
     }
 
@@ -24,12 +25,11 @@ public class SpawnAnimation : CellAnim
         float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
 
         // 저장된 원래 위치 사용 (이전 애니메이션 중단 상태 복구)
-        Vector3 originalPos = cellView.selectOriginalPos;
         Vector3 originalTextPos = cellView.textOriginalPos;
 
         // 시작 상태: 위에 있고 스케일 0
-        cellImage.transform.localPosition = originalPos + Vector3.up * config.spawnDropHeight;
-        cellImage.transform.localScale = Vector3.zero;
+        rect.anchoredPosition = Vector3.zero + Vector3.up * config.spawnDropHeight;
+        rect.transform.localScale = Vector3.zero;
 
         // 숫자 텍스트도 위에서 시작하고 투명하게
         if (numberText != null && numberText.enabled)
@@ -48,11 +48,11 @@ public class SpawnAnimation : CellAnim
 
         // Phase 1: 떨어지면서 커지기 (60%)
         spawnSeq.Append(
-            cellImage.transform.DOLocalMove(originalPos, config.spawnDuration * 0.6f)
+            rect.transform.DOLocalMove(Vector3.zero, config.spawnDuration * 0.6f)
                 .SetEase(Ease.OutQuad)
         );
         spawnSeq.Join(
-            cellImage.transform.DOScale(config.spawnScalePeak * themeScale, config.spawnDuration * 0.6f)
+            rect.transform.DOScale(config.spawnScalePeak * themeScale, config.spawnDuration * 0.6f)
                 .SetEase(Ease.OutBack)
         );
 
@@ -71,10 +71,10 @@ public class SpawnAnimation : CellAnim
 
         // Phase 2: 살짝 줄어들면서 안정 (40%)
         spawnSeq.Append(
-            cellImage.transform.DOScale(themeScale, config.spawnDuration * 0.4f)
+            rect.transform.DOScale(themeScale, config.spawnDuration * 0.4f)
                 .SetEase(Ease.OutQuad)
         );
-        cellImage.sprite = targetSprite;
+        cellIamge.sprite = targetSprite;
         seq.OnComplete(() => onComplete?.Invoke());
     }
     public override void KillAnim()

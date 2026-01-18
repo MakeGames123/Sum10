@@ -8,30 +8,31 @@ using System;
 public class DisappearAnimation : CellAnim
 {
 
-    public DisappearAnimation(CellView cellView, CellAnimConfig config) : base(cellView, config)
+    public DisappearAnimation(CellView cellView, RectTransform rect, CellAnimConfig config) : base(cellView, rect, config)
     {
         this.cellView = cellView;
         this.config = config;
-
-        cellImage = cellView.cellImage;
+        this.rect = rect;
+        
+        cellIamge = cellView.cellImage;
         numberText = cellView.numberText;
     }
 
     public override void PlayAnim(Sprite targetSprite = null, Action onComplete = null)
     {
         float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
-        Vector3 originalPos = cellImage.transform.localPosition;
+        Vector3 originalPos = rect.transform.localPosition;
         Vector3 originalTextPos = numberText.transform.localPosition;
 
         seq = DOTween.Sequence();
 
         // Phase 1: 살짝 커지면서 위로 점프
         seq.Append(
-            cellImage.transform.DOScale(config.disappearScalePeak * themeScale, config.disappearDuration * 0.3f)
+            rect.transform.DOScale(config.disappearScalePeak * themeScale, config.disappearDuration * 0.3f)
                 .SetEase(Ease.OutQuad)
         );
         seq.Join(
-            cellImage.transform.DOLocalMoveY(originalPos.y + config.disappearJumpHeight, config.disappearDuration * 0.3f)
+            rect.transform.DOLocalMoveY(originalPos.y + config.disappearJumpHeight, config.disappearDuration * 0.3f)
                 .SetEase(Ease.OutQuad)
         );
         if (numberText != null && numberText.enabled)
@@ -45,11 +46,11 @@ public class DisappearAnimation : CellAnim
         // Phase 2: 파티클 + 스케일 0으로 사라짐
         //seq.AppendCallback(() => SpawnKillParticles());
         seq.Append(
-            cellImage.transform.DOScale(0f, config.disappearDuration * 0.7f)
+            rect.transform.DOScale(0f, config.disappearDuration * 0.7f)
                 .SetEase(Ease.InBack)
         );
         seq.Join(
-            cellImage.transform.DOLocalMoveY(originalPos.y + config.disappearJumpHeight * 0.5f, config.disappearDuration * 0.7f)
+            rect.transform.DOLocalMoveY(originalPos.y + config.disappearJumpHeight * 0.5f, config.disappearDuration * 0.7f)
                 .SetEase(Ease.InQuad)
         );
         if (numberText != null && numberText.enabled)

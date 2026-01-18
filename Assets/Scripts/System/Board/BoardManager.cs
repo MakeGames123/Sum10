@@ -36,8 +36,8 @@ public class BoardManager : MonoBehaviour, IBoard
             selection.OnKeyPadBlocked += gameManager.HandleNoMoreMoves;
             selection.OnCellRemoved += gameManager.HandleCellsRemoved;
         }
-        
-        if(themePanel != null)
+
+        if (themePanel != null)
         {
             selection.OnKeyPadBlocked += themePanel.SetUp;
         }
@@ -57,6 +57,7 @@ public class BoardManager : MonoBehaviour, IBoard
             cellSlots[i].SetCondition(info);
 
             CellView cell = cellUIs[i];
+            cell.ResetVisual();
             cell.Init(this, info);
             float delay = CalculateSpawnDelay(i % 5, i / 5);
             StartCoroutine(cell.PlaySpawnAnimation(delay));
@@ -77,7 +78,6 @@ public class BoardManager : MonoBehaviour, IBoard
     {
         if (Input.GetMouseButtonDown(0))
         {
-            CancelHint();
             selection.Begin();
         }
 
@@ -182,25 +182,22 @@ public class BoardManager : MonoBehaviour, IBoard
         foreach (var cell in currentHintCells)
         {
             cell.EnableHintMode();
+            cell.onRemoved += CancelHint;
         }
-        //hintCoroutine = StartCoroutine(HintRoutine(flashDuration));
     }
 
     public void CancelHint()
     {
-        if (hintCoroutine != null)
-        {
-            StopCoroutine(hintCoroutine);
-            hintCoroutine = null;
-        }
-
         if (currentHintCells != null)
         {
             foreach (var cell in currentHintCells)
             {
                 cell.DisableHintMode();
+                cell.onRemoved -= CancelHint;
             }
         }
+
+        currentHintCells.Clear();
     }
 
     /// <summary>

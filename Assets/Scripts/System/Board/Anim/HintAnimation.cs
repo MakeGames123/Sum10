@@ -8,12 +8,13 @@ using System;
 public class HintAnimation : CellAnim
 {
     
-    public HintAnimation(CellView cellView, CellAnimConfig config) : base(cellView, config)
+    public HintAnimation(CellView cellView, RectTransform rect, CellAnimConfig config) : base(cellView, rect, config)
     {
         this.cellView = cellView;
         this.config = config;
-
-        cellImage = cellView.cellImage;
+        this.rect = rect;
+        
+        cellIamge = cellView.cellImage;
         numberText = cellView.numberText;
     }
     public override void PlayAnim(Sprite targetSprite = null, Action onComplete = null)
@@ -44,11 +45,11 @@ public class HintAnimation : CellAnim
 
             // 위로 올라가면서 커지기
             seq.Append(
-                cellImage.transform.DOScale(bounceScale * themeScale, config.hintBounceDuration * 0.4f)
+                rect.transform.DOScale(bounceScale * themeScale, config.hintBounceDuration * 0.4f)
                     .SetEase(Ease.OutQuad)
             );
             seq.Join(
-                cellImage.transform.DOLocalMoveY(cellView.selectOriginalPos.y + bounceHeight, config.hintBounceDuration * 0.4f)
+                rect.transform.DOLocalMoveY(bounceHeight, config.hintBounceDuration * 0.4f)
                     .SetEase(Ease.OutQuad)
             );
             // 숫자도 같이
@@ -62,11 +63,11 @@ public class HintAnimation : CellAnim
 
             // 내려오면서 원래 크기로
             seq.Append(
-                cellImage.transform.DOScale(themeScale, config.hintBounceDuration * 0.6f)
+                rect.transform.DOScale(themeScale, config.hintBounceDuration * 0.6f)
                     .SetEase(Ease.OutBounce)
             );
             seq.Join(
-                cellImage.transform.DOLocalMoveY(cellView.selectOriginalPos.y, config.hintBounceDuration * 0.6f)
+                rect.transform.DOLocalMoveY(0, config.hintBounceDuration * 0.6f)
                     .SetEase(Ease.OutBounce)
             );
             // 숫자도 같이
@@ -82,7 +83,6 @@ public class HintAnimation : CellAnim
         // 멈춤
         seq.AppendInterval(config.hintPauseDuration);
 
-        cellImage.sprite = targetSprite;
         // 무한 루프
         seq.SetLoops(-1, LoopType.Restart);
         seq.OnComplete(() => onComplete?.Invoke());

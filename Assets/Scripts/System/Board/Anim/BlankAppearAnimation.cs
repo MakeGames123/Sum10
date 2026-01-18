@@ -8,12 +8,13 @@ using System;
 public class BlankAppearAnimation : CellAnim
 {
     
-    public BlankAppearAnimation(CellView cellView, CellAnimConfig config) : base(cellView, config)
+    public BlankAppearAnimation(CellView cellView, RectTransform rect, CellAnimConfig config) : base(cellView, rect, config)
     {
         this.cellView = cellView;
         this.config = config;
-
-        cellImage = cellView.cellImage;
+        this.rect = rect;
+        
+        cellIamge = cellView.cellImage;
         numberText = cellView.numberText;
     }
 
@@ -24,7 +25,7 @@ public class BlankAppearAnimation : CellAnim
         float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
 
         // 시작 스케일 0
-        cellImage.transform.localScale = Vector3.zero;
+        rect.transform.localScale = Vector3.zero;
 
         Sequence appearSeq = DOTween.Sequence();
 
@@ -33,22 +34,15 @@ public class BlankAppearAnimation : CellAnim
 
         // Scale 0 → 1.1 → 1 (톡 튀어나오는 느낌)
         appearSeq.Append(
-            cellImage.transform.DOScale(config.appearScalePeak * themeScale, config.appearDuration * 0.6f)
+            rect.transform.DOScale(config.appearScalePeak * themeScale, config.appearDuration * 0.6f)
                 .SetEase(Ease.OutBack)
         );
         appearSeq.Append(
-            cellImage.transform.DOScale(themeScale, config.appearDuration * 0.4f)
+            rect.transform.DOScale(themeScale, config.appearDuration * 0.4f)
                 .SetEase(Ease.InOutQuad)
         );
-/*
-        appearSeq.OnComplete(() =>
-        {
-            isSelected = false;
-            isHint = false;
-            onComplete?.Invoke();
-        });
-        */
-        cellImage.sprite = targetSprite;
+        
+        cellIamge.sprite = targetSprite;
         seq.OnComplete(() => onComplete?.Invoke());
     }
     public override void KillAnim()

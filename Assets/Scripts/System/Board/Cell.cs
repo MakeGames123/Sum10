@@ -7,6 +7,7 @@ public class Cell
     bool cellLock = false;
     public Vector2Int Position { get; private set; }
     public Action<bool> onValueChanged;
+    public Action onRemoved;
     public Action onCellSelectedEvent;
     public Action onCellUnSelectedEvent;
     public Action onEnableHintEvent;
@@ -20,6 +21,7 @@ public class Cell
         bool isAlreadyBlank = num == 0 && n == 0;
         num = n;
         onValueChanged?.Invoke(isAlreadyBlank);
+        if(num == 0) onRemoved?.Invoke();
     }
     public int ReturnNum()
     {

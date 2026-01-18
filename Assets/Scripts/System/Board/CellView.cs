@@ -22,6 +22,7 @@ public class CellView : MonoBehaviour
 {
     [Header("References")]
     public Image cellImage;
+    public Image hintImage;
     public Image cellBackground;
     public TextMeshProUGUI numberText;
     private CellSprite normalSprite;
@@ -38,20 +39,22 @@ public class CellView : MonoBehaviour
     private bool isHintSoundLeader = false;
 
     private Dictionary<CellAnimState, CellAnim> animMap = new();
+    private CellAnim hintAnim;
     // 애니메이션 관련
-    public Vector3 selectOriginalPos { get; private set; }
     public Vector3 textOriginalPos { get; private set; }
 
     public CellAnimConfig config;
-
+    public RectTransform parent;
     void Awake()
     {
-        animMap.Add(CellAnimState.BlankAppear, new BlankAppearAnimation(this, config));
-        animMap.Add(CellAnimState.Deselect, new DeselectAnimation(this, config));
-        animMap.Add(CellAnimState.Disappear, new DisappearAnimation(this, config));
-        animMap.Add(CellAnimState.Hint, new HintAnimation(this, config));
-        animMap.Add(CellAnimState.Select, new SelectAnimation(this, config));
-        animMap.Add(CellAnimState.Spawn, new SpawnAnimation(this, config));
+        RectTransform rect = parent;
+        animMap.Add(CellAnimState.BlankAppear, new BlankAppearAnimation(this, rect, config));
+        animMap.Add(CellAnimState.Deselect, new DeselectAnimation(this, rect, config));
+        animMap.Add(CellAnimState.Disappear, new DisappearAnimation(this, rect, config));
+        animMap.Add(CellAnimState.Select, new SelectAnimation(this, rect, config));
+        animMap.Add(CellAnimState.Spawn, new SpawnAnimation(this, rect, config));
+
+        hintAnim = new HintAnimation(this, rect, config);
     }
 
     Cell cellInfo;
@@ -78,8 +81,8 @@ public class CellView : MonoBehaviour
 
         // 기존 애니메이션 정리 및 위치/상태 초기화
         StopAnimation();
-        cellImage.transform.localPosition = Vector3.zero;
-        cellImage.transform.localRotation = Quaternion.identity;
+        parent.anchoredPosition = Vector3.zero;
+        parent.localRotation = Quaternion.identity;
         if (numberText != null)
         {
             numberText.alpha = 1f;
@@ -90,17 +93,15 @@ public class CellView : MonoBehaviour
         normalSprite = ThemeManager.Instance.selectedTheme.normalSpriteSets[UnityEngine.Random.Range(0, ThemeManager.Instance.selectedTheme.normalSpriteSets.Count)];
         blankSprite = ThemeManager.Instance.selectedTheme.blankSpriteSets[UnityEngine.Random.Range(0, ThemeManager.Instance.selectedTheme.blankSpriteSets.Count)];
         numberText.transform.localPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.textOffset);
-        cellImage.transform.localScale = new Vector2(ThemeManager.Instance.selectedTheme.cellScale, ThemeManager.Instance.selectedTheme.cellScale);
+        parent.localScale = new Vector2(ThemeManager.Instance.selectedTheme.cellScale, ThemeManager.Instance.selectedTheme.cellScale);
         cellBackground.transform.localScale = new Vector2(ThemeManager.Instance.selectedTheme.backgroundScale, ThemeManager.Instance.selectedTheme.backgroundScale);
 
-        // 원래 위치 저장
-        selectOriginalPos = cellImage.transform.localPosition;
         textOriginalPos = numberText.transform.localPosition;
 
         cellInfo.onValueChanged += UpdateVisualState;
         cellInfo.onCellSelectedEvent += () => PlayAnimation(CellAnimState.Select, GetSelectSprite());
         cellInfo.onCellUnSelectedEvent += () => PlayAnimation(CellAnimState.Deselect, GetNormalSprite());
-        cellInfo.onEnableHintEvent += () => PlayAnimation(CellAnimState.Hint, GetHintSprite());
+        cellInfo.onEnableHintEvent += StartHintAnimation;
         cellInfo.onDisableHintEvent += StopHintAnimation;
     }
 
@@ -118,13 +119,12 @@ public class CellView : MonoBehaviour
             anim.KillAnim();
         }
     }
-
     private void ResetState()
     {
         float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
-        cellImage.transform.localPosition = selectOriginalPos;
-        cellImage.transform.localScale = Vector3.one * themeScale;
-        cellImage.transform.localRotation = Quaternion.identity;
+        parent.anchoredPosition = Vector2.zero;
+        parent.localScale = Vector3.one * themeScale;
+        parent.localRotation = Quaternion.identity;
         if (numberText != null)
         {
             numberText.transform.localPosition = textOriginalPos;
@@ -132,16 +132,13 @@ public class CellView : MonoBehaviour
             numberText.transform.localRotation = Quaternion.identity;
         }
     }
-
-
-    /// <summary>
-    /// 힌트 사운드 리더 설정 (이 셀만 힌트 효과음 재생)
-    /// </summary>
-    public void SetHintSoundLeader(bool isLeader)
+    public void ResetVisual()
     {
-        isHintSoundLeader = isLeader;
+        numberText.text = "";
+        numberText.enabled = false;
+        cellImage.enabled = false;
+        StopHintAnimation();
     }
-
     private void UpdateVisualState(bool isAlreadyBlank)
     {
         if (ThemeManager.Instance.selectedTheme.cellBackground != null)
@@ -155,12 +152,10 @@ public class CellView : MonoBehaviour
         if (value > 0)
         {
             numberText.text = value.ToString();
-            numberText.enabled = true;
         }
         else
         {
             numberText.text = "";
-            numberText.enabled = false;
             //매칭된 빈 셀은 뒤집기, 일반셀은 제거
             if (!isAlreadyBlank) PlayAnimation(CellAnimState.Disappear, GetNormalSprite(), () => PlayAnimation(CellAnimState.BlankAppear, blankSprite.normalSprite));
             else PlayAnimation(CellAnimState.Deselect, GetNormalSprite());
@@ -173,18 +168,16 @@ public class CellView : MonoBehaviour
             //numberText.color = isSelected ? theme.selectedFontColor : theme.normalFontColor;
         }
     }
+    private void StartHintAnimation()
+    {
+        hintImage.sprite = GetHintSprite();
+        hintImage.enabled = true;
+        hintAnim.PlayAnim();
+    }
     private void StopHintAnimation()
     {
-        animMap[CellAnimState.Hint].KillAnim();
-
-        cellImage.sprite = GetNormalSprite();
-        float themeScale = ThemeManager.Instance.selectedTheme.cellScale;
-        cellImage.transform.localPosition = selectOriginalPos;
-        cellImage.transform.localScale = Vector3.one * themeScale;
-        if (numberText != null)
-        {
-            numberText.transform.localPosition = textOriginalPos;
-        }
+        hintAnim.KillAnim();
+        hintImage.enabled = false;
     }
     private Sprite GetNormalSprite()
     {
@@ -213,7 +206,10 @@ public class CellView : MonoBehaviour
     /// <param name="delay">애니메이션 시작 전 딜레이</param>
     public IEnumerator PlaySpawnAnimation(float delay = 0f)
     {
+
         yield return new WaitForSeconds(delay);
+        cellImage.enabled = true;
+        numberText.enabled = true;
         PlayAnimation(CellAnimState.Spawn, GetNormalSprite());
     }
     private void SpawnKillParticles()
