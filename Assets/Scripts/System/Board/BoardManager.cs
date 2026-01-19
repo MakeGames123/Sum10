@@ -61,7 +61,7 @@ public class BoardManager : MonoBehaviour
             CellView cell = cellUIs[i];
             cell.ResetVisual();
             cell.Init(info);
-            float delay = CalculateSpawnDelay(i % 5, i / 5);
+            float delay = CalculateSpawnDelay(i % n, i / n);
             StartCoroutine(cell.PlaySpawnAnimation(delay));
 
             cell.gameObject.SetActive(true);
@@ -135,6 +135,9 @@ public class BoardManager : MonoBehaviour
             return;
 
         Cell b = cells[pos.x + pos.y * n];
+
+        if(b.ReturnNum() == 0) return;
+        
         list.Add((a, b));
     }
 
