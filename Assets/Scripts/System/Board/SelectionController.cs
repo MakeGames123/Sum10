@@ -64,13 +64,15 @@ public class SelectionController
         
         if (sum == 10)
         {
+            int gained = 0;
             foreach (var cell in selectedCells)
             {
+                if(cell.ReturnNum() > 1) gained++;
                 cell.SetNum(0);
             }
 
             OnCellsDestroyed?.Invoke();
-            OnCellRemoved?.Invoke(selectedCells.Count);
+            OnCellRemoved?.Invoke(gained);
         }
         else
         {
