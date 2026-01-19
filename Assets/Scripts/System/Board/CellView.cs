@@ -30,13 +30,6 @@ public class CellView : MonoBehaviour
 
     [SerializeField] private ParticleSystem particle;                   // 파티클 스프라이트
 
-    private IBoard board;
-    private bool isHint = false;
-
-    public bool IsHint => isHint;
-
-    // 힌트 사운드 리더 (여러 힌트 셀 중 하나만 사운드 재생)
-    private bool isHintSoundLeader = false;
 
     private Dictionary<CellAnimState, CellAnim> animMap = new();
     private CellAnim hintAnim;
@@ -74,9 +67,8 @@ public class CellView : MonoBehaviour
         }
     }
 
-    public void Init(IBoard board, Cell cellInfo)
+    public void Init(Cell cellInfo)
     {
-        this.board = board;
         this.cellInfo = cellInfo;
 
         // 기존 애니메이션 정리 및 위치/상태 초기화
@@ -100,7 +92,9 @@ public class CellView : MonoBehaviour
 
         cellInfo.onValueChanged += UpdateVisualState;
         cellInfo.onCellSelectedEvent += () => PlayAnimation(CellAnimState.Select, GetSelectSprite());
+        cellInfo.onCellSelectedEvent += () => UpdateFontColor(true);
         cellInfo.onCellUnSelectedEvent += () => PlayAnimation(CellAnimState.Deselect, GetNormalSprite());
+        cellInfo.onCellUnSelectedEvent += () => UpdateFontColor(false);
         cellInfo.onEnableHintEvent += StartHintAnimation;
         cellInfo.onDisableHintEvent += StopHintAnimation;
     }
@@ -136,6 +130,7 @@ public class CellView : MonoBehaviour
     {
         numberText.text = "";
         numberText.enabled = false;
+        UpdateFontColor(false);
         cellImage.enabled = false;
         StopHintAnimation();
     }
@@ -160,13 +155,11 @@ public class CellView : MonoBehaviour
             if (!isAlreadyBlank) PlayAnimation(CellAnimState.Disappear, GetNormalSprite(), () => PlayAnimation(CellAnimState.BlankAppear, blankSprite.normalSprite));
             else PlayAnimation(CellAnimState.Deselect, GetNormalSprite());
         }
-
-        // 폰트 색상 적용
-        if (numberText != null && numberText.enabled)
-        {
-            var theme = ThemeManager.Instance.selectedTheme;
-            //numberText.color = isSelected ? theme.selectedFontColor : theme.normalFontColor;
-        }
+    }
+    private void UpdateFontColor(bool isSelected)
+    {
+        var theme = ThemeManager.Instance.selectedTheme;
+        numberText.color = isSelected ? theme.selectedFontColor : theme.normalFontColor;
     }
     private void StartHintAnimation()
     {
@@ -218,92 +211,3 @@ public class CellView : MonoBehaviour
         particleCpy.transform.SetParent(transform.parent.parent.parent);
     }
 }
-
-
-/*
-
-
-    /// <summary>
-    /// 힌트 애니메이션을 강제로 재시작 (싱크 맞추기용)
-    /// </summary>
-    public void ForceRestartHintAnimation()
-    {
-        if (isHint)
-        {
-            StopHintAnimation();
-            PlayHintAnimation(playSound: true);
-        }
-    }
-
-    private void PlayHintAnimation(bool playSound = true)
-    {
-    }
-
-/// <summary>
-/// 공백 셀이 매칭에 포함되어 터질 때 호출 (Flip 롤백 애니메이션 재생)
-/// </summary>
-public void PlayDeselectForMatch()
-{
-    if (isSelected)
-    {
-        isSelected = false;
-        wasSelected = false;
-        isHint = false;
-        StopHintAnimation();
-
-        // 스프라이트를 기본으로 변경 (UpdateVisualState 대신 직접 처리)
-        cellImage.sprite = blankSprite.normalSprite;
-
-        PlayDeselectAnimationFlip();
-    }
-    else
-    {
-        SetHighlight(false);
-    }
-}
-
-*/
-
-/// <summary>
-/// 파괴 대기 상태 설정 (매칭 성공 후 즉시 호출하여 재선택 방지)
-/// </summary>\
-
-/*
-public void SetValue(int newValue)
-{
-    value = newValue;
-    isPendingDestruction = false;  // 새 값 설정 시 파괴 대기 해제
-
-
-    isSelected = false;
-    isHint = false;
-    UpdateVisualState();
-}
-public void SetPendingDestruction(bool pending)
-{
-    isPendingDestruction = pending;
-}
-
-// 기존 SetHighlight → 선택 하이라이트로 사용
-public void SetHighlight(bool on)
-{
-    SetSelectionHighlight(on);
-}
-
-public void SetSelectionHighlight(bool on)
-{
-    isSelected = on;
-    UpdateVisualState();
-}
-
-public void SetHintHighlight(bool on)
-{
-    isHint = on;
-    UpdateVisualState();
-}
-
-public void SetHint(bool on)
-{
-    SetHintHighlight(on);
-}
-*/

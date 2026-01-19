@@ -4,18 +4,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class BoardManager : MonoBehaviour, IBoard
+public class BoardManager : MonoBehaviour
 {
-    private Vector2 lastProcessedTouchPosition;
-    private const float TOUCH_POSITION_THRESHOLD = 50f;
-
     public List<Cell> cells = new();
     public List<CellSlot> cellSlots = new();
     public List<CellView> cellUIs = new();
     // 힌트
     private List<Cell> currentHintCells;
-    private Coroutine hintCoroutine;
-
     [SerializeField] private float spawnDelayPerCell = 0.03f;   // 셀 간 딜레이
     private SelectionController selection;
     public GameManager gameManager;
@@ -58,7 +53,7 @@ public class BoardManager : MonoBehaviour, IBoard
 
             CellView cell = cellUIs[i];
             cell.ResetVisual();
-            cell.Init(this, info);
+            cell.Init(info);
             float delay = CalculateSpawnDelay(i % 5, i / 5);
             StartCoroutine(cell.PlaySpawnAnimation(delay));
 
@@ -170,7 +165,7 @@ public class BoardManager : MonoBehaviour, IBoard
         return result;
     }
 
-    public void ShowHint(float flashDuration = 1.0f)
+    public void ShowHint()
     {
         var path = FindHintPath();
 
@@ -184,6 +179,8 @@ public class BoardManager : MonoBehaviour, IBoard
             cell.EnableHintMode();
             cell.onRemoved += CancelHint;
         }
+
+        //이곳에 사운드 삽입
     }
 
     public void CancelHint()
@@ -198,54 +195,7 @@ public class BoardManager : MonoBehaviour, IBoard
         }
 
         currentHintCells.Clear();
-    }
 
-    /// <summary>
-    /// 주어진 셀이 현재 활성 힌트 셀 중 첫 번째인지 확인 (사운드 리더 동적 결정)
-    /// </summary>
-    public bool IsFirstActiveHintCell(CellView cell)
-    {
-        return false;
-        /*
-        if (currentHintCells == null || currentHintCells.Count == 0)
-            return false;
-
-        // 힌트 상태이면서 선택되지 않은 첫 번째 셀 찾기
-        foreach (var hintCell in currentHintCells)
-        {
-            if (hintCell.IsHint && !hintCell.IsSelected)
-                return hintCell == cell;
-        }
-        return false;*/
-    }
-
-    /// <summary>
-    /// 모든 힌트 셀의 애니메이션을 동기화 (선택 해제 후 싱크 맞추기)
-    /// </summary>
-    private void ResyncHintAnimations()
-    {/*
-        if (currentHintCells == null || currentHintCells.Count == 0)
-            return;
-
-        foreach (var cell in currentHintCells)
-        {
-            cell.ForceRestartHintAnimation();
-        }*/
-    }
-
-    private IEnumerator HintRoutine(float duration)
-    {
-        yield break;
-        /*
-        // 첫 번째 힌트 셀을 사운드 리더로 지정
-        for (int i = 0; i < currentHintCells.Count; i++)
-        {
-            currentHintCells[i].SetHintSoundLeader(i == 0);
-            currentHintCells[i].SetHintHighlight(true);
-        }
-
-        // DOTween 콜백으로 사운드 재생하므로 코루틴 대기 불필요
-        yield break;
-        */
+        //이곳에 사운드 제거
     }
 }

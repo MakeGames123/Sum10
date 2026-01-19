@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour
             var hintPath = boardManager.FindHintPath();
             if (hintPath != null && hintPath.Count > 0)
             {
-                boardManager.ShowHint(hintFlashDuration);
+                boardManager.ShowHint();
                 combo = 0;
                 OnComboChanged?.Invoke((int)combo);
                 hintShownForCurrentIdle = true;
