@@ -13,6 +13,12 @@ public class SelectionController
     public Action OnKeyPadBlocked; //판 엎기
     public Action<int> OnCellRemoved;
 
+    // 사운드 연결용 이벤트
+    public Action OnSelectionStarted;       // 드래그 시작
+    public Action<int> OnCellSelected;      // 셀 선택 (pathCount 전달)
+    public Action<int> OnCellDeselected;    // 셀 해제 (remainingCount 전달)
+    public Action OnCellsDestroyed;         // 셀 파괴
+
     public SelectionController(List<CellSlot> cellSlots)
     {
         this.cellSlots = cellSlots;
@@ -26,6 +32,7 @@ public class SelectionController
     {
         isDragging = true;
         selectedCells.Clear();
+        OnSelectionStarted?.Invoke();
     }
 
     public void Update(Vector2 pointerScreenPos)
@@ -62,6 +69,7 @@ public class SelectionController
                 cell.SetNum(0);
             }
 
+            OnCellsDestroyed?.Invoke();
             OnCellRemoved?.Invoke(selectedCells.Count);
         }
         else
@@ -106,6 +114,7 @@ public class SelectionController
         {
             selectedCells.Add(newCell);
             newCell.OnSelect();
+            OnCellSelected?.Invoke(selectedCells.Count);
         }
     }
 
@@ -114,6 +123,7 @@ public class SelectionController
         for (int i = selectedCells.Count - 1; i > idx; i--)
         {
             selectedCells[i].UnSelect();
+            OnCellDeselected?.Invoke(i);
             selectedCells.RemoveAt(i);
         }
     }

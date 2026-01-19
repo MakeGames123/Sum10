@@ -11,6 +11,7 @@ public class BoardManager : MonoBehaviour
     public List<CellView> cellUIs = new();
     // 힌트
     private List<Cell> currentHintCells;
+    private Coroutine hintSoundCoroutine;
     [SerializeField] private float spawnDelayPerCell = 0.03f;   // 셀 간 딜레이
     private SelectionController selection;
     public GameManager gameManager;
@@ -31,6 +32,12 @@ public class BoardManager : MonoBehaviour
             selection.OnKeyPadBlocked += gameManager.HandleNoMoreMoves;
             selection.OnCellRemoved += gameManager.HandleCellsRemoved;
         }
+
+        // 사운드 연결
+        selection.OnSelectionStarted += () => AudioManager.Instance.ResetPopPitch();
+        selection.OnCellSelected += (count) => AudioManager.Instance.PlayPopSFX(count);
+        selection.OnCellDeselected += (count) => AudioManager.Instance.PlayDeselectSFX(count);
+        selection.OnCellsDestroyed += () => AudioManager.Instance.PlayCellDestroySFX();
 
         if (themePanel != null)
         {
@@ -180,11 +187,21 @@ public class BoardManager : MonoBehaviour
             cell.onRemoved += CancelHint;
         }
 
-        //이곳에 사운드 삽입
+        // 힌트 사운드 루프 시작
+        var config = cellUIs[0].config;
+        float interval = config.hintBounceDuration * config.hintBounceCount + config.hintPauseDuration;
+        hintSoundCoroutine = StartCoroutine(HintSoundLoop(interval));
     }
 
     public void CancelHint()
     {
+        // 힌트 사운드 루프 중지
+        if (hintSoundCoroutine != null)
+        {
+            StopCoroutine(hintSoundCoroutine);
+            hintSoundCoroutine = null;
+        }
+
         if (currentHintCells != null)
         {
             foreach (var cell in currentHintCells)
@@ -195,7 +212,14 @@ public class BoardManager : MonoBehaviour
         }
 
         currentHintCells.Clear();
+    }
 
-        //이곳에 사운드 제거
+    private IEnumerator HintSoundLoop(float interval)
+    {
+        while (true)
+        {
+            AudioManager.Instance.PlayHintSFX();
+            yield return new WaitForSeconds(interval);
+        }
     }
 }
