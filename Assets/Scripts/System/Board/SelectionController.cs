@@ -67,7 +67,7 @@ public class SelectionController
             int gained = 0;
             foreach (var cell in selectedCells)
             {
-                if(cell.ReturnNum() > 1) gained++;
+                if(cell.ReturnNum() > 0) gained++;
                 cell.SetNum(0);
             }
 
