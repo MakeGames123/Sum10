@@ -3,11 +3,13 @@ using PlayFab.ClientModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 public class PlayFabLoginManager : MonoBehaviour
 {
-    void Awake()
+    public UnityEvent onLogined = new();
+    void Start()
     {
         Login();
     }
@@ -70,6 +72,7 @@ public class PlayFabLoginManager : MonoBehaviour
         Debug.Log("플레이팹 로그인 성공!");
         Debug.Log($"사용자 ID: {result.PlayFabId}");
 
+        onLogined.Invoke();
         // 새로 생성된 계정인지 확인
         if (result.NewlyCreated)
         {

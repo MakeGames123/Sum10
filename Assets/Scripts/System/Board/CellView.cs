@@ -102,8 +102,8 @@ public class CellView : MonoBehaviour
     public void PlayAnimation(CellAnimState state, Sprite targetSprite = null, Action onComplete = null)
     {
         //Debug.Log(state);
-        ResetState();
         StopAnimation();
+        ResetState();
         animMap[state].PlayAnim(targetSprite, onComplete);
     }
     private void StopAnimation()
@@ -170,6 +170,7 @@ public class CellView : MonoBehaviour
     private void StopHintAnimation()
     {
         hintAnim.KillAnim();
+        ResetState();
         hintImage.enabled = false;
     }
     private Sprite GetNormalSprite()

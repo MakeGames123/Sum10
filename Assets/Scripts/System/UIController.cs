@@ -28,6 +28,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject panelBoard;         // 게임 보드 패널
     [SerializeField] private GameObject fastRestartButton;  // 빠른 재시작 버튼
     [SerializeField] private GameOverPanel gameOverPanel;  // 빠른 재시작 버튼
+    [SerializeField] private SettingManager setting;  // 빠른 재시작 버튼
 
     // UI 상태
     public enum UIState { Lobby, InGame, GameOver }
@@ -61,6 +62,7 @@ public class UIController : MonoBehaviour
         }
 
         gameManager.OnGameOver.AddListener(TransitionToGameOver);
+        setting.homeButton.onClick.AddListener(TransitionToLobby);
         gameOverPanel.homeButton.onClick.AddListener(TransitionToLobby);
         gameOverPanel.replayButton.onClick.AddListener(TransitionToInGame);
     }

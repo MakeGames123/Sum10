@@ -15,6 +15,7 @@ public class BoardManager : MonoBehaviour
     [SerializeField] private float spawnDelayPerCell = 0.03f;   // 셀 간 딜레이
     private SelectionController selection;
     public GameManager gameManager;
+    public TutorialManager tutorialManager;
     public ThemePanel themePanel;
     int n;
     private PathFinder pathFinder = new();
@@ -46,6 +47,7 @@ public class BoardManager : MonoBehaviour
     }
     public void SetupBoardWithSize(int size)
     {
+        CancelHint();
         n = size;
         pathFinder.SetSize(n);
 
@@ -67,7 +69,8 @@ public class BoardManager : MonoBehaviour
             cell.gameObject.SetActive(true);
         }
 
-        GenerateBoardValuesUntilValid();
+        if (TutorialStatusManager.Instance.isTutorialCompleted) GenerateBoardValuesUntilValid();
+        else GenerateBoardTutorialValues();
 
         for (int x = n * n; x < cellSlots.Count; x++)
         {
@@ -99,6 +102,17 @@ public class BoardManager : MonoBehaviour
 
         InsertTwoCellPath();
         InsertTwoCellPath();
+    }
+    private void GenerateBoardTutorialValues()
+    {
+        List<int> tutorialValues = new() { 3, 1, 5, 4, 0, 5, 1, 5, 6 };
+
+        for (int i = 0; i < n * n; i++)
+        {
+            cells[i].SetNum(tutorialValues[i]);
+        }
+
+        tutorialManager.TutorialProgress();
     }
     private void InsertTwoCellPath()
     {
@@ -136,8 +150,8 @@ public class BoardManager : MonoBehaviour
 
         Cell b = cells[pos.x + pos.y * n];
 
-        if(b.ReturnNum() == 0) return;
-        
+        if (b.ReturnNum() == 0) return;
+
         list.Add((a, b));
     }
 
@@ -149,6 +163,11 @@ public class BoardManager : MonoBehaviour
     }
     private void FillBoardRandom()
     {
+        foreach (Cell cell in cells)
+        {
+            cell.UpdateCellLock(false);
+        }
+
         int centerIndex = 99;
         if (n % 2 == 1)
         {
@@ -212,9 +231,10 @@ public class BoardManager : MonoBehaviour
                 cell.DisableHintMode();
                 cell.onRemoved -= CancelHint;
             }
+            currentHintCells.Clear();
         }
 
-        currentHintCells.Clear();
+        gameManager.ResetIdleTimer();
     }
 
     private IEnumerator HintSoundLoop(float interval)

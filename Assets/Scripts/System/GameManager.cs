@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -26,7 +27,7 @@ public class GameManager : MonoBehaviour
         }
     }
     private float timeProgress = 0;
-    private bool isRunning = false;
+    public bool isRunning = false;
 
     private int currentBoardSize = 3;   // 3x3 시작
     private int stageIndex = 0;         // 스테이지 인덱스 (테스트용)
@@ -48,6 +49,8 @@ public class GameManager : MonoBehaviour
 
     public int combo = 0;
     public int maxCombo = 0;
+    public bool timeStopped = false;
+    Coroutine progress = null;
     private void Awake()
     {
         if (boardManager == null)
@@ -77,12 +80,21 @@ public class GameManager : MonoBehaviour
         OnTimeChanged?.Invoke(RemainingTime);
     }
 
-    private void Update()
+    private IEnumerator ProgressGame()
     {
+        while (true)
+        {
+            yield return null;
+            if (!isRunning) continue;
 
-        if (!isRunning)
-            return;
+            if (timeStopped) continue;
 
+            ProgressTime();
+            ProgressHintTime();
+        }
+    }
+    private void ProgressTime()
+    {
         // ----- 게임 타이머 -----
         RemainingTime -= Time.deltaTime;
         timeProgress += Time.deltaTime;
@@ -96,11 +108,13 @@ public class GameManager : MonoBehaviour
             EndRun();
             return;
         }
-
+    }
+    private void ProgressHintTime()
+    {
         // ----- 힌트용 idle 타이머 -----
         idleTimer += Time.deltaTime;
 
-        if (!hintShownForCurrentIdle && idleTimer >= hintIdleThreshold)
+        if (!hintShownForCurrentIdle && idleTimer >= hintIdleThreshold && TutorialStatusManager.Instance.isTutorialCompleted)
         {
             var hintPath = boardManager.FindHintPath();
             if (hintPath != null && hintPath.Count > 0)
@@ -134,6 +148,7 @@ public class GameManager : MonoBehaviour
 
     private void StartNewRun()
     {
+        progress = StartCoroutine(ProgressGame());
         // 이전 게임의 파티클/고스트 정리
         CellView.DestroyAllActiveParticles();
 
@@ -154,19 +169,30 @@ public class GameManager : MonoBehaviour
         boardManager.SetupBoardWithSize(currentBoardSize);
         boardSettingManager.SetupBoardWithSize(currentBoardSize);
 
+        if (!TutorialStatusManager.Instance.isTutorialCompleted) stageIndex = -1;
+
         ResetIdleTimer();
     }
-
+    public void ForceEnd()
+    {
+        isRunning = false;
+        
+        if (progress != null) StopCoroutine(progress);
+        progress = null;
+    }
     private void EndRun()
     {
         isRunning = false;
 
         CellView.DestroyAllActiveParticles();
 
+        if (progress != null) StopCoroutine(progress);
+        progress = null;
+
         OnGameOver?.Invoke(score);
     }
 
-    private void ResetIdleTimer()
+    public void ResetIdleTimer()
     {
         idleTimer = 0f;
         hintShownForCurrentIdle = false;
@@ -187,13 +213,6 @@ public class GameManager : MonoBehaviour
         text.GetComponent<RectTransform>().anchoredPosition = scoreTextPosition;
         text.GetComponent<TextFloating>().SetCondition("+" + scoreGain.ToString());
 
-        // TODO: 10콤보마다 화면 중앙 텍스트 (임시 비활성화)
-        // if (combo % 10 == 0)
-        // {
-        //     GameObject comboTextCpy = Instantiate(comboText, textGroup.transform);
-        //     comboTextCpy.GetComponent<ComboTextFade>().SetCondition("Combo " + combo.ToString() + "!");
-        // }
-
         // 시간 추가 규칙 (경과 시간에 따라 감소)
         float timeBonus;
         if (timeProgress < 30) timeBonus = 2f;
@@ -207,15 +226,11 @@ public class GameManager : MonoBehaviour
         timetext.GetComponent<TextFloating>().SetCondition("+" + timeBonus.ToString("0.#") + "s", true);
         OnComboChanged?.Invoke((int)combo);
 
-
         OnScoreChanged?.Invoke(score);
-
-        ResetIdleTimer();
     }
 
     public void HandleNoMoreMoves()
     {
-        
         if (!isRunning)
             return;
 

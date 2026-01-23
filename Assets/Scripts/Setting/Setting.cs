@@ -2,14 +2,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 
-public class SettingsManager : MonoBehaviour
+public class SettingManager : MonoBehaviour
 {
-    public static SettingsManager Instance { get; private set; }
+    public static SettingManager Instance { get; private set; }
 
     [Header("UI")]
     [SerializeField] Slider masterVolumeSlider;
     [SerializeField] Slider musicVolumeSlider;
     [SerializeField] Toggle vibrationToggle;
+    public Button homeButton;
+    [SerializeField] Button linkButton;
+    [SerializeField] Button button1;
+    [SerializeField] Button button2;
+    [SerializeField] Button button3;
+    [SerializeField] Button checkButton;
+    [SerializeField] GameManager game;
     RectTransform rect;
     const string MASTER_VOL_KEY = "MASTER_VOLUME";
     const string MUSIC_VOL_KEY = "MUSIC_VOLUME";
@@ -31,13 +38,33 @@ public class SettingsManager : MonoBehaviour
         LoadSettings();
         BindUI();
         //ApplySettings();
+        homeButton.onClick.AddListener(game.ForceEnd);
     }
     public void Show()
     {
         rect.anchoredPosition = Vector2.zero;
+
+        if (game.isRunning)
+        {
+            Time.timeScale = 0;
+            homeButton.gameObject.SetActive(true);
+            linkButton.gameObject.SetActive(false);
+            button1.gameObject.SetActive(false);
+            button2.gameObject.SetActive(false);
+            button3.gameObject.SetActive(false);
+        }
+        else
+        {
+            homeButton.gameObject.SetActive(false);
+            linkButton.gameObject.SetActive(true);
+            button1.gameObject.SetActive(true);
+            button2.gameObject.SetActive(true);
+            button3.gameObject.SetActive(true);
+        }
     }
     public void Hide()
     {
+        Time.timeScale = 1;
         rect.anchoredPosition = disablePos;
     }
 

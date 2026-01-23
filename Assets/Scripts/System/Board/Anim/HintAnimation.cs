@@ -23,20 +23,6 @@ public class HintAnimation : CellAnim
 
         // 메인 시퀀스 (무한 루프)
         seq = DOTween.Sequence();
-/*
-        // 모든 힌트 셀에 콜백 추가, 실제 재생은 동적으로 결정
-        if (playSound)
-        {
-            hintTween.AppendCallback(() =>
-            {
-                // 동적 체크: 현재 활성 힌트 셀 중 첫 번째인 경우에만 재생
-                if (AudioManager.Instance != null && board != null && board.IsFirstActiveHintCell(this))
-                {
-                    AudioManager.Instance.PlayHintSFX();
-                }
-            });
-        }
-*/
         // 연속 바운스 (hintBounceCount번)
         for (int i = 0; i < config.hintBounceCount; i++)
         {
@@ -53,7 +39,7 @@ public class HintAnimation : CellAnim
                     .SetEase(Ease.OutQuad)
             );
             // 숫자도 같이
-            if (numberText != null && numberText.enabled)
+            if (numberText != null)
             {
                 seq.Join(
                     numberText.transform.DOLocalMoveY(cellView.textOriginalPos.y + bounceHeight, config.hintBounceDuration * 0.4f)
@@ -71,7 +57,7 @@ public class HintAnimation : CellAnim
                     .SetEase(Ease.OutBounce)
             );
             // 숫자도 같이
-            if (numberText != null && numberText.enabled)
+            if (numberText != null)
             {
                 seq.Join(
                     numberText.transform.DOLocalMoveY(cellView.textOriginalPos.y, config.hintBounceDuration * 0.6f)

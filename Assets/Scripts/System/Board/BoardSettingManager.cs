@@ -14,7 +14,6 @@ public class BoardSettingManager : MonoBehaviour
     public RectTransform boardRoot;
     public RectTransform boardSkin;
     public RectTransform boardLowSkin;
-    [SerializeField] private CellView cellPrefab;
     public BoardManager board;
     void Awake()
     {
