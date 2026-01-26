@@ -81,7 +81,7 @@ public class SelectionController
 
         selectedCells.Clear();
 
-        if (!pathFinder.HasAnyValidPath(allCells)) OnKeyPadBlocked?.Invoke();
+        if (allCells != null && !pathFinder.HasAnyValidPath(allCells)) OnKeyPadBlocked?.Invoke();
     }
 
     // ===== Internal Logic =====

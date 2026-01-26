@@ -1124,6 +1124,7 @@ MonoBehaviour:
   - {fileID: 3143128776536851770}
   spawnDelayPerCell: 0.03
   gameManager: {fileID: 0}
+  tutorialManager: {fileID: 0}
   themePanel: {fileID: 0}
 --- !u!114 &6707814326587545241
 MonoBehaviour:
@@ -1141,7 +1142,6 @@ MonoBehaviour:
   boardRoot: {fileID: 8211438816382255643}
   boardSkin: {fileID: 7620364104290867291}
   boardLowSkin: {fileID: 6297228577258305680}
-  cellPrefab: {fileID: 0}
   board: {fileID: 4560042159149238943}
 --- !u!1 &6710821046705214419
 GameObject:
