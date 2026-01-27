@@ -1,123 +1,110 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using PlayFab;
 using PlayFab.ClientModels;
 using System.Collections.Generic;
-using UnityEngine.Events;
+
 /// <summary>
 /// 게임오버 패널
-/// 자신의 표시/숨김과 이벤트 발생만 담당 (Single Responsibility)
-/// UI 전환은 UIController가 처리
+/// 주간 랭킹 제치기 애니메이션 + UI 표시
 /// </summary>
 public class GameOverPanel : MonoBehaviour
 {
     [Header("Panel Elements")]
-    [SerializeField] private TMP_Text bigScoreText;         // 큰 점수 텍스트
-    [SerializeField] private TMP_Text bestScoreText;        // 베스트 스코어 텍스트
-    [SerializeField] private TMP_Text globalRankText;       // 글로벌 랭킹 텍스트
+    [SerializeField] private TMP_Text bestScoreText;
+    [SerializeField] private TMP_Text globalRankText;
 
     [Header("Buttons")]
-    public Button replayButton;           // 리플레이 버튼
-    public Button homeButton;             // 홈 버튼
+    public Button replayButton;
+    public Button homeButton;
 
-    [SerializeField] private GameManager gameManager;             // 홈 버튼
-    [SerializeField] private List<GameOverScoreUnit> units;             // 홈 버튼
-
+    [Header("References")]
+    [SerializeField] private GameManager gameManager;
+    [SerializeField] private GameOverAnimationController animationController;
     public ScoreManager scoreManager;
-    RectTransform myRect;
-    Vector2 disablePos = new Vector2(-9999, 9999);
-    int finalScore;
+
+    private RectTransform myRect;
+    private Vector2 disablePos = new Vector2(-9999, 9999);
+    private int finalScore;
+    private int previousBestScore;
+
     private void Awake()
     {
         myRect = GetComponent<RectTransform>();
-        // 버튼 이벤트 코드로 할당 (매뉴얼 규칙)
-        if (replayButton != null) replayButton.onClick.AddListener(Hide); // Button_Replay onClick
 
-        if (homeButton != null) homeButton.onClick.AddListener(Hide); // Button_Home onClick
+        if (replayButton != null) replayButton.onClick.AddListener(Hide);
+        if (homeButton != null) homeButton.onClick.AddListener(Hide);
 
         gameManager.OnGameOver.AddListener(SetCondition);
     }
+
     private async void SetCondition(int finalScore)
     {
-        bool success = await scoreManager.SubmitScoreAsync(finalScore);
         this.finalScore = finalScore;
         myRect.anchoredPosition = Vector2.zero;
+        gameObject.SetActive(true);
 
+        // 1. 점수 카운트업 먼저 시작 (API 기다리지 않음)
+        if (animationController != null)
+            animationController.PlayScoreCountUp(finalScore);
+
+        // 2. 이전 순위 가져오기
+        int prevRank = scoreManager.PreviousWeeklyRank;
+        if (prevRank < 1) prevRank = 9999;  // 첫 플레이
+
+        // 3. 하이스코어 체크
+        previousBestScore = scoreManager.PreviousHighScore;
+        if (animationController != null)
+            animationController.SetHighScoreStatus(finalScore > previousBestScore);
+
+        // 4. 점수 제출 후 순위 조회
+        bool success = await scoreManager.SubmitScoreAsync(finalScore);
         if (success)
+            FetchWeeklyRankAndAnimate(prevRank);
+    }
+
+    private async void FetchWeeklyRankAndAnimate(int prevRank)
+    {
+        int currentRank = await scoreManager.GetMyWeeklyRankAsync();
+        if (currentRank < 1) currentRank = prevRank;
+
+        // 시각적 스크롤 제한에 맞춰 리더보드 범위 계산
+        int maxVisualSteps = animationController != null ? animationController.MaxVisualScrollSteps : 15;
+        int actualSteps = Mathf.Abs(prevRank - currentRank);
+        int visualSteps = Mathf.Min(actualSteps, maxVisualSteps);
+
+        bool isRising = prevRank > currentRank;
+        int visualPrevRank = isRising ? currentRank + visualSteps : currentRank - visualSteps;
+        visualPrevRank = Mathf.Max(1, visualPrevRank);
+
+        // 시각적 시작 순위 기준으로 리더보드 데이터 조회
+        int fromRank = Mathf.Max(1, Mathf.Min(visualPrevRank, currentRank) - 5);
+        int toRank = Mathf.Max(visualPrevRank, currentRank) + 5;
+
+        var leaderboardData = await scoreManager.GetWeeklyLeaderboardRangeAsync(fromRank, toRank);
+
+        if (animationController != null)
         {
-            GetAroundMyRank();
+            animationController.PlayOvertakeSequence(finalScore, prevRank, currentRank,
+                                                      leaderboardData, () => SetFinalUI(currentRank));
+        }
+        else
+        {
+            SetFinalUI(currentRank);
         }
     }
 
-    public void UpdateUI(List<PlayerLeaderboardEntry> result)
+    private void SetFinalUI(int currentRank)
     {
-        gameObject.SetActive(true);
+        if (bestScoreText != null)
+            bestScoreText.text = Mathf.Max(previousBestScore, finalScore).ToString();
 
-        if (bigScoreText != null)
-            bigScoreText.text = finalScore.ToString();
-
-        int myIndex = -1;
-        string myId = PlayFabSettings.staticPlayer.PlayFabId;
-
-        for (int i = 0; i < result.Count; i++)
-        {
-            if (result[i].PlayFabId == myId)
-            {
-                myIndex = i;
-                break;
-            }
-        }
-
-        List<PlayerLeaderboardEntry> unitResult = new();
-        for (int i = myIndex - 1, j = 1; i > 0 && j < 4; i--, j++)
-        {
-            unitResult.Add(result[myIndex - j]);
-        }
-        unitResult.Reverse();
-
-        int upperCount = unitResult.Count;
-        for (int i = 0; i < 6 - upperCount; i++)
-        {
-            unitResult.Add(result[i + myIndex]);
-        }
-
-        for (int i = 0; i < 6; i++)
-        {
-            units[i].SetCondition(unitResult[i].Position + 1, unitResult[i].StatValue, unitResult[i].PlayFabId, i == upperCount);
-        }
-
-
-        if (bestScoreText != null) bestScoreText.text = result[myIndex].StatValue.ToString();
-        if (globalRankText != null) globalRankText.text = (result[myIndex].Position + 1).ToString();
+        if (globalRankText != null)
+            globalRankText.text = currentRank.ToString();
     }
 
     public void Hide()
     {
         myRect.anchoredPosition = disablePos;
-    }
-    public void GetAroundMyRank()
-    {
-        var request = new GetLeaderboardAroundPlayerRequest
-        {
-            StatisticName = "HighScore", // 리더보드 통계 이름
-            MaxResultsCount = 11      // 위 5 + 나 + 아래 5
-        };
-
-        PlayFabClientAPI.GetLeaderboardAroundPlayer(
-            request,
-            OnSuccess,
-            OnError
-        );
-    }
-    void OnSuccess(GetLeaderboardAroundPlayerResult result)
-    {
-        UpdateUI(result.Leaderboard);
-    }
-
-    void OnError(PlayFabError error)
-    {
-        Debug.LogError($"리더보드 조회 실패: {error.GenerateErrorReport()}");
     }
 }

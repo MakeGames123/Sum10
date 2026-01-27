@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private BoardManager boardManager;
     [SerializeField] private BoardSettingManager boardSettingManager;
+    [SerializeField] private ScoreManager scoreManager;
 
     [Header("Game Settings")]
     [SerializeField] private float gameDuration = 30f;  // 30초
@@ -146,8 +147,15 @@ public class GameManager : MonoBehaviour
 
     // ========= 내부 로직 =========
 
-    private void StartNewRun()
+    private async void StartNewRun()
     {
+        // 게임 시작 전 현재 주간 순위 + 전체 최고기록 저장
+        if (scoreManager != null)
+        {
+            await scoreManager.SavePreviousWeeklyRankAsync();
+            await scoreManager.SavePreviousHighScoreAsync();
+        }
+
         progress = StartCoroutine(ProgressGame());
         // 이전 게임의 파티클/고스트 정리
         CellView.DestroyAllActiveParticles();
