@@ -318,9 +318,26 @@ MonoBehaviour:
   rowHeight: 75
   rowSpacing: 10
   startYOffset: 200
-  scrollSpeed: 0.15
-  fastScrollSpeed: 0.05
+  maxScrollOverflow: 100
+  initialDisplayDelay: 0.3
+  extractDuration: 0.25
+  minScrollDuration: 1
+  maxScrollDuration: 2
+  maxVisualScrollSteps: 15
+  insertDuration: 0.3
+  myRowPopScale: 1.08
   scrollEase: 6
+  insertEase: 27
+  recycleTopOffset: 1
+  recycleBottomOffset: 1
+  recyclePopScale: 0.85
+  recyclePopDuration: 0.15
+  swapDuration: 0.3
+  swapEase: 7
+  testPrevRank: 10
+  testCurrentRank: 5
+  testMyScore: 100
+  runTest: 0
 --- !u!1 &1671194832054169023
 GameObject:
   m_ObjectHideFlags: 0
@@ -1257,7 +1274,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2eded734b7374f45976f7ccc35584d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bigScoreText: {fileID: 8866590025218399648}
   bestScoreText: {fileID: 3764506849579760287}
   globalRankText: {fileID: 8938375458554669083}
   replayButton: {fileID: 3940723006521664053}
@@ -1295,7 +1311,6 @@ MonoBehaviour:
   scoreCountUpAnimation: {fileID: 8324684862780710008}
   rankingOvertakeAnimation: {fileID: 661468104175767060}
   fireworksEffect: {fileID: 8902745242825813334}
-  scoreManager: {fileID: 0}
 --- !u!1 &4213007154159645596
 GameObject:
   m_ObjectHideFlags: 0
@@ -1748,7 +1763,7 @@ GameObject:
   - component: {fileID: 473115094390241980}
   - component: {fileID: 8582843514955769628}
   m_Layer: 0
-  m_Name: BestScoreLabel
+  m_Name: BestScoreLabelText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
