@@ -152,8 +152,8 @@ public class GameManager : MonoBehaviour
         // 게임 시작 전 현재 주간 순위 + 전체 최고기록 저장
         if (scoreManager != null)
         {
-            await scoreManager.SavePreviousWeeklyRankAsync();
-            await scoreManager.SavePreviousHighScoreAsync();
+            scoreManager.SavePreviousHighScoreAsync();
+            scoreManager.SavePreviousHighScoreAsync();
         }
 
         progress = StartCoroutine(ProgressGame());
@@ -235,6 +235,8 @@ public class GameManager : MonoBehaviour
         OnComboChanged?.Invoke((int)combo);
 
         OnScoreChanged?.Invoke(score);
+
+        ResetIdleTimer();
     }
 
     public void HandleNoMoreMoves()

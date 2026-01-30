@@ -7,7 +7,6 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     public const string STAT_HIGH_SCORE = "HighScore";
-    public const string STAT_WEEKLY_HIGH_SCORE = "WeeklyHighScore";
 
     // 이전 주간 순위 (게임 시작 시 저장)
     private int previousWeeklyRank = -1;
@@ -30,11 +29,6 @@ public class ScoreManager : MonoBehaviour
                 {
                     StatisticName = STAT_HIGH_SCORE,
                     Value = score
-                },
-                new StatisticUpdate
-                {
-                    StatisticName = STAT_WEEKLY_HIGH_SCORE,
-                    Value = score
                 }
             }
         };
@@ -53,43 +47,56 @@ public class ScoreManager : MonoBehaviour
             }
         );
 
+        var request2 = new UpdateUserDataRequest
+        {
+            Data = new Dictionary<string, string>
+        {
+            { STAT_HIGH_SCORE, score.ToString() }
+        }
+        };
+
+        PlayFabClientAPI.UpdateUserData(request2, null, error =>
+        {
+            tcs.TrySetResult(false);
+            Debug.LogError("하이스코어(UserData) 저장 실패: " + error.GenerateErrorReport());
+        });
+
         return tcs.Task;
     }
 
-    // 내 전체 하이스코어 조회
     public Task<int> GetMyHighScoreAsync()
     {
         var tcs = new TaskCompletionSource<int>();
 
-        var request = new GetPlayerStatisticsRequest
+        var request = new GetUserDataRequest
         {
-            StatisticNames = new List<string> { STAT_HIGH_SCORE }
+            Keys = new List<string> { STAT_HIGH_SCORE }
         };
 
-        PlayFabClientAPI.GetPlayerStatistics(
+        PlayFabClientAPI.GetUserData(
             request,
             result =>
             {
                 int highScore = 0;
-                foreach (var stat in result.Statistics)
+
+                if (result.Data != null &&
+                    result.Data.TryGetValue(STAT_HIGH_SCORE, out var data))
                 {
-                    if (stat.StatisticName == STAT_HIGH_SCORE)
-                    {
-                        highScore = stat.Value;
-                        break;
-                    }
+                    int.TryParse(data.Value, out highScore);
                 }
+
                 tcs.TrySetResult(highScore);
             },
             error =>
             {
-                Debug.LogError("하이스코어 조회 실패: " + error.GenerateErrorReport());
+                Debug.LogError("하이스코어(UserData) 조회 실패: " + error.GenerateErrorReport());
                 tcs.TrySetResult(0);
             }
         );
 
         return tcs.Task;
     }
+
 
     /// <summary>
     /// 내 주간 순위 조회 및 저장

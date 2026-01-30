@@ -140,7 +140,7 @@ public class AudioManager : MonoBehaviour
     }
     public void SetSFX(float volume)
     {
-        masterSfxVolume = Mathf.Clamp01(volume);
+        masterSfxVolume = volume;
     }
 
     public void SetBGM(float value)

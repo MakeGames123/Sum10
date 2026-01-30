@@ -180,6 +180,21 @@ public class BoardManager : MonoBehaviour
             else cells[i].SetNum(0);
         }
     }
+    public void LockCells()
+    {
+        foreach (Cell cell in cells)
+        {
+            cell.UpdateCellLock(true);
+        }
+    }
+    public void UnlockCells()
+    {
+        foreach (Cell cell in cells)
+        {
+            cell.UpdateCellLock(false);
+        }
+    }
+
     // =========================
     //  힌트
     // =========================
@@ -193,7 +208,6 @@ public class BoardManager : MonoBehaviour
 
         return result;
     }
-
     public void ShowHint()
     {
         var path = FindHintPath();

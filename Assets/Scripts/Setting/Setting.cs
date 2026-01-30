@@ -15,8 +15,9 @@ public class SettingManager : MonoBehaviour
     [SerializeField] Button button1;
     [SerializeField] Button button2;
     [SerializeField] Button button3;
-    [SerializeField] Button checkButton;
+    [SerializeField] Button retryButton;
     [SerializeField] GameManager game;
+    [SerializeField] BoardManager board;
     RectTransform rect;
     const string MASTER_VOL_KEY = "MASTER_VOLUME";
     const string MUSIC_VOL_KEY = "MUSIC_VOLUME";
@@ -39,6 +40,7 @@ public class SettingManager : MonoBehaviour
         BindUI();
         //ApplySettings();
         homeButton.onClick.AddListener(game.ForceEnd);
+        retryButton.onClick.AddListener(Hide);
     }
     public void Show()
     {
@@ -48,14 +50,17 @@ public class SettingManager : MonoBehaviour
         {
             Time.timeScale = 0;
             homeButton.gameObject.SetActive(true);
+            retryButton.gameObject.SetActive(true);
             linkButton.gameObject.SetActive(false);
             button1.gameObject.SetActive(false);
             button2.gameObject.SetActive(false);
             button3.gameObject.SetActive(false);
+            board.LockCells();
         }
         else
         {
             homeButton.gameObject.SetActive(false);
+            retryButton.gameObject.SetActive(false);
             linkButton.gameObject.SetActive(true);
             button1.gameObject.SetActive(true);
             button2.gameObject.SetActive(true);
@@ -66,6 +71,7 @@ public class SettingManager : MonoBehaviour
     {
         Time.timeScale = 1;
         rect.anchoredPosition = disablePos;
+        board.UnlockCells();
     }
 
     void BindUI()

@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6407875833251232571}
-  - component: {fileID: 82025596048230148}
   - component: {fileID: 6982340759165470953}
   - component: {fileID: 8352245093095510782}
   m_Layer: 0
@@ -34,27 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &82025596048230148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7767561982726342471}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90bcfb6be149afe44b9333be254139c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
-  gameOverRoot: {fileID: 0}
-  inGameUIRoot: {fileID: 0}
-  scoreButton: {fileID: 0}
-  startButton: {fileID: 0}
-  fastRestartButton: {fileID: 0}
-  finalScoreText: {fileID: 0}
-  retryButton: {fileID: 0}
-  mainButton: {fileID: 0}
 --- !u!114 &6982340759165470953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,5 +65,8 @@ MonoBehaviour:
   bottomNavBar: {fileID: 0}
   startButton: {fileID: 0}
   scoreButton: {fileID: 0}
+  inGameBackground: {fileID: 0}
+  panelBoard: {fileID: 0}
   fastRestartButton: {fileID: 0}
   gameOverPanel: {fileID: 0}
+  setting: {fileID: 0}
