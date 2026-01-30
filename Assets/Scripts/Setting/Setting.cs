@@ -49,8 +49,16 @@ public class SettingManager : MonoBehaviour
         if (game.isRunning)
         {
             Time.timeScale = 0;
-            homeButton.gameObject.SetActive(true);
-            retryButton.gameObject.SetActive(true);
+            if (!game.isTutorial)
+            {
+                homeButton.gameObject.SetActive(true);
+                retryButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                homeButton.gameObject.SetActive(false);
+                retryButton.gameObject.SetActive(false);
+            }
             linkButton.gameObject.SetActive(false);
             button1.gameObject.SetActive(false);
             button2.gameObject.SetActive(false);

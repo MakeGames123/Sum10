@@ -282,6 +282,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   board: {fileID: 4560042159149238943}
   game: {fileID: 0}
+  Setting: {fileID: 0}
 --- !u!1 &2398564846176312990
 GameObject:
   m_ObjectHideFlags: 0
@@ -4045,7 +4046,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3608459425683430347, guid: 54fc757d7260da640a6c624f98bedabf, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 9999
+      value: 15000
       objectReference: {fileID: 0}
     - target: {fileID: 3608459425683430347, guid: 54fc757d7260da640a6c624f98bedabf, type: 3}
       propertyPath: m_AnchoredPosition.y

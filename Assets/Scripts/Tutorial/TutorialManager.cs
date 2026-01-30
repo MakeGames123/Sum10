@@ -16,11 +16,11 @@ public class TutorialManager : MonoBehaviour
     List<Cell> tutorialCells = new();
     public void TutorialProgress()
     {
-        game.timeStopped = true;
+        game.isTutorial = true;
 
         if (progress == 3)
         {
-            game.timeStopped = false;
+            game.isTutorial = false;
             TutorialStatusManager.Instance.UpdateStatus(true);
             return;
         }
@@ -41,10 +41,9 @@ public class TutorialManager : MonoBehaviour
         {
             cell.EnableHintMode();
             cell.UpdateCellLock(false);
-            cell.onRemoved += TutorialProgressEnd;
         }
     }
-    private void TutorialProgressEnd()
+    public void TutorialProgressEnd()
     {
         progress++;
 

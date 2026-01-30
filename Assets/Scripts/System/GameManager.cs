@@ -47,10 +47,11 @@ public class GameManager : MonoBehaviour
     public GameObject comboText;
     public GameObject textGroup;
     public GameOverPanel gameOverPanel;
+    public TutorialManager tutorial;
 
     public int combo = 0;
     public int maxCombo = 0;
-    public bool timeStopped = false;
+    public bool isTutorial = false;
     Coroutine progress = null;
     private void Awake()
     {
@@ -88,7 +89,7 @@ public class GameManager : MonoBehaviour
             yield return null;
             if (!isRunning) continue;
 
-            if (timeStopped) continue;
+            if (isTutorial) continue;
 
             ProgressTime();
             ProgressHintTime();
@@ -210,6 +211,12 @@ public class GameManager : MonoBehaviour
     {
         if (gained <= 0 || !isRunning)
             return;
+
+        if (isTutorial)
+        {
+            tutorial.TutorialProgressEnd();
+            return;
+        }
 
         combo++;
         if (maxCombo < combo) maxCombo = combo;

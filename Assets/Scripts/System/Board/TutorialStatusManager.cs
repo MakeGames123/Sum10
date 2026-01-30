@@ -28,7 +28,6 @@ public class TutorialStatusManager : MonoBehaviour
     // 데이터 저장 (True/False)
     public void SaveTutorialStatus()
     {
-        Debug.Log(isTutorialCompleted);
         var request = new UpdateUserDataRequest
         {
             Data = new Dictionary<string, string> { { "TutorialFinished", isTutorialCompleted.ToString() } }
