@@ -132,11 +132,12 @@ public class RankingOvertakeAnimation : MonoBehaviour
 
         leaderboardData = data;
         currentPlayerId = myPlayerId;
-        currentMyScore = myScore;
 
+        // 주간 최고기록 표시: 리더보드 점수 우선, 없으면 max(방금판, 리더보드)
         var myEntry = FindEntryByPlayerId(myPlayerId);
-        if (myEntry != null && myEntry.StatValue > currentMyScore)
-            currentMyScore = myEntry.StatValue;
+        currentMyScore = myEntry != null
+            ? Mathf.Max(myEntry.StatValue, myScore)
+            : myScore;
 
         animCoroutine = StartCoroutine(AnimationSequence(prevRank, currentRank, onComplete));
     }

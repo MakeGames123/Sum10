@@ -48,29 +48,54 @@ public class GameOverPanel : MonoBehaviour
         if (animationController != null)
             animationController.PlayScoreCountUp(finalScore);
 
-        // 2. 이전 순위 가져오기
+        // 2. 이전 데이터 가져오기
         int prevRank = scoreManager.PreviousWeeklyRank;
-        if (prevRank < 1) prevRank = 9999;  // 첫 플레이
+        if (prevRank < 1) prevRank = 9999;
+        int weeklyBest = scoreManager.PreviousWeeklyBestScore;
+        previousBestScore = scoreManager.PreviousHighScore;
 
         // 3. 하이스코어 체크
-        previousBestScore = scoreManager.PreviousHighScore;
         if (animationController != null)
             animationController.SetHighScoreStatus(finalScore > previousBestScore);
 
-        // 4. 점수 제출 후 순위 조회
-        bool success = await scoreManager.SubmitScoreAsync(finalScore);
-        if (success)
-            FetchWeeklyRankAndAnimate(prevRank);
+        int currentRank = prevRank;
+
+        // 4. 주간 최고 갱신 시
+        if (finalScore > weeklyBest)
+        {
+            Debug.Log($"[GameOver] 주간 최고 갱신! {weeklyBest} → {finalScore}, prevRank={prevRank}");
+
+            // 제출 전에 순위 계산 (1등부터 스캔, PlayFab Position 미사용)
+            currentRank = await scoreManager.CalculateRankForScoreAsync(finalScore);
+            Debug.Log($"[GameOver] 순위 계산 완료: {prevRank} → {currentRank}");
+
+            bool success = await scoreManager.SubmitWeeklyScoreAsync(finalScore);
+            if (!success)
+                Debug.LogError("[GameOver] 리더보드 제출 실패");
+
+            // 연속 플레이 대비: 계산된 순위를 캐시
+            scoreManager.CacheCalculatedRank(currentRank, finalScore);
+        }
+        else
+        {
+            Debug.Log($"[GameOver] 주간 최고 미갱신 (현재={finalScore}, 주간최고={weeklyBest}), rank={prevRank}");
+        }
+
+        // 5. 역대 최고 갱신 시에만 UserData 저장
+        if (finalScore > previousBestScore)
+            scoreManager.SaveHighScoreToUserData(finalScore);
+
+        // 6. 순위 애니메이션 시작
+        ShowRankAnimation(prevRank, currentRank);
     }
 
-    private async void FetchWeeklyRankAndAnimate(int prevRank)
+    private async void ShowRankAnimation(int prevRank, int currentRank)
     {
-        int currentRank = await scoreManager.GetMyWeeklyRankAsync();
-        if (currentRank < 1) currentRank = prevRank;
+        int actualSteps = Mathf.Abs(prevRank - currentRank);
+        Debug.Log($"[GameOver] prevRank={prevRank}, currentRank={currentRank}, actualSteps={actualSteps}");
 
         // 시각적 스크롤 제한에 맞춰 리더보드 범위 계산
         int maxVisualSteps = animationController != null ? animationController.MaxVisualScrollSteps : 15;
-        int actualSteps = Mathf.Abs(prevRank - currentRank);
         int visualSteps = Mathf.Min(actualSteps, maxVisualSteps);
 
         bool isRising = prevRank > currentRank;

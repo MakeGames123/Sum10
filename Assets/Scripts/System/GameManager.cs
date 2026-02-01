@@ -150,11 +150,11 @@ public class GameManager : MonoBehaviour
 
     private async void StartNewRun()
     {
-        // 게임 시작 전 현재 주간 순위 + 전체 최고기록 저장
+        // 게임 시작 전 현재 주간 순위 + 전체 최고기록 저장 (완료까지 대기)
         if (scoreManager != null)
         {
-            scoreManager.SavePreviousWeeklyRankAsync();
-            scoreManager.SavePreviousHighScoreAsync();
+            await scoreManager.SavePreviousWeeklyRankAsync();
+            await scoreManager.SavePreviousHighScoreAsync();
         }
 
         progress = StartCoroutine(ProgressGame());
