@@ -1506,6 +1506,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 719136464114601305}
+  - component: {fileID: 2740144595084090968}
   m_Layer: 5
   m_Name: ProfileGroup
   m_TagString: Untagged
@@ -1534,6 +1535,27 @@ RectTransform:
   m_AnchoredPosition: {x: -320, y: 0}
   m_SizeDelta: {x: 400, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2740144595084090968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7687309590968718919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3055a6c08e1e1344d82d52526de7992a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profileImage: {fileID: 3161372696197682060}
+  profileSprites:
+  - {fileID: 21300000, guid: a24667e90fe4aef488939d42ecfde69f, type: 3}
+  - {fileID: 21300000, guid: defa5b5f48ccab640832e5336834cb56, type: 3}
+  - {fileID: 21300000, guid: 7e3e0dc6b24eb2e46af75fd6412f9f54, type: 3}
+  - {fileID: 21300000, guid: 917fb0e17eda4104581d19b6aa10986f, type: 3}
+  - {fileID: 21300000, guid: b3c668935bec8bd4b8c37207a74dd9e3, type: 3}
+  - {fileID: 21300000, guid: 8339c53d40b56c44c88e827ad5807c14, type: 3}
+  panel: {fileID: 0}
 --- !u!1 &8184003563767999865
 GameObject:
   m_ObjectHideFlags: 0

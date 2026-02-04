@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DisableClick : MonoBehaviour, IPointerClickHandler
+public class SettingDisableClick : MonoBehaviour, IPointerClickHandler
 {
-    public GameObject panel;
+    public SettingManager panel;
     public void OnPointerClick(PointerEventData data)
     {
-        panel.SetActive(false);
+        panel.Hide();
     }
 }

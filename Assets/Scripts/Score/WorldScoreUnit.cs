@@ -13,8 +13,10 @@ public class WorldScoreUnit : MonoBehaviour
     [SerializeField] Image background;
     [SerializeField] List<Sprite> backgrounds;
     [SerializeField] Image badge;
+    [SerializeField] Image profile;
+    [SerializeField] List<Sprite> profiles;
     [SerializeField] List<Sprite> badges;
-    public void SetCondition(int rank, string id, int score)
+    public void SetCondition(int rank, string id, int score, int profileIndex)
     {
         if (!string.IsNullOrEmpty(id) && id.Length > 6)
         {
@@ -26,6 +28,7 @@ public class WorldScoreUnit : MonoBehaviour
             IDText.text = id;
         }
         scoreText.text = score.ToString();
+        profile.sprite = profiles[profileIndex];
 
         if (rank > 3)
         {

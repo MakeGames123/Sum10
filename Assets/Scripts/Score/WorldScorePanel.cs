@@ -10,10 +10,14 @@ public interface IMainPanel
 public class WorldScorePanel : MonoBehaviour, IMainPanel
 {
     public List<WorldScoreUnit> units = new();
+    private const string PROFILE_INDEX_KEY = "ProfileIndex";
+    private Dictionary<string, int> profileIndexCache = new();
     private const string TargetStatistic = "HighScore";
-
+    bool init = false;
+    public GameManager gameManager;
     public void SetCondition()
     {
+        gameManager.OnGameOver.AddListener((val) => LoadWorldLeaderboard());
         UpdateRank();
     }
     public void OnDisable()
@@ -31,7 +35,7 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
         {
             StatisticName = TargetStatistic,
             StartPosition = 0,
-            MaxResultsCount = 10,
+            MaxResultsCount = 50,
             ProfileConstraints = new PlayerProfileViewConstraints
             {
                 ShowDisplayName = true
@@ -41,58 +45,114 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
         PlayFabClientAPI.GetLeaderboard(request, result =>
         {
             string myPlayFabId = PlayFabSettings.staticPlayer.PlayFabId;
-            PlayerLeaderboardEntry myEntry = null;
 
-            // 1. 내 엔트리 찾기
-            foreach (var entry in result.Leaderboard)
+            if (!init)
             {
-                if (entry.PlayFabId == myPlayFabId)
+                PreloadProfileIndices(result.Leaderboard, () =>
                 {
-                    myEntry = entry;
-                    break;
-                }
+                    DrawLeaderboard(result.Leaderboard, myPlayFabId);
+                });
+                init = true;
             }
-
-            int uiIndex = 0;
-
-            // 2. 첫 번째 유닛 = 내 점수
-            if (myEntry != null && units.Count > 0)
+            else
             {
-                string myName = string.IsNullOrEmpty(myEntry.DisplayName)
-                    ? myEntry.PlayFabId
-                    : myEntry.DisplayName;
-
-                units[0].SetCondition(
-                    myEntry.Position + 1,
-                    myName,
-                    myEntry.StatValue
-                );
-                units[0].gameObject.SetActive(true);
-                uiIndex = 1;
+                DrawLeaderboard(result.Leaderboard, myPlayFabId);
             }
-
-            // 3. 나머지 유닛 = 월드 랭킹
-            foreach (var entry in result.Leaderboard)
-            {
-                if (uiIndex >= units.Count) break;
-
-                string displayName = string.IsNullOrEmpty(entry.DisplayName)
-                    ? entry.PlayFabId
-                    : entry.DisplayName;
-
-                units[uiIndex].SetCondition(
-                    entry.Position + 1,
-                    displayName,
-                    entry.StatValue
-                );
-                units[uiIndex].gameObject.SetActive(true);
-                uiIndex++;
-            }
-
         }, error =>
         {
             Debug.LogError("리더보드 로드 실패: " + error.GenerateErrorReport());
         });
+    }
+    private void DrawLeaderboard(
+        List<PlayerLeaderboardEntry> leaderboard,
+        string myPlayFabId)
+    {
+        int uiIndex = 0;
+
+        PlayerLeaderboardEntry myEntry =
+            leaderboard.Find(e => e.PlayFabId == myPlayFabId);
+
+        // 내 점수
+        if (myEntry != null && units.Count > 0)
+        {
+            units[0].SetCondition(
+                myEntry.Position + 1,
+                string.IsNullOrEmpty(myEntry.DisplayName)
+                    ? myEntry.PlayFabId
+                    : myEntry.DisplayName,
+                myEntry.StatValue,
+                PlayerData.Instance.EquippedProfileImage
+            );
+            units[0].gameObject.SetActive(true);
+            uiIndex = 1;
+        }
+
+        // 월드 랭킹
+        foreach (var entry in leaderboard)
+        {
+            if (uiIndex >= units.Count) break;
+
+            units[uiIndex].SetCondition(
+                entry.Position + 1,
+                string.IsNullOrEmpty(entry.DisplayName)
+                    ? entry.PlayFabId
+                    : entry.DisplayName,
+                entry.StatValue,
+                profileIndexCache[entry.PlayFabId]
+            );
+            units[uiIndex].gameObject.SetActive(true);
+
+            uiIndex++;
+        }
+    }
+
+    private void PreloadProfileIndices(
+        List<PlayerLeaderboardEntry> entries,
+        System.Action onComplete)
+    {
+        int remaining = entries.Count;
+
+        if (remaining == 0)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        foreach (var entry in entries)
+        {
+            string playFabId = entry.PlayFabId;
+
+            PlayFabClientAPI.GetUserData(
+                new GetUserDataRequest
+                {
+                    PlayFabId = playFabId,
+                    Keys = new List<string> { PROFILE_INDEX_KEY }
+                },
+                result =>
+                {
+                    int index = 0;
+
+                    if (result.Data != null &&
+                        result.Data.TryGetValue(PROFILE_INDEX_KEY, out var data))
+                    {
+                        int.TryParse(data.Value, out index);
+                    }
+
+                    profileIndexCache[playFabId] = index;
+
+                    if (--remaining == 0)
+                        onComplete?.Invoke();
+                },
+                error =>
+                {
+                    // 실패해도 기본값
+                    profileIndexCache[playFabId] = 0;
+
+                    if (--remaining == 0)
+                        onComplete?.Invoke();
+                }
+            );
+        }
     }
 
     private void ClearUI()

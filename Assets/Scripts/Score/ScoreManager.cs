@@ -17,6 +17,7 @@ public class ScoreManager : MonoBehaviour
     // 이전 전체 최고기록 (게임 시작 시 저장)
     private int previousHighScore = 0;
     public int PreviousHighScore => previousHighScore;
+    public PlayFabLoginManager login;
 
     // 게임오버 시 계산된 순위 캐시 (연속 플레이 시 PlayFab Position 지연 우회)
     private int cachedRank = -1;
