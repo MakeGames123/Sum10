@@ -38,7 +38,6 @@ public class SettingManager : MonoBehaviour
         rect = GetComponent<RectTransform>();
         LoadSettings();
         BindUI();
-        //ApplySettings();
         homeButton.onClick.AddListener(game.ForceEnd);
         retryButton.onClick.AddListener(Hide);
     }
@@ -82,6 +81,10 @@ public class SettingManager : MonoBehaviour
         board.UnlockCells();
     }
 
+    void Start()
+    {
+        ApplySettings();
+    }
     void BindUI()
     {
         masterVolumeSlider.onValueChanged.AddListener(SetMasterVolume);
@@ -92,14 +95,14 @@ public class SettingManager : MonoBehaviour
     public void SetMasterVolume(float value)
     {
         PlayerPrefs.SetFloat(MASTER_VOL_KEY, value);
-        value /= 5;
+        value /= 9f;
         AudioManager.Instance.SetSFX(value);
     }
 
     public void SetMusicVolume(float value)
     {
         PlayerPrefs.SetFloat(MUSIC_VOL_KEY, value);
-        value /= 5;
+        value /= 9f;
         AudioManager.Instance.SetBGM(value);
     }
     public void SetVibration(bool isOn)

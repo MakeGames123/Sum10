@@ -79,6 +79,11 @@ public class AudioManager : MonoBehaviour
     // Pop pitch tracking
     private int currentPopCount = 0;
 
+    // 슬라이더 비율 (0.0~1.0)
+    private float sfxSliderRatio = 1f;
+    private float bgmSliderRatio = 1f;
+    private float baseMasterSfxVolume;
+
 
     private void Awake()
     {
@@ -86,6 +91,7 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            baseMasterSfxVolume = masterSfxVolume;
         }
         else
         {
@@ -125,7 +131,7 @@ public class AudioManager : MonoBehaviour
         }
 
         // 초기 볼륨 설정
-        bgmSource.volume = bgmVolume;
+        bgmSource.volume = bgmVolume * bgmSliderRatio;
 
         // 로비 BGM 시작
         PlayBGM(lobbyBGM);
@@ -138,14 +144,16 @@ public class AudioManager : MonoBehaviour
             UIController.Instance.OnUIStateChanged -= HandleUIStateChanged;
         }
     }
-    public void SetSFX(float volume)
+    public void SetSFX(float ratio)
     {
-        masterSfxVolume = volume;
+        sfxSliderRatio = ratio;
+        masterSfxVolume = baseMasterSfxVolume * sfxSliderRatio;
     }
 
-    public void SetBGM(float value)
+    public void SetBGM(float ratio)
     {
-        bgmSource.volume = bgmVolume * value;
+        bgmSliderRatio = ratio;
+        bgmSource.volume = bgmVolume * bgmSliderRatio;
     }
 
     #region UI State Handling
@@ -181,7 +189,7 @@ public class AudioManager : MonoBehaviour
 
             case GameOverAudioMode.IngameBGM:
                 // B: 인게임 BGM 볼륨 낮춰서 유지
-                bgmSource.volume = bgmVolume * gameOverIngameVolumeMultiplier;
+                bgmSource.volume = bgmVolume * gameOverIngameVolumeMultiplier * bgmSliderRatio;
                 // 이미 인게임 BGM이 재생 중이므로 그대로 유지
                 break;
 
@@ -219,7 +227,7 @@ public class AudioManager : MonoBehaviour
 
         bgmSource.clip = clip;
         bgmSource.loop = true;
-        bgmSource.volume = bgmVolume;
+        bgmSource.volume = bgmVolume * bgmSliderRatio;
         bgmSource.Play();
     }
 

@@ -17,6 +17,7 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
     }
     public void OnPointerClick(PointerEventData data)
     {
+        AudioManager.Instance?.PlayButtonSFX();
         panel.SetActive(true);
     }
     private void ChangeProfileImage(int index)

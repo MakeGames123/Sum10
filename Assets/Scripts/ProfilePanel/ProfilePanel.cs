@@ -20,10 +20,23 @@ public class ProfilePanel : MonoBehaviour
             slots[i].onClick.AddListener(SelectProfile);
         }
 
+        equipButton.onClick.AddListener(TryEquipProfile);
+    }
+    void Start()
+    {
+        PlayerData.Instance.onProfileImageChanged.AddListener(SyncCheck);
+        SyncCheck(PlayerData.Instance.EquippedProfileImage);
+    }
+    private void SyncCheck(int index)
+    {
+        for (int i = 0; i < slots.Count; i++)
+        {
+            slots[i].DisableBorder();
+            slots[i].DisableCheck();
+        }
+        currentIndex = index;
         slots[currentIndex].EnableBorder();
         slots[currentIndex].EnableCheck();
-
-        equipButton.onClick.AddListener(TryEquipProfile);
     }
     public void SelectProfile(int index)
     {
