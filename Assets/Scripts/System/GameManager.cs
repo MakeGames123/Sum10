@@ -157,6 +157,7 @@ public class GameManager : MonoBehaviour
             scoreManager.SavePreviousHighScoreAsync();
         }
 
+        if (progress != null) StopCoroutine(progress);
         progress = StartCoroutine(ProgressGame());
         // 이전 게임의 파티클/고스트 정리
         CellView.DestroyAllActiveParticles();
