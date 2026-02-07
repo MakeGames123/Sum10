@@ -69,7 +69,7 @@ public class BoardManager : MonoBehaviour
             cell.gameObject.SetActive(true);
         }
 
-        if (TutorialStatusManager.Instance.isTutorialCompleted) GenerateBoardValuesUntilValid();
+        if (TutorialStatusManager.Instance.isTutorialCompleted || tutorialManager == null) GenerateBoardValuesUntilValid();
         else GenerateBoardTutorialValues();
 
         for (int x = n * n; x < cellSlots.Count; x++)

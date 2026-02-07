@@ -64,7 +64,8 @@ public class ProfilePanel : MonoBehaviour
             Data = new Dictionary<string, string>
         {
             { PROFILE_INDEX_KEY, index.ToString() }
-        }
+        },
+        Permission = UserDataPermission.Public
         };
 
         PlayFabClientAPI.UpdateUserData(
