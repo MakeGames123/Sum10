@@ -10,6 +10,7 @@ public interface IMainPanel
 public class WorldScorePanel : MonoBehaviour, IMainPanel
 {
     public List<WorldScoreUnit> units = new();
+    public List<PodiumUnit> podiumUnits = new();
     private const string PROFILE_INDEX_KEY = "ProfileIndex";
     private Dictionary<string, int> profileIndexCache = new();
     private const string TargetStatistic = "HighScore";
@@ -103,6 +104,19 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
             units[uiIndex].gameObject.SetActive(true);
 
             uiIndex++;
+        }
+
+        // 시상대
+        for (int i = 0; i < 3; i++)
+        {
+            var entry = leaderboard[i];
+
+            podiumUnits[i].SetCondition(
+                string.IsNullOrEmpty(entry.DisplayName)
+                    ? entry.PlayFabId
+                    : entry.DisplayName,
+                profileIndexCache[entry.PlayFabId]
+            );
         }
     }
 
