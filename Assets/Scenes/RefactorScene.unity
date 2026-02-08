@@ -11431,6 +11431,10 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 2128613649}
+    - target: {fileID: 6560821517645333225, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
+      propertyPath: scoreManager
+      value: 
+      objectReference: {fileID: 899309715}
     - target: {fileID: 6613050018565938544, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0

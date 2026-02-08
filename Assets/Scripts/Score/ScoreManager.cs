@@ -23,6 +23,23 @@ public class ScoreManager : MonoBehaviour
     private int cachedRank = -1;
     private int cachedRankScore = -1;
 
+    // ===== Top 50 공유 캐시 =====
+    private const string PROFILE_INDEX_KEY = "ProfileIndex";
+    private List<PlayerLeaderboardEntry> cachedTop50;
+    private Dictionary<string, int> profileIndexCache = new();
+    public List<PlayerLeaderboardEntry> CachedTop50 => cachedTop50;
+    public bool IsTop50Ready => cachedTop50 != null && cachedTop50.Count > 0;
+    public System.Action OnTop50Updated;
+
+    private void Start()
+    {
+        if (login == null)
+            login = FindObjectOfType<PlayFabLoginManager>();
+
+        if (login != null)
+            login.onLogined.AddListener(() => _ = FetchTop50WithProfilesAsync());
+    }
+
     /// <summary>
     /// 게임오버 시 호출: 계산된 순위를 캐시 (다음 게임 시작 시 사용)
     /// </summary>
@@ -92,12 +109,11 @@ public class ScoreManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 게임 시작 시 호출: 역대 최고기록 저장 (UserData)
+    /// 게임 시작 시 호출: 역대 최고기록 로드 (로컬 PlayerPrefs)
     /// </summary>
-    public async Task SavePreviousHighScoreAsync()
+    public void LoadPreviousHighScore()
     {
-        previousHighScore = await GetMyHighScoreAsync();
-        Debug.Log($"[게임시작] 역대최고={previousHighScore}");
+        previousHighScore = PlayerPrefs.GetInt(STAT_HIGH_SCORE, 0);
     }
 
     /// <summary>
@@ -137,10 +153,13 @@ public class ScoreManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 역대 최고기록 UserData에 저장 (역대 최고 갱신 시에만 호출할 것)
+    /// 역대 최고기록 저장 (로컬 PlayerPrefs + PlayFab UserData 백업)
     /// </summary>
-    public void SaveHighScoreToUserData(int score)
+    public void SaveHighScore(int score)
     {
+        PlayerPrefs.SetInt(STAT_HIGH_SCORE, score);
+        PlayerPrefs.Save();
+
         var request = new UpdateUserDataRequest
         {
             Data = new Dictionary<string, string>
@@ -149,9 +168,8 @@ public class ScoreManager : MonoBehaviour
             }
         };
 
-        PlayFabClientAPI.UpdateUserData(request,
-            result => Debug.Log($"[UserData] 역대 최고 갱신: {score}"),
-            error => Debug.LogError("UserData 저장 실패: " + error.GenerateErrorReport())
+        PlayFabClientAPI.UpdateUserData(request, null,
+            error => Debug.LogError("UserData 백업 실패: " + error.GenerateErrorReport())
         );
     }
 
@@ -249,6 +267,114 @@ public class ScoreManager : MonoBehaviour
                 tcs.TrySetResult(new List<PlayerLeaderboardEntry>());
             }
         );
+
+        return tcs.Task;
+    }
+
+    // ===== Top 50 공유 캐시 =====
+
+    public int GetProfileIndex(string playFabId)
+    {
+        return profileIndexCache.TryGetValue(playFabId, out int index) ? index : 0;
+    }
+
+    /// <summary>
+    /// Top 50 리더보드 + 프로필 인덱스를 조회하여 캐시에 저장
+    /// </summary>
+    public async Task FetchTop50WithProfilesAsync()
+    {
+        var tcs = new TaskCompletionSource<List<PlayerLeaderboardEntry>>();
+
+        var request = new GetLeaderboardRequest
+        {
+            StatisticName = STAT_HIGH_SCORE,
+            StartPosition = 0,
+            MaxResultsCount = 50,
+            ProfileConstraints = new PlayerProfileViewConstraints
+            {
+                ShowDisplayName = true
+            }
+        };
+
+        PlayFabClientAPI.GetLeaderboard(request,
+            result => tcs.TrySetResult(result.Leaderboard),
+            error =>
+            {
+                Debug.LogError("Top 50 조회 실패: " + error.GenerateErrorReport());
+                tcs.TrySetResult(null);
+            }
+        );
+
+        var leaderboard = await tcs.Task;
+        if (leaderboard == null)
+        {
+            Debug.Log("[ScoreManager] Top 50 조회 실패 (null)");
+            return;
+        }
+
+        Debug.Log($"[ScoreManager] Top 50 조회 완료: {leaderboard.Count}명");
+        cachedTop50 = leaderboard;
+
+        await FetchMissingProfileIndicesAsync(leaderboard);
+
+        Debug.Log("[ScoreManager] 프로필 인덱스 조회 완료 → OnTop50Updated 발행");
+        OnTop50Updated?.Invoke();
+    }
+
+    /// <summary>
+    /// 캐시에 없는 유저의 프로필 인덱스만 조회
+    /// </summary>
+    private Task FetchMissingProfileIndicesAsync(List<PlayerLeaderboardEntry> entries)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+
+        var missing = new List<PlayerLeaderboardEntry>();
+        foreach (var entry in entries)
+        {
+            if (!profileIndexCache.ContainsKey(entry.PlayFabId))
+                missing.Add(entry);
+        }
+
+        if (missing.Count == 0)
+        {
+            tcs.TrySetResult(true);
+            return tcs.Task;
+        }
+
+        int remaining = missing.Count;
+
+        foreach (var entry in missing)
+        {
+            string playFabId = entry.PlayFabId;
+
+            PlayFabClientAPI.GetUserData(
+                new GetUserDataRequest
+                {
+                    PlayFabId = playFabId,
+                    Keys = new List<string> { PROFILE_INDEX_KEY }
+                },
+                result =>
+                {
+                    int index = 0;
+                    if (result.Data != null &&
+                        result.Data.TryGetValue(PROFILE_INDEX_KEY, out var data))
+                    {
+                        int.TryParse(data.Value, out index);
+                    }
+                    profileIndexCache[playFabId] = index;
+
+                    if (--remaining == 0)
+                        tcs.TrySetResult(true);
+                },
+                error =>
+                {
+                    profileIndexCache[playFabId] = 0;
+
+                    if (--remaining == 0)
+                        tcs.TrySetResult(true);
+                }
+            );
+        }
 
         return tcs.Task;
     }

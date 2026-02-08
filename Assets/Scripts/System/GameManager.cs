@@ -148,13 +148,13 @@ public class GameManager : MonoBehaviour
 
     // ========= 내부 로직 =========
 
-    private async void StartNewRun()
+    private void StartNewRun()
     {
-        // 게임 시작 전 현재 주간 순위 + 전체 최고기록 저장 (완료까지 대기)
+        // 게임 시작 전 현재 주간 순위 + 전체 최고기록 저장 (백그라운드)
         if (scoreManager != null)
         {
-            scoreManager.SavePreviousWeeklyRankAsync();
-            scoreManager.SavePreviousHighScoreAsync();
+            _ = scoreManager.SavePreviousWeeklyRankAsync();
+            scoreManager.LoadPreviousHighScore();
         }
 
         if (progress != null) StopCoroutine(progress);

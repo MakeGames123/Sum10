@@ -81,11 +81,14 @@ public class GameOverPanel : MonoBehaviour
             Debug.Log($"[GameOver] 주간 최고 미갱신 (현재={finalScore}, 주간최고={weeklyBest}), rank={prevRank}");
         }
 
-        // 5. 역대 최고 갱신 시에만 UserData 저장
+        // 5. 역대 최고 갱신 시 저장 (로컬 + 서버 백업)
         if (finalScore > previousBestScore)
-            scoreManager.SaveHighScoreToUserData(finalScore);
+            scoreManager.SaveHighScore(finalScore);
 
-        // 6. 순위 애니메이션 시작
+        // 6. Top 50 캐시 갱신 (백그라운드)
+        _ = scoreManager.FetchTop50WithProfilesAsync();
+
+        // 7. 순위 애니메이션 시작
         ShowRankAnimation(prevRank, currentRank);
     }
 
