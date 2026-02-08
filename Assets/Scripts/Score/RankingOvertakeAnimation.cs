@@ -133,7 +133,6 @@ public class RankingOvertakeAnimation : MonoBehaviour
 
         leaderboardData = data;
         currentPlayerId = myPlayerId;
-        BuildRankMap(currentRank);
 
         // 주간 최고기록 표시: 리더보드 점수 우선, 없으면 max(방금판, 리더보드)
         var myEntry = FindEntryByPlayerId(myPlayerId);
@@ -170,6 +169,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
 
         // Phase 0: Initial Display
         // 화면 배치는 visualPrevRank 기준, 숫자는 실제 prevRank 표시
+        BuildRankMap(visualPrevRank);
         SetupInitialDisplay(visualPrevRank, currentRank, isCase2 || isCase3);
         currentDisplayRank = prevRank;  // 숫자는 실제 순위로 표시
         myRow.SetCondition(prevRank, currentMyScore, currentPlayerId);
@@ -197,6 +197,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
 
             yield return StartCoroutine(PhaseExtract(visualPrevRank));
             yield return StartCoroutine(PhaseSmoothScroll(prevRank, boundary, true, scrollSteps, scrollActualSteps));
+            BuildRankMap(boundary);
             yield return StartCoroutine(PhaseInsert(boundary));
             yield return StartCoroutine(PhaseSwapAnimation(boundary, currentRank, true, swapSteps));
         }
@@ -205,6 +206,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
             // 케이스 4: 1~3등 → 4등 밖 (하락) - 케이스 1처럼 바로 처리
             yield return StartCoroutine(PhaseExtract(visualPrevRank));
             yield return StartCoroutine(PhaseSmoothScroll(prevRank, currentRank, false, visualSteps, actualSteps));
+            BuildRankMap(currentRank);
             yield return StartCoroutine(PhaseInsert(currentRank));
         }
         else
@@ -212,6 +214,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
             // 케이스 1: 기존 Extract → Scroll → Insert
             yield return StartCoroutine(PhaseExtract(visualPrevRank));
             yield return StartCoroutine(PhaseSmoothScroll(prevRank, currentRank, isRising, visualSteps, actualSteps));
+            BuildRankMap(currentRank);
             yield return StartCoroutine(PhaseInsert(currentRank));
         }
 

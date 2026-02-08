@@ -186,7 +186,8 @@ public class GameManager : MonoBehaviour
     public void ForceEnd()
     {
         isRunning = false;
-        
+        boardManager.CancelHint();
+
         if (progress != null) StopCoroutine(progress);
         progress = null;
     }
@@ -195,6 +196,7 @@ public class GameManager : MonoBehaviour
         isRunning = false;
 
         CellView.DestroyAllActiveParticles();
+        boardManager.CancelHint();
 
         if (progress != null) StopCoroutine(progress);
         progress = null;

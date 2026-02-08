@@ -13,7 +13,7 @@ public class BoardManager : MonoBehaviour
     private List<Cell> currentHintCells;
     private Coroutine hintSoundCoroutine;
     private List<Coroutine> spawnCoroutines = new();
-    [SerializeField] private float spawnDelayPerCell = 0.03f;   // 셀 간 딜레이
+    [SerializeField] private float[] spawnWaveDurations = { 0.25f, 0.33f, 0.42f, 0.5f };  // 3x3, 4x4, 5x5, 6x6
     private SelectionController selection;
     public GameManager gameManager;
     public TutorialManager tutorialManager;
@@ -103,7 +103,11 @@ public class BoardManager : MonoBehaviour
     }
     private float CalculateSpawnDelay(int x, int y)
     {
-        return (y * n + x) * spawnDelayPerCell;
+        int totalCells = n * n;
+        int index = Mathf.Clamp(n - 3, 0, spawnWaveDurations.Length - 1);
+        float duration = spawnWaveDurations[index];
+        float delayPerCell = totalCells > 1 ? duration / (totalCells - 1) : 0f;
+        return (y * n + x) * delayPerCell;
     }
     private void GenerateBoardValuesUntilValid()
     {

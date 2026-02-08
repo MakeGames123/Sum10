@@ -13764,6 +13764,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1619283865348903255, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: spawnWaveDurations.Array.data[2]
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1619283865348903255, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: spawnWaveDurations.Array.data[3]
+      value: 0.35
+      objectReference: {fileID: 0}
     - target: {fileID: 2218677158743232515, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
