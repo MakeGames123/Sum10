@@ -46,20 +46,14 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
     {
         ClearUI();
 
-        if (scoreManager == null)
-        {
-            Debug.Log("[WorldScorePanel] scoreManager가 null");
-            return;
-        }
+        if (scoreManager == null) return;
 
         if (!scoreManager.IsTop50Ready)
         {
-            Debug.Log("[WorldScorePanel] 캐시 비어있음 → FetchTop50 트리거");
             _ = scoreManager.FetchTop50WithProfilesAsync();
             return;
         }
 
-        Debug.Log($"[WorldScorePanel] 캐시에서 표시: {scoreManager.CachedTop50.Count}명");
         DrawLeaderboard(scoreManager.CachedTop50);
     }
 

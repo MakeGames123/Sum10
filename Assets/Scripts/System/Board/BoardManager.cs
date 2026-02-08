@@ -12,6 +12,7 @@ public class BoardManager : MonoBehaviour
     // 힌트
     private List<Cell> currentHintCells;
     private Coroutine hintSoundCoroutine;
+    private List<Coroutine> spawnCoroutines = new();
     [SerializeField] private float spawnDelayPerCell = 0.03f;   // 셀 간 딜레이
     private SelectionController selection;
     public GameManager gameManager;
@@ -48,6 +49,14 @@ public class BoardManager : MonoBehaviour
     public void SetupBoardWithSize(int size)
     {
         CancelHint();
+
+        // 이전 보드의 spawn 코루틴 정리
+        foreach (var co in spawnCoroutines)
+        {
+            if (co != null) StopCoroutine(co);
+        }
+        spawnCoroutines.Clear();
+
         n = size;
         pathFinder.SetSize(n);
 
@@ -64,7 +73,7 @@ public class BoardManager : MonoBehaviour
             cell.ResetVisual();
             cell.Init(info);
             float delay = CalculateSpawnDelay(i % n, i / n);
-            StartCoroutine(cell.PlaySpawnAnimation(delay));
+            spawnCoroutines.Add(StartCoroutine(cell.PlaySpawnAnimation(delay)));
 
             cell.gameObject.SetActive(true);
         }

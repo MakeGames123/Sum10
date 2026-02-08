@@ -37,7 +37,61 @@ public class ScoreManager : MonoBehaviour
             login = FindObjectOfType<PlayFabLoginManager>();
 
         if (login != null)
-            login.onLogined.AddListener(() => _ = FetchTop50WithProfilesAsync());
+        {
+            login.onLogined.AddListener(() =>
+            {
+                _ = FetchTop50WithProfilesAsync();
+                _ = SyncHighScoreFromServerAsync();
+            });
+        }
+    }
+
+    /// <summary>
+    /// 최초 1회: 서버 역대 최고기록을 로컬에 동기화 (이후 로컬이 항상 최신)
+    /// 실패 시 플래그를 설정하지 않아 다음 로그인에 재시도
+    /// await 후 로컬을 다시 읽어 동기화 중 신기록 덮어쓰기 방지
+    /// </summary>
+    private const string HIGH_SCORE_SYNCED_KEY = "HighScoreSynced";
+    private async Task SyncHighScoreFromServerAsync()
+    {
+        if (PlayerPrefs.GetInt(HIGH_SCORE_SYNCED_KEY, 0) == 1) return;
+
+        var (success, serverScore) = await GetMyHighScoreWithStatusAsync();
+        if (!success) return; // 실패 시 플래그 미설정 → 다음 로그인에 재시도
+
+        int currentLocal = PlayerPrefs.GetInt(STAT_HIGH_SCORE, 0); // await 후 다시 읽기
+        if (serverScore > currentLocal)
+        {
+            PlayerPrefs.SetInt(STAT_HIGH_SCORE, serverScore);
+        }
+        PlayerPrefs.SetInt(HIGH_SCORE_SYNCED_KEY, 1);
+        PlayerPrefs.Save();
+    }
+
+    private Task<(bool success, int score)> GetMyHighScoreWithStatusAsync()
+    {
+        var tcs = new TaskCompletionSource<(bool, int)>();
+
+        PlayFabClientAPI.GetUserData(
+            new GetUserDataRequest { Keys = new List<string> { STAT_HIGH_SCORE } },
+            result =>
+            {
+                int highScore = 0;
+                if (result.Data != null &&
+                    result.Data.TryGetValue(STAT_HIGH_SCORE, out var data))
+                {
+                    int.TryParse(data.Value, out highScore);
+                }
+                tcs.TrySetResult((true, highScore));
+            },
+            error =>
+            {
+                Debug.LogError("UserData 조회 실패: " + error.GenerateErrorReport());
+                tcs.TrySetResult((false, 0));
+            }
+        );
+
+        return tcs.Task;
     }
 
     /// <summary>
@@ -47,7 +101,6 @@ public class ScoreManager : MonoBehaviour
     {
         cachedRank = rank;
         cachedRankScore = score;
-        Debug.Log($"[캐시] 순위={rank}, 점수={score}");
     }
 
     /// <summary>
@@ -93,15 +146,9 @@ public class ScoreManager : MonoBehaviour
 
         // 순위: 캐시가 있고 점수가 일치하면 캐시 사용 (PlayFab Position 갱신 지연 우회)
         if (cachedRank > 0 && cachedRankScore == previousWeeklyBestScore)
-        {
             previousWeeklyRank = cachedRank;
-            Debug.Log($"[게임시작] 캐시 순위 사용: 순위={cachedRank}, 주간최고={previousWeeklyBestScore}");
-        }
         else
-        {
             previousWeeklyRank = result.rank;
-            Debug.Log($"[게임시작] PlayFab 순위 사용: 순위={result.rank}, 주간최고={previousWeeklyBestScore}");
-        }
 
         // 캐시 소비 (1회 사용 후 초기화)
         cachedRank = -1;
@@ -137,11 +184,7 @@ public class ScoreManager : MonoBehaviour
 
         PlayFabClientAPI.UpdatePlayerStatistics(
             request,
-            result =>
-            {
-                Debug.Log($"[리더보드] 주간 최고 갱신: {score}");
-                tcs.TrySetResult(true);
-            },
+            result => tcs.TrySetResult(true),
             error =>
             {
                 Debug.LogError("리더보드 전송 실패: " + error.GenerateErrorReport());
@@ -306,18 +349,10 @@ public class ScoreManager : MonoBehaviour
         );
 
         var leaderboard = await tcs.Task;
-        if (leaderboard == null)
-        {
-            Debug.Log("[ScoreManager] Top 50 조회 실패 (null)");
-            return;
-        }
+        if (leaderboard == null) return;
 
-        Debug.Log($"[ScoreManager] Top 50 조회 완료: {leaderboard.Count}명");
         cachedTop50 = leaderboard;
-
         await FetchMissingProfileIndicesAsync(leaderboard);
-
-        Debug.Log("[ScoreManager] 프로필 인덱스 조회 완료 → OnTop50Updated 발행");
         OnTop50Updated?.Invoke();
     }
 
