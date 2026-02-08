@@ -91,7 +91,7 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
                     ? entry.PlayFabId
                     : entry.DisplayName,
                 entry.StatValue,
-                scoreManager.GetProfileIndex(entry.PlayFabId)
+                GetProfileIndex(entry)
             );
             units[uiIndex].gameObject.SetActive(true);
 
@@ -107,11 +107,23 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
                 string.IsNullOrEmpty(entry.DisplayName)
                     ? entry.PlayFabId
                     : entry.DisplayName,
-                scoreManager.GetProfileIndex(entry.PlayFabId)
+                GetProfileIndex(entry)
             );
         }
     }
-
+    private int GetProfileIndex(PlayerLeaderboardEntry entry)
+    {
+        Debug.Log(entry.Profile.DisplayName);
+        Debug.Log(entry.Profile.AvatarUrl);
+        if (entry.Profile != null && !string.IsNullOrEmpty(entry.Profile.AvatarUrl))
+        {
+            Debug.Log("1235");
+            if (int.TryParse(entry.Profile.AvatarUrl, out int index))
+                return index;
+        }
+        Debug.Log("123");
+        return 0; // 기본값
+    }
     private void ClearUI()
     {
         foreach (var unit in units)

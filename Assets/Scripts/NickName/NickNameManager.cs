@@ -11,7 +11,7 @@ public class NicknameManager : MonoBehaviour
     public TMP_InputField nicknameInputField;
     public TextMeshProUGUI statusText; // 상태 메시지를 보여줄 텍스트 (선택사항)
     public PlayFabLoginManager login;
-    public Profile profile;
+    public ProfileGroup profile;
 
     // 서버 응답을 담을 클래스
     [System.Serializable]
