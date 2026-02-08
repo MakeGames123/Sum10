@@ -52,18 +52,8 @@ public class ScoreManager : MonoBehaviour
     private const string HIGH_SCORE_SYNCED_KEY = "HighScoreSynced";
     private async Task SyncHighScoreFromServerAsync()
     {
-        if (PlayerPrefs.GetInt(HIGH_SCORE_SYNCED_KEY, 0) == 1) return;
-
         var (success, serverScore) = await GetMyHighScoreWithStatusAsync();
         if (!success) return; // 실패 시 플래그 미설정 → 다음 로그인에 재시도
-
-        int currentLocal = PlayerPrefs.GetInt(STAT_HIGH_SCORE, 0); // await 후 다시 읽기
-        if (serverScore > currentLocal)
-        {
-            PlayerPrefs.SetInt(STAT_HIGH_SCORE, serverScore);
-        }
-        PlayerPrefs.SetInt(HIGH_SCORE_SYNCED_KEY, 1);
-        PlayerPrefs.Save();
     }
 
     private Task<(bool success, int score)> GetMyHighScoreWithStatusAsync()
@@ -158,7 +148,26 @@ public class ScoreManager : MonoBehaviour
     /// </summary>
     public void LoadPreviousHighScore()
     {
-        previousHighScore = PlayerPrefs.GetInt(STAT_HIGH_SCORE, 0);
+        PlayFabClientAPI.GetUserData(
+            new GetUserDataRequest
+            {
+                PlayFabId = PlayFabSettings.staticPlayer.PlayFabId,
+                Keys = new List<string> { STAT_HIGH_SCORE }
+            },
+            result =>
+            {
+                if (result.Data != null &&
+                    result.Data.TryGetValue(STAT_HIGH_SCORE, out var data))
+                {
+                    int.TryParse(data.Value, out int score);
+                    previousHighScore = score;
+                }
+            },
+            error =>
+            {
+                Debug.LogError("로드 실패");
+            }
+        );
     }
 
     /// <summary>
@@ -198,9 +207,6 @@ public class ScoreManager : MonoBehaviour
     /// </summary>
     public void SaveHighScore(int score)
     {
-        PlayerPrefs.SetInt(STAT_HIGH_SCORE, score);
-        PlayerPrefs.Save();
-
         var request = new UpdateUserDataRequest
         {
             Data = new Dictionary<string, string>

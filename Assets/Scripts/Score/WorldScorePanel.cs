@@ -113,15 +113,11 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
     }
     private int GetProfileIndex(PlayerLeaderboardEntry entry)
     {
-        Debug.Log(entry.Profile.DisplayName);
-        Debug.Log(entry.Profile.AvatarUrl);
         if (entry.Profile != null && !string.IsNullOrEmpty(entry.Profile.AvatarUrl))
         {
-            Debug.Log("1235");
             if (int.TryParse(entry.Profile.AvatarUrl, out int index))
                 return index;
         }
-        Debug.Log("123");
         return 0; // 기본값
     }
     private void ClearUI()
