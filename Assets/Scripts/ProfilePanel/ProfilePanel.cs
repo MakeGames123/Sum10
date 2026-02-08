@@ -59,26 +59,15 @@ public class ProfilePanel : MonoBehaviour
     }
     private void SaveProfileIndexToPlayFab(int index)
     {
-        var request = new UpdateUserDataRequest
+        var request = new UpdateAvatarUrlRequest
         {
-            Data = new Dictionary<string, string>
-        {
-            { PROFILE_INDEX_KEY, index.ToString() }
-        },
-        Permission = UserDataPermission.Public
+            ImageUrl = index.ToString()
         };
 
-        PlayFabClientAPI.UpdateUserData(
-            request,
-            result =>
-            {
-                Debug.Log($"프로필 인덱스 저장 성공: {index}");
-            },
-            error =>
-            {
-                Debug.LogError("프로필 인덱스 저장 실패: " + error.GenerateErrorReport());
-            }
-        );
+        PlayFabClientAPI.UpdateAvatarUrl(request, result =>
+        {
+            Debug.Log("클라우드 프로필 인덱스 업데이트 완료");
+        }, error => Debug.LogError(error.GenerateErrorReport()));
     }
 
 }
