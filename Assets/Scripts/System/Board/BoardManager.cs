@@ -113,8 +113,10 @@ public class BoardManager : MonoBehaviour
     {
         FillBoardRandom();
 
-        InsertTwoCellPath();
-        InsertTwoCellPath();
+        var reserved = new HashSet<Cell>();
+        InsertTwoCellPath(reserved);
+        InsertTwoCellPath(reserved);
+        InsertTwoCellPath(reserved);
     }
     private void GenerateBoardTutorialValues()
     {
@@ -127,7 +129,7 @@ public class BoardManager : MonoBehaviour
 
         tutorialManager.TutorialProgress();
     }
-    private void InsertTwoCellPath()
+    private void InsertTwoCellPath(HashSet<Cell> reserved)
     {
         int centerIndex = 99;
         if (n % 2 == 1)
@@ -140,23 +142,22 @@ public class BoardManager : MonoBehaviour
         for (int i = 0; i < n * n; i++)
         {
             if (i == centerIndex) continue;
+            if (reserved.Contains(cells[i])) continue;
             Vector2Int p = cells[i].Position;
 
-            TryAddPair(cells[i], p + Vector2Int.right, candidates);
-            TryAddPair(cells[i], p + Vector2Int.up, candidates);
+            TryAddPair(cells[i], p + Vector2Int.right, candidates, reserved);
+            TryAddPair(cells[i], p + Vector2Int.up, candidates, reserved);
         }
 
-        if (candidates.Count == 0)
-        {
-            Debug.LogWarning("삽입 가능한 셀 쌍 없음");
-            return;
-        }
+        if (candidates.Count == 0) return;
 
         var pair = candidates[UnityEngine.Random.Range(0, candidates.Count)];
         AssignPairSumToTen(pair.a, pair.b);
+        reserved.Add(pair.a);
+        reserved.Add(pair.b);
     }
 
-    private void TryAddPair(Cell a, Vector2Int pos, List<(Cell, Cell)> list)
+    private void TryAddPair(Cell a, Vector2Int pos, List<(Cell, Cell)> list, HashSet<Cell> reserved)
     {
         if (pos.x < 0 || pos.y < 0 || pos.x >= n || pos.y >= n)
             return;
@@ -164,6 +165,7 @@ public class BoardManager : MonoBehaviour
         Cell b = cells[pos.x + pos.y * n];
 
         if (b.ReturnNum() == 0) return;
+        if (reserved.Contains(b)) return;
 
         list.Add((a, b));
     }
