@@ -11,25 +11,23 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
 {
     public List<WorldScoreUnit> units = new();
     public List<PodiumUnit> podiumUnits = new();
-    private const string PROFILE_INDEX_KEY = "ProfileIndex";
-    private Dictionary<string, int> profileIndexCache = new();
     private const string TargetStatistic = "HighScore";
-    bool init = false;
     public GameManager gameManager;
+
     public void SetCondition()
     {
         gameManager.OnGameOver.AddListener((val) => LoadWorldLeaderboard());
         UpdateRank();
     }
-    public void OnDisable()
-    {
-    }
+
+    public void OnDisable() { }
 
     public void UpdateRank()
     {
         ClearUI();
         LoadWorldLeaderboard();
     }
+
     private void LoadWorldLeaderboard()
     {
         var request = new GetLeaderboardRequest
@@ -37,50 +35,38 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
             StatisticName = TargetStatistic,
             StartPosition = 0,
             MaxResultsCount = 50,
+            // 핵심: 프로필 제약 조건을 설정하여 AvatarUrl(인덱스 저장용)을 같이 가져옴
             ProfileConstraints = new PlayerProfileViewConstraints
             {
-                ShowDisplayName = true
+                ShowDisplayName = true,
+                ShowAvatarUrl = true 
             }
         };
 
         PlayFabClientAPI.GetLeaderboard(request, result =>
         {
             string myPlayFabId = PlayFabSettings.staticPlayer.PlayFabId;
-
-            if (!init)
-            {
-                PreloadProfileIndices(result.Leaderboard, () =>
-                {
-                    DrawLeaderboard(result.Leaderboard, myPlayFabId);
-                });
-                init = true;
-            }
-            else
-            {
-                DrawLeaderboard(result.Leaderboard, myPlayFabId);
-            }
+            // 이제 추가 API 호출 없이 바로 그립니다.
+            DrawLeaderboard(result.Leaderboard, myPlayFabId);
         }, error =>
         {
             Debug.LogError("리더보드 로드 실패: " + error.GenerateErrorReport());
         });
     }
-    private void DrawLeaderboard(
-        List<PlayerLeaderboardEntry> leaderboard,
-        string myPlayFabId)
+
+    private void DrawLeaderboard(List<PlayerLeaderboardEntry> leaderboard, string myPlayFabId)
     {
+        if (leaderboard == null) return;
+
         int uiIndex = 0;
+        PlayerLeaderboardEntry myEntry = leaderboard.Find(e => e.PlayFabId == myPlayFabId);
 
-        PlayerLeaderboardEntry myEntry =
-            leaderboard.Find(e => e.PlayFabId == myPlayFabId);
-
-        // 내 점수
+        // 1. 내 점수 (리더보드에 내가 있을 경우)
         if (myEntry != null && units.Count > 0)
         {
             units[0].SetCondition(
                 myEntry.Position + 1,
-                string.IsNullOrEmpty(myEntry.DisplayName)
-                    ? myEntry.PlayFabId
-                    : myEntry.DisplayName,
+                GetPlayerName(myEntry),
                 myEntry.StatValue,
                 PlayerData.Instance.EquippedProfileImage
             );
@@ -88,92 +74,50 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
             uiIndex = 1;
         }
 
-        // 월드 랭킹
-        foreach (var entry in leaderboard)
-        {
-            if (uiIndex >= units.Count) break;
-
-            units[uiIndex].SetCondition(
-                entry.Position + 1,
-                string.IsNullOrEmpty(entry.DisplayName)
-                    ? entry.PlayFabId
-                    : entry.DisplayName,
-                entry.StatValue,
-                profileIndexCache[entry.PlayFabId]
-            );
-            units[uiIndex].gameObject.SetActive(true);
-
-            uiIndex++;
-        }
-
-        // 시상대
-        for (int i = 0; i < 3; i++)
+        // 2. 월드 랭킹 및 시상대 처리
+        for (int i = 0; i < leaderboard.Count; i++)
         {
             var entry = leaderboard[i];
+            int profileIndex = GetProfileIndex(entry);
+            string playerName = GetPlayerName(entry);
 
-            podiumUnits[i].SetCondition(
-                string.IsNullOrEmpty(entry.DisplayName)
-                    ? entry.PlayFabId
-                    : entry.DisplayName,
-                profileIndexCache[entry.PlayFabId]
-            );
+            // 리스트 UI 업데이트
+            if (uiIndex < units.Count)
+            {
+                units[uiIndex].SetCondition(entry.Position + 1, playerName, entry.StatValue, profileIndex);
+                units[uiIndex].gameObject.SetActive(true);
+                uiIndex++;
+            }
+
+            // 시상대 UI 업데이트 (상위 3명)
+            if (i < 3 && i < podiumUnits.Count)
+            {
+                podiumUnits[i].SetCondition(playerName, profileIndex);
+            }
         }
     }
 
-    private void PreloadProfileIndices(
-        List<PlayerLeaderboardEntry> entries,
-        System.Action onComplete)
+    // 이름 결정 로직 유틸리티
+    private string GetPlayerName(PlayerLeaderboardEntry entry)
     {
-        int remaining = entries.Count;
+        if (!string.IsNullOrEmpty(entry.DisplayName)) return entry.DisplayName;
+        if (entry.Profile != null && !string.IsNullOrEmpty(entry.Profile.DisplayName)) return entry.Profile.DisplayName;
+        return entry.PlayFabId;
+    }
 
-        if (remaining == 0)
+    // AvatarUrl에서 인덱스 추출 유틸리티
+    private int GetProfileIndex(PlayerLeaderboardEntry entry)
+    {
+        if (entry.Profile != null && !string.IsNullOrEmpty(entry.Profile.AvatarUrl))
         {
-            onComplete?.Invoke();
-            return;
+            if (int.TryParse(entry.Profile.AvatarUrl, out int index))
+                return index;
         }
-
-        foreach (var entry in entries)
-        {
-            string playFabId = entry.PlayFabId;
-
-            PlayFabClientAPI.GetUserData(
-                new GetUserDataRequest
-                {
-                    PlayFabId = playFabId,
-                    Keys = new List<string> { PROFILE_INDEX_KEY }
-                },
-                result =>
-                {
-                    int index = 0;
-
-                    if (result.Data != null &&
-                        result.Data.TryGetValue(PROFILE_INDEX_KEY, out var data))
-                    {
-                        int.TryParse(data.Value, out index);
-                    }
-
-                    profileIndexCache[playFabId] = index;
-
-                    if (--remaining == 0)
-                        onComplete?.Invoke();
-                },
-                error =>
-                {
-                    // 실패해도 기본값
-                    profileIndexCache[playFabId] = 0;
-
-                    if (--remaining == 0)
-                        onComplete?.Invoke();
-                }
-            );
-        }
+        return 0; // 기본값
     }
 
     private void ClearUI()
     {
-        foreach (var unit in units)
-        {
-            unit.gameObject.SetActive(false);
-        }
+        foreach (var unit in units) unit.gameObject.SetActive(false);
     }
 }
