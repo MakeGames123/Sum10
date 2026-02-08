@@ -65,6 +65,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
     private string currentPlayerId;
     private int currentMyScore;
     private float extractMyY;  // Extract 시점의 내 Row Y 위치 (위/아래 구분 기준)
+    private Dictionary<int, PlayerLeaderboardEntry> rankMap = new(); // 점수 기반 순위 맵 (Position 전파 지연 우회)
 
     // Recycling state
     private int[] poolDisplayRanks;  // 각 pool row가 현재 표시 중인 rank
@@ -168,6 +169,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
 
         // Phase 0: Initial Display
         // 화면 배치는 visualPrevRank 기준, 숫자는 실제 prevRank 표시
+        BuildRankMap(visualPrevRank);
         SetupInitialDisplay(visualPrevRank, currentRank, isCase2 || isCase3);
         currentDisplayRank = prevRank;  // 숫자는 실제 순위로 표시
         myRow.SetCondition(prevRank, currentMyScore, currentPlayerId);
@@ -195,6 +197,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
 
             yield return StartCoroutine(PhaseExtract(visualPrevRank));
             yield return StartCoroutine(PhaseSmoothScroll(prevRank, boundary, true, scrollSteps, scrollActualSteps));
+            BuildRankMap(boundary);
             yield return StartCoroutine(PhaseInsert(boundary));
             yield return StartCoroutine(PhaseSwapAnimation(boundary, currentRank, true, swapSteps));
         }
@@ -203,6 +206,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
             // 케이스 4: 1~3등 → 4등 밖 (하락) - 케이스 1처럼 바로 처리
             yield return StartCoroutine(PhaseExtract(visualPrevRank));
             yield return StartCoroutine(PhaseSmoothScroll(prevRank, currentRank, false, visualSteps, actualSteps));
+            BuildRankMap(currentRank);
             yield return StartCoroutine(PhaseInsert(currentRank));
         }
         else
@@ -210,6 +214,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
             // 케이스 1: 기존 Extract → Scroll → Insert
             yield return StartCoroutine(PhaseExtract(visualPrevRank));
             yield return StartCoroutine(PhaseSmoothScroll(prevRank, currentRank, isRising, visualSteps, actualSteps));
+            BuildRankMap(currentRank);
             yield return StartCoroutine(PhaseInsert(currentRank));
         }
 
@@ -570,16 +575,48 @@ public class RankingOvertakeAnimation : MonoBehaviour
 
     // ========== Helper Methods ==========
 
-    private PlayerLeaderboardEntry FindEntryByRankExcludePlayer(int rank, string excludePlayerId)
+    /// <summary>
+    /// 순위 맵 생성: "제거 후 삽입" 방식 (PlayFab Position 전파 지연 + 동점자 타이브레이킹 차이 모두 우회)
+    /// 1단계: 데이터에서 플레이어를 제거 → 아래 엔트리가 한 칸 올라감
+    /// 2단계: currentRank 위치에 플레이어 삽입 → 해당 순위 이하 엔트리가 한 칸 밀림
+    /// </summary>
+    private void BuildRankMap(int currentRank)
     {
-        if (leaderboardData == null) return null;
+        rankMap.Clear();
+        if (leaderboardData == null) return;
+
+        // 플레이어의 데이터상 Position 찾기
+        int playerPos = int.MaxValue;
         foreach (var entry in leaderboardData)
         {
-            if (entry.PlayFabId == excludePlayerId) continue;
-            if (entry.Position + 1 == rank)
-                return entry;
+            if (entry.PlayFabId == currentPlayerId)
+            {
+                playerPos = entry.Position;
+                break;
+            }
         }
-        return null;
+
+        foreach (var entry in leaderboardData)
+        {
+            if (entry.PlayFabId == currentPlayerId) continue;
+
+            // Step 1: 플레이어 제거 후 순위 (플레이어보다 아래 엔트리는 한 칸 올라감)
+            int rankAfterRemove = entry.Position < playerPos
+                ? entry.Position + 1
+                : entry.Position;
+
+            // Step 2: currentRank에 플레이어 삽입 (해당 순위 이상은 한 칸 밀림)
+            int displayRank = rankAfterRemove < currentRank
+                ? rankAfterRemove
+                : rankAfterRemove + 1;
+
+            rankMap[displayRank] = entry;
+        }
+    }
+
+    private PlayerLeaderboardEntry FindEntryByRankExcludePlayer(int rank, string excludePlayerId)
+    {
+        return rankMap.TryGetValue(rank, out var entry) ? entry : null;
     }
 
     private PlayerLeaderboardEntry FindEntryByPlayerId(string playerId)

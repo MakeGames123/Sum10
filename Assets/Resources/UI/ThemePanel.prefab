@@ -1256,7 +1256,11 @@ MonoBehaviour:
   - {fileID: 3821765716317912282}
   - {fileID: 3727585923194293474}
   - {fileID: 2165086369541297313}
-  spawnDelayPerCell: 0.03
+  spawnWaveDurations:
+  - 0.25
+  - 0.32
+  - 0.35
+  - 0.35
   gameManager: {fileID: 0}
   tutorialManager: {fileID: 0}
   themePanel: {fileID: 273688842149201134}

@@ -38,20 +38,14 @@ public class SpawnAnimation : CellAnim
             numberText.alpha = 0f;
         }
 
-        Sequence spawnSeq = DOTween.Sequence();
-
-        // 딜레이
-        //if (delay > 0f)
-        //{
-        //    spawnSeq.AppendInterval(delay);
-        //}
+        seq = DOTween.Sequence();
 
         // Phase 1: 떨어지면서 커지기 (60%)
-        spawnSeq.Append(
+        seq.Append(
             rect.transform.DOLocalMove(Vector3.zero, config.spawnDuration * 0.6f)
                 .SetEase(Ease.OutQuad)
         );
-        spawnSeq.Join(
+        seq.Join(
             rect.transform.DOScale(config.spawnScalePeak * themeScale, config.spawnDuration * 0.6f)
                 .SetEase(Ease.OutBack)
         );
@@ -59,18 +53,18 @@ public class SpawnAnimation : CellAnim
         // 숫자도 같이 떨어지면서 페이드인
         if (numberText != null && numberText.enabled)
         {
-            spawnSeq.Join(
+            seq.Join(
                 numberText.transform.DOLocalMove(originalTextPos, config.spawnDuration * 0.6f)
                     .SetEase(Ease.OutQuad)
             );
-            spawnSeq.Join(
+            seq.Join(
                 numberText.DOFade(1f, config.spawnDuration * 0.4f)
                     .SetDelay(config.spawnDuration * 0.1f)
             );
         }
 
         // Phase 2: 살짝 줄어들면서 안정 (40%)
-        spawnSeq.Append(
+        seq.Append(
             rect.transform.DOScale(themeScale, config.spawnDuration * 0.4f)
                 .SetEase(Ease.OutQuad)
         );

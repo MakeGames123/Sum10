@@ -12,7 +12,8 @@ public class BoardManager : MonoBehaviour
     // 힌트
     private List<Cell> currentHintCells;
     private Coroutine hintSoundCoroutine;
-    [SerializeField] private float spawnDelayPerCell = 0.03f;   // 셀 간 딜레이
+    private List<Coroutine> spawnCoroutines = new();
+    [SerializeField] private float[] spawnWaveDurations = { 0.25f, 0.33f, 0.42f, 0.5f };  // 3x3, 4x4, 5x5, 6x6
     private SelectionController selection;
     public GameManager gameManager;
     public TutorialManager tutorialManager;
@@ -48,6 +49,14 @@ public class BoardManager : MonoBehaviour
     public void SetupBoardWithSize(int size)
     {
         CancelHint();
+
+        // 이전 보드의 spawn 코루틴 정리
+        foreach (var co in spawnCoroutines)
+        {
+            if (co != null) StopCoroutine(co);
+        }
+        spawnCoroutines.Clear();
+
         n = size;
         pathFinder.SetSize(n);
 
@@ -64,7 +73,7 @@ public class BoardManager : MonoBehaviour
             cell.ResetVisual();
             cell.Init(info);
             float delay = CalculateSpawnDelay(i % n, i / n);
-            StartCoroutine(cell.PlaySpawnAnimation(delay));
+            spawnCoroutines.Add(StartCoroutine(cell.PlaySpawnAnimation(delay)));
 
             cell.gameObject.SetActive(true);
         }
@@ -94,14 +103,20 @@ public class BoardManager : MonoBehaviour
     }
     private float CalculateSpawnDelay(int x, int y)
     {
-        return (y * n + x) * spawnDelayPerCell;
+        int totalCells = n * n;
+        int index = Mathf.Clamp(n - 3, 0, spawnWaveDurations.Length - 1);
+        float duration = spawnWaveDurations[index];
+        float delayPerCell = totalCells > 1 ? duration / (totalCells - 1) : 0f;
+        return (y * n + x) * delayPerCell;
     }
     private void GenerateBoardValuesUntilValid()
     {
         FillBoardRandom();
 
-        InsertTwoCellPath();
-        InsertTwoCellPath();
+        var reserved = new HashSet<Cell>();
+        InsertTwoCellPath(reserved);
+        InsertTwoCellPath(reserved);
+        InsertTwoCellPath(reserved);
     }
     private void GenerateBoardTutorialValues()
     {
@@ -114,7 +129,7 @@ public class BoardManager : MonoBehaviour
 
         tutorialManager.TutorialProgress();
     }
-    private void InsertTwoCellPath()
+    private void InsertTwoCellPath(HashSet<Cell> reserved)
     {
         int centerIndex = 99;
         if (n % 2 == 1)
@@ -127,23 +142,22 @@ public class BoardManager : MonoBehaviour
         for (int i = 0; i < n * n; i++)
         {
             if (i == centerIndex) continue;
+            if (reserved.Contains(cells[i])) continue;
             Vector2Int p = cells[i].Position;
 
-            TryAddPair(cells[i], p + Vector2Int.right, candidates);
-            TryAddPair(cells[i], p + Vector2Int.up, candidates);
+            TryAddPair(cells[i], p + Vector2Int.right, candidates, reserved);
+            TryAddPair(cells[i], p + Vector2Int.up, candidates, reserved);
         }
 
-        if (candidates.Count == 0)
-        {
-            Debug.LogWarning("삽입 가능한 셀 쌍 없음");
-            return;
-        }
+        if (candidates.Count == 0) return;
 
         var pair = candidates[UnityEngine.Random.Range(0, candidates.Count)];
         AssignPairSumToTen(pair.a, pair.b);
+        reserved.Add(pair.a);
+        reserved.Add(pair.b);
     }
 
-    private void TryAddPair(Cell a, Vector2Int pos, List<(Cell, Cell)> list)
+    private void TryAddPair(Cell a, Vector2Int pos, List<(Cell, Cell)> list, HashSet<Cell> reserved)
     {
         if (pos.x < 0 || pos.y < 0 || pos.x >= n || pos.y >= n)
             return;
@@ -151,6 +165,7 @@ public class BoardManager : MonoBehaviour
         Cell b = cells[pos.x + pos.y * n];
 
         if (b.ReturnNum() == 0) return;
+        if (reserved.Contains(b)) return;
 
         list.Add((a, b));
     }

@@ -27,17 +27,17 @@ public class BlankAppearAnimation : CellAnim
         // 시작 스케일 0
         rect.transform.localScale = Vector3.zero;
 
-        Sequence appearSeq = DOTween.Sequence();
+        seq = DOTween.Sequence();
 
         // 딜레이
-        appearSeq.AppendInterval(config.appearDelay);
+        seq.AppendInterval(config.appearDelay);
 
         // Scale 0 → 1.1 → 1 (톡 튀어나오는 느낌)
-        appearSeq.Append(
+        seq.Append(
             rect.transform.DOScale(config.appearScalePeak * themeScale, config.appearDuration * 0.6f)
                 .SetEase(Ease.OutBack)
         );
-        appearSeq.Append(
+        seq.Append(
             rect.transform.DOScale(themeScale, config.appearDuration * 0.4f)
                 .SetEase(Ease.InOutQuad)
         );
