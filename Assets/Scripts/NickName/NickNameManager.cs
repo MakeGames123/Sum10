@@ -32,7 +32,7 @@ public class NicknameManager : MonoBehaviour
             result =>
             {
                 string nickname = result.AccountInfo.TitleInfo.DisplayName;
-                if(nickname == "") transform.position = Vector2.zero;
+                if(nickname == "" || nickname == null) transform.localPosition = Vector2.zero;
                 else gameObject.SetActive(false);
             },
             error =>
@@ -113,6 +113,7 @@ public class NicknameManager : MonoBehaviour
                     {
                         Debug.Log("닉네임 변경 성공");
                         profile.UpdateProfile();
+                        SaveNewbieProfile();
                         gameObject.SetActive(false);
                         // 토큰 소모 (삭제)
                         PlayFabClientAPI.UpdateUserData(
@@ -129,6 +130,18 @@ public class NicknameManager : MonoBehaviour
             },
             error => Debug.LogError(error.GenerateErrorReport())
         );
+    }
+    private void SaveNewbieProfile()
+    {
+        var request = new UpdateAvatarUrlRequest
+        {
+            ImageUrl = "0"
+        };
+
+        PlayFabClientAPI.UpdateAvatarUrl(request, result =>
+        {
+            Debug.Log("클라우드 프로필 인덱스 업데이트 완료");
+        }, error => Debug.LogError(error.GenerateErrorReport()));
     }
     void HandleNicknameFailReason(string reason)
     {

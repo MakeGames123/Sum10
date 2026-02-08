@@ -30,8 +30,8 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
             result =>
             {
                 nickName.text = result.AccountInfo.TitleInfo.DisplayName;
-                if (int.TryParse(result.AccountInfo.TitleInfo.AvatarUrl, out int index))
-                profileImage.sprite = profileSprites[index];
+                if (int.TryParse(result.AccountInfo.TitleInfo.AvatarUrl, out int index)) profileImage.sprite = profileSprites[index];//기본프로필 시작 : 저장된 프로필 시작
+                else profileImage.sprite = profileSprites[0];
                 PlayerData.Instance.EquippedProfileImage = index;
             },
             error =>
