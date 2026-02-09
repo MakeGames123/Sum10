@@ -6,21 +6,26 @@ using UnityEngine.UI;
 
 public class PodiumUnit : MonoBehaviour
 {
-    
+
     [SerializeField] TextMeshProUGUI IDText;
     [SerializeField] Image profile;
+    [SerializeField] Image crown;
+    [SerializeField] GameObject profileGroup;
     [SerializeField] List<Sprite> profiles;
     public void SetCondition(string id, int profileIndex)
     {
-        if (!string.IsNullOrEmpty(id) && id.Length > 6)
+        IDText.text = id;
+
+        if (profileIndex == -1)
         {
-            // 6글자까지 자르고 뒤에 .. 추가 (예: ABCDEF..)
-            IDText.text = id.Substring(0, 6) + "..";
+            crown.enabled = false;
+            profileGroup.SetActive(false);
         }
         else
         {
-            IDText.text = id;
+            crown.enabled = true;
+            profileGroup.SetActive(true);
+            profile.sprite = profiles[profileIndex];
         }
-        profile.sprite = profiles[profileIndex];
     }
 }

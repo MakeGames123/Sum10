@@ -122,9 +122,15 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
     }
     private void ClearUI()
     {
+        int uiIndex = 1;
         foreach (var unit in units)
         {
-            unit.gameObject.SetActive(false);
+            unit.SetCondition(uiIndex++, "---", -1, -1);
+        }
+
+        foreach (var unit in podiumUnits)
+        {
+            unit.SetCondition("", -1);
         }
     }
 }

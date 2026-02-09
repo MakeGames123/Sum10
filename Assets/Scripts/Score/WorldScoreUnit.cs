@@ -14,21 +14,23 @@ public class WorldScoreUnit : MonoBehaviour
     [SerializeField] List<Sprite> backgrounds;
     [SerializeField] Image badge;
     [SerializeField] Image profile;
+    [SerializeField] GameObject profileGroup;
     [SerializeField] List<Sprite> profiles;
     [SerializeField] List<Sprite> badges;
     public void SetCondition(int rank, string id, int score, int profileIndex)
     {
-        if (!string.IsNullOrEmpty(id) && id.Length > 6)
-        {
-            // 6글자까지 자르고 뒤에 .. 추가 (예: ABCDEF..)
-            IDText.text = id.Substring(0, 6) + "..";
-        }
+        IDText.text = id;
+
+        if (score == -1) scoreText.text = "---";
+        else scoreText.text = score.ToString();
+
+        if (score == -1) profileGroup.SetActive(false);
         else
         {
-            IDText.text = id;
+            profileGroup.SetActive(true);
+            profile.sprite = profiles[profileIndex];
         }
-        scoreText.text = score.ToString();
-        profile.sprite = profiles[profileIndex];
+
 
         if (rank > 3)
         {
