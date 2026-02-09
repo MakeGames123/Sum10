@@ -26,7 +26,7 @@ public class ScoreManager : MonoBehaviour
     // ===== Top 50 공유 캐시 =====
     private List<PlayerLeaderboardEntry> cachedTop50;
     public List<PlayerLeaderboardEntry> CachedTop50 => cachedTop50;
-    public bool IsTop50Ready => cachedTop50 != null && cachedTop50.Count > 0;
+    public bool IsTop50Ready => cachedTop50 != null;
     public System.Action OnTop50Updated;
 
     private void Start()

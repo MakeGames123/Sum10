@@ -10784,6 +10784,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1888830327}
   m_CullTransparentMesh: 1
+--- !u!1 &1891781739
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1891781741}
+  - component: {fileID: 1891781740}
+  m_Layer: 0
+  m_Name: TopAdBanner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1891781740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1891781739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56dde580e4f0fe744a48f4021618c44e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1891781741
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1891781739}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -218.62994, y: -590.49316, z: -3.519562}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1905876327
 GameObject:
   m_ObjectHideFlags: 0
@@ -13881,7 +13925,7 @@ MonoBehaviour:
   boardManager: {fileID: 1471298999}
   boardSettingManager: {fileID: 1471298998}
   scoreManager: {fileID: 899309715}
-  gameDuration: 30
+  gameDuration: 1.5
   hintIdleThreshold: 5
   hintFlashDuration: 1
   scoreTextPosition: {x: 0, y: 700}
@@ -13995,6 +14039,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2130406195 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3161372696197682060, guid: ebc9ab647be1bb74baa1ab6262799cde, type: 3}
+  m_PrefabInstance: {fileID: 1575351740}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2136017606
 GameObject:
   m_ObjectHideFlags: 0
@@ -14857,6 +14912,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -130
       objectReference: {fileID: 0}
+    - target: {fileID: 8927398965367415294, guid: f74e790a46e7315458b9c2cd0a1d6069, type: 3}
+      propertyPath: profileImage
+      value: 
+      objectReference: {fileID: 2130406195}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15333,3 +15392,4 @@ SceneRoots:
   - {fileID: 1722559472}
   - {fileID: 945397518}
   - {fileID: 1576174832}
+  - {fileID: 1891781741}
