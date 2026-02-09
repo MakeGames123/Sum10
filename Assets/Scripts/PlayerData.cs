@@ -16,6 +16,8 @@ public class PlayerData : MonoBehaviour
             DontDestroyOnLoad(gameObject); // 씬이 바뀌어도 파괴되지 않음
         }
         else { Destroy(gameObject); }
+
+        login.onLogined.AddListener(LoadDiamondFromServer);
     }
 
     private int equippedProfileImage = 0;
@@ -29,5 +31,41 @@ public class PlayerData : MonoBehaviour
         }
     }
     public UnityEvent<int> onProfileImageChanged = new();
+    private int localDiamond;
+    public UnityEvent<int> onDiamondChanged = new();
+    public void LoadDiamondFromServer()
+    {
+        PlayFabClientAPI.GetUserInventory(
+            new GetUserInventoryRequest(),
+            result =>
+            {
+                if (result.VirtualCurrency != null &&
+                    result.VirtualCurrency.TryGetValue("DM", out int diamond))
+                {
+                    localDiamond = diamond;
+                    onDiamondChanged?.Invoke(localDiamond);
+                    Debug.Log($"다이아 로드 성공: {localDiamond}");
+                }
+                else
+                {
+                    localDiamond = 0;
+                    Debug.Log("다이아 없음 (0으로 초기화)");
+                }
+            },
+            error =>
+            {
+                Debug.LogError("다이아 로드 실패: " + error.GenerateErrorReport());
+            }
+        );
+    }
 
+    public int GetDiamond()
+    {
+        return localDiamond;
+    }
+    public void AdjustDiamone(int val)
+    {
+        localDiamond += val;
+        onDiamondChanged?.Invoke(localDiamond);
+    }
 }

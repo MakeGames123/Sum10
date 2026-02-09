@@ -1033,6 +1033,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8973079425792203132}
+  - component: {fileID: 2677605323239269807}
   m_Layer: 5
   m_Name: DiamondGroup
   m_TagString: Untagged
@@ -1063,6 +1064,19 @@ RectTransform:
   m_AnchoredPosition: {x: 50, y: 0}
   m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 0, y: 0.5}
+--- !u!114 &2677605323239269807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5928938540456722404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 555f9810ef0471d44b226dbe0ee11004, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 7580150059696282788}
 --- !u!1 &6458993575148288772
 GameObject:
   m_ObjectHideFlags: 0
@@ -1648,6 +1662,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: aba314c54c2e85347865c7aeb9889822, type: 3}
   - {fileID: 21300000, guid: 81bdcc283e7a67c4ea78f5311c02c487, type: 3}
   panel: {fileID: 0}
+  nickName: {fileID: 8772081739264870310}
+  rank: {fileID: 5859751442626433863}
+  login: {fileID: 0}
 --- !u!1 &8184003563767999865
 GameObject:
   m_ObjectHideFlags: 0
@@ -1768,7 +1785,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4609461170822558076}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &8233924605996852451
 MonoBehaviour:
   m_ObjectHideFlags: 0
