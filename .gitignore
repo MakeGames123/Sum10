@@ -60,3 +60,6 @@ Assets/StreamingAssets/build_info
 Assets/PlayMaker/Editor/Resources/EditorStartupPrefs.asset
 Assets/StreamingAssets/build_info.meta
 Assets/PlayMaker/Editor/Resources/EditorStartupPrefs.asset.meta
+
+# Windows 예약 디바이스 이름
+nul
