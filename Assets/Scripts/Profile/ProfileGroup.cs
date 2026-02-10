@@ -9,7 +9,6 @@ using TMPro;
 public class ProfileGroup : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] Image profileImage;
-    public List<Sprite> profileSprites = new();
     public GameObject panel;
     [SerializeField] TextMeshProUGUI nickName;
     [SerializeField] TextMeshProUGUI rank;
@@ -30,8 +29,8 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
             result =>
             {
                 nickName.text = result.AccountInfo.TitleInfo.DisplayName;
-                if (int.TryParse(result.AccountInfo.TitleInfo.AvatarUrl, out int index)) profileImage.sprite = profileSprites[index];//기본프로필 시작 : 저장된 프로필 시작
-                else profileImage.sprite = profileSprites[0];
+                if (int.TryParse(result.AccountInfo.TitleInfo.AvatarUrl, out int index)) profileImage.sprite = ProfileList.Instance.profileList[index];//기본프로필 시작 : 저장된 프로필 시작
+                else profileImage.sprite = ProfileList.Instance.profileList[0];
                 PlayerData.Instance.EquippedProfileImage = index;
             },
             error =>

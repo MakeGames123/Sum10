@@ -7,7 +7,6 @@ using PlayFab.ClientModels;
 public class ProfilePanel : MonoBehaviour
 {
     [SerializeField] Image profileImage;
-    public List<Sprite> profileSprites = new();
     public List<ProfileSlot> slots = new();
     public Button equipButton;
     int currentIndex = 0;
@@ -16,7 +15,7 @@ public class ProfilePanel : MonoBehaviour
     {
         for (int i = 0; i < slots.Count; i++)
         {
-            slots[i].SetCondition(profileSprites[i], i);
+            slots[i].SetCondition(ProfileList.Instance.profileList[i], i);
 
             slots[i].onClick.AddListener(SelectProfile);
         }
@@ -56,7 +55,7 @@ public class ProfilePanel : MonoBehaviour
         }
         slots[currentIndex].EnableCheck();
         PlayerData.Instance.EquippedProfileImage = currentIndex;
-        profileImage.sprite = profileSprites[currentIndex];
+        profileImage.sprite = ProfileList.Instance.profileList[currentIndex];
         SaveProfileIndexToPlayFab(currentIndex);
     }
     private void SaveProfileIndexToPlayFab(int index)

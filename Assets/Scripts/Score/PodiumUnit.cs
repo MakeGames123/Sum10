@@ -11,7 +11,6 @@ public class PodiumUnit : MonoBehaviour
     [SerializeField] Image profile;
     [SerializeField] Image crown;
     [SerializeField] GameObject profileGroup;
-    [SerializeField] List<Sprite> profiles;
     public void SetCondition(string id, int profileIndex)
     {
         IDText.text = id;
@@ -25,7 +24,7 @@ public class PodiumUnit : MonoBehaviour
         {
             crown.enabled = true;
             profileGroup.SetActive(true);
-            profile.sprite = profiles[profileIndex];
+            profile.sprite = ProfileList.Instance.profileList[profileIndex];
         }
     }
 }

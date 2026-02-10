@@ -15,7 +15,6 @@ public class WorldScoreUnit : MonoBehaviour
     [SerializeField] Image badge;
     [SerializeField] Image profile;
     [SerializeField] GameObject profileGroup;
-    [SerializeField] List<Sprite> profiles;
     [SerializeField] List<Sprite> badges;
     public void SetCondition(int rank, string id, int score, int profileIndex)
     {
@@ -28,7 +27,7 @@ public class WorldScoreUnit : MonoBehaviour
         else
         {
             profileGroup.SetActive(true);
-            profile.sprite = profiles[profileIndex];
+            profile.sprite = ProfileList.Instance.profileList[profileIndex];
         }
 
 
