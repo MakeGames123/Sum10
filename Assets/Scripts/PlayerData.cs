@@ -8,6 +8,21 @@ public class PlayerData : MonoBehaviour
 {
     public static PlayerData Instance;
     public PlayFabLoginManager login;
+    public UnityEvent<int> onProfileImageChanged = new();
+    private int localDiamond;
+    public UnityEvent<int> onDiamondChanged = new();
+    private int equippedProfileImage = 0;
+    public int EquippedProfileImage
+    {
+        get { return equippedProfileImage; }
+        set
+        {
+            equippedProfileImage = value;
+            onProfileImageChanged.Invoke(equippedProfileImage);
+        }
+    }
+    private bool isAdRemoved = false;
+    public UnityEvent<bool> onAdRemovedChanged = new();
     private void Awake()
     {
         if (Instance == null)
@@ -19,20 +34,6 @@ public class PlayerData : MonoBehaviour
 
         login.onLogined.AddListener(LoadDiamondFromServer);
     }
-
-    private int equippedProfileImage = 0;
-    public int EquippedProfileImage
-    {
-        get { return equippedProfileImage; }
-        set
-        {
-            equippedProfileImage = value;
-            onProfileImageChanged.Invoke(equippedProfileImage);
-        }
-    }
-    public UnityEvent<int> onProfileImageChanged = new();
-    private int localDiamond;
-    public UnityEvent<int> onDiamondChanged = new();
     public void LoadDiamondFromServer()
     {
         PlayFabClientAPI.GetUserInventory(
@@ -58,7 +59,6 @@ public class PlayerData : MonoBehaviour
             }
         );
     }
-
     public int GetDiamond()
     {
         return localDiamond;
@@ -67,5 +67,14 @@ public class PlayerData : MonoBehaviour
     {
         localDiamond += val;
         onDiamondChanged?.Invoke(localDiamond);
+    }
+    public void SetAdStatus(bool flag)
+    {
+        isAdRemoved = flag;
+        onAdRemovedChanged.Invoke(flag);
+    }
+    public bool GetAdStatus()
+    {
+        return isAdRemoved;
     }
 }

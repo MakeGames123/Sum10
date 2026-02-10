@@ -62,8 +62,6 @@ public class AdMobManager : MonoBehaviour
     // 2. 광고 보여주기 (버튼 클릭 이벤트 등에 연결)
     public void ShowRewardedAd(System.Action<bool> onComplete)
     {
-        Debug.Log(_rewardedAd);
-        Debug.Log(_rewardedAd.CanShowAd());
         if (_rewardedAd != null && _rewardedAd.CanShowAd())
         {
             _rewardedAd.Show((Reward reward) =>

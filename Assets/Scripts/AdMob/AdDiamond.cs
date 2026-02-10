@@ -12,6 +12,7 @@ public class AdDiamond : MonoBehaviour, IPointerClickHandler
     int rewardCount = 2;
     [SerializeField] TextMeshProUGUI countText;
     [SerializeField] PlayFabLoginManager login;
+    [SerializeField] DiaPopup popup;
     void Start()
     {
         login.onLogined.AddListener(GetDiamondCount);
@@ -26,7 +27,8 @@ public class AdDiamond : MonoBehaviour, IPointerClickHandler
     {
         if(rewardCount <= 0) return;
 
-        AdMobManager.Instance.ShowRewardedAd(AdDiamondReward);
+        if(PlayerData.Instance.GetAdStatus()) AdDiamondReward(true);
+        else AdMobManager.Instance.ShowRewardedAd(AdDiamondReward);
     }
     private void AdDiamondReward(bool flag)
     {
@@ -42,6 +44,8 @@ public class AdDiamond : MonoBehaviour, IPointerClickHandler
                 var data = result.FunctionResult as IDictionary<string, object>;
                 rewardCount = System.Convert.ToInt32(data["remaining"]);
                 PlayerData.Instance.AdjustDiamone(20);
+                popup.gameObject.SetActive(true);
+                popup.SetCondition(20);
                 countText.text = $"[{rewardCount}/2]";
             },
             error =>
