@@ -40,7 +40,7 @@ public class AdRemove : MonoBehaviour
             return;
         }
 
-        PlayerData.Instance.AdjustDiamone(-15);
+        PlayerData.Instance.AdjustDiamond(-15);
         PlayerData.Instance.SetAdStatus(true);
 
         Debug.Log("광고 제거 구매 완료");

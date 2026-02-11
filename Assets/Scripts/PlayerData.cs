@@ -11,6 +11,7 @@ public class PlayerData : MonoBehaviour
     public UnityEvent<int> onProfileImageChanged = new();
     private int localDiamond;
     public UnityEvent<int> onDiamondChanged = new();
+    public List<int> profileStatus = new();
     public string nickName;
     private int equippedProfileImage = 0;
     public int EquippedProfileImage
@@ -34,6 +35,7 @@ public class PlayerData : MonoBehaviour
         else { Destroy(gameObject); }
 
         login.onLogined.AddListener(LoadDiamondFromServer);
+        login.onLogined.AddListener(LoadProfileStatusFromServer);
     }
     public void LoadDiamondFromServer()
     {
@@ -60,13 +62,82 @@ public class PlayerData : MonoBehaviour
             }
         );
     }
+    public void LoadProfileStatusFromServer()
+    {
+        PlayFabClientAPI.GetUserData(
+            new GetUserDataRequest(),
+            result =>
+            {
+                if (result.Data != null &&
+                    result.Data.TryGetValue("PROFILE_STATUS", out var data))
+                {
+                    profileStatus.Clear();
+
+                    string[] values = data.Value.Split(',');
+
+                    foreach (var v in values)
+                    {
+                        if (int.TryParse(v, out int parsed))
+                            profileStatus.Add(parsed);
+                        else
+                            profileStatus.Add(0);
+                    }
+
+                    Debug.Log("프로필 상태 로드 완료");
+                }
+                else
+                {
+                    Debug.Log("프로필 데이터 없음 → 기본값 생성");
+
+                    // 기본값 필요하면 여기서 초기화
+                    profileStatus = new List<int> { 1, 0, 0, 0, 0, 0, 0, 0 }; // 기본 프로필 0번 해금
+                    SaveProfileStatusToServer();
+                }
+            },
+            error =>
+            {
+                Debug.LogError("프로필 데이터 로드 실패: " + error.GenerateErrorReport());
+            }
+        );
+    }
+    public void SaveProfileStatusToServer()
+    {
+        string joined = string.Join(",", profileStatus);
+
+        var request = new UpdateUserDataRequest
+        {
+            Data = new Dictionary<string, string>
+        {
+            { "PROFILE_STATUS", joined }
+        }
+        };
+
+        PlayFabClientAPI.UpdateUserData(
+            request,
+            result =>
+            {
+                Debug.Log("프로필 상태 저장 완료");
+            },
+            error =>
+            {
+                Debug.LogError("프로필 상태 저장 실패: " + error.GenerateErrorReport());
+            }
+        );
+    }
+
+
     public int GetDiamond()
     {
         return localDiamond;
     }
-    public void AdjustDiamone(int val)
+    public void AdjustDiamond(int val)
     {
         localDiamond += val;
+        onDiamondChanged?.Invoke(localDiamond);
+    }
+    public void SetDiamond(int val)
+    {
+        localDiamond = val;
         onDiamondChanged?.Invoke(localDiamond);
     }
     public void SetAdStatus(bool flag)

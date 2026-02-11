@@ -9,7 +9,7 @@ using TMPro;
 public class ProfileGroup : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] Image profileImage;
-    public GameObject panel;
+    public ProfilePanel panel;
     [SerializeField] TextMeshProUGUI nickName;
     [SerializeField] TextMeshProUGUI rank;
     public PlayFabLoginManager login;
@@ -20,7 +20,8 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData data)
     {
         AudioManager.Instance?.PlayButtonSFX();
-        panel.SetActive(true);
+        panel.gameObject.SetActive(true);
+        panel.SetCondition();
     }
     public void UpdateProfile()
     {

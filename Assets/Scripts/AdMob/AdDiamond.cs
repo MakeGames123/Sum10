@@ -43,7 +43,7 @@ public class AdDiamond : MonoBehaviour, IPointerClickHandler
             {
                 var data = result.FunctionResult as IDictionary<string, object>;
                 rewardCount = System.Convert.ToInt32(data["remaining"]);
-                PlayerData.Instance.AdjustDiamone(20);
+                PlayerData.Instance.AdjustDiamond(20);
                 popup.gameObject.SetActive(true);
                 popup.SetCondition(20);
                 countText.text = $"[{rewardCount}/2]";

@@ -1077,6 +1077,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 7580150059696282788}
+  button: {fileID: 6972984061144276685}
+  panel: {fileID: 0}
 --- !u!1 &6458993575148288772
 GameObject:
   m_ObjectHideFlags: 0
@@ -1652,15 +1654,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profileImage: {fileID: 3161372696197682060}
-  profileSprites:
-  - {fileID: 21300000, guid: 8bbf59741cf36be48a44b342ec5c5abf, type: 3}
-  - {fileID: 21300000, guid: 8db84be30307cda41ad243edae3f4e68, type: 3}
-  - {fileID: 21300000, guid: 959f54c849732894e8b3b9b94c6f3e28, type: 3}
-  - {fileID: 21300000, guid: d8ef4719a78f30b4b97b7283b15c3194, type: 3}
-  - {fileID: 21300000, guid: 54fbad8e16278be48b11112d8d5f4c65, type: 3}
-  - {fileID: 21300000, guid: 0bdd0320e60098a4689c101a5d438d93, type: 3}
-  - {fileID: 21300000, guid: aba314c54c2e85347865c7aeb9889822, type: 3}
-  - {fileID: 21300000, guid: 81bdcc283e7a67c4ea78f5311c02c487, type: 3}
   panel: {fileID: 0}
   nickName: {fileID: 8772081739264870310}
   rank: {fileID: 5859751442626433863}
