@@ -338,7 +338,12 @@ public class ScoreManager : MonoBehaviour
         };
 
         PlayFabClientAPI.GetLeaderboard(request,
-            result => tcs.TrySetResult(result.Leaderboard),
+            result =>
+            {
+                tcs.TrySetResult(result.Leaderboard);
+                cachedTop50 = result.Leaderboard;
+                OnTop50Updated?.Invoke();
+            },
             error =>
             {
                 Debug.LogError("Top 50 조회 실패: " + error.GenerateErrorReport());
@@ -346,10 +351,5 @@ public class ScoreManager : MonoBehaviour
             }
         );
 
-        var leaderboard = await tcs.Task;
-        if (leaderboard == null) return;
-
-        cachedTop50 = leaderboard;
-        OnTop50Updated?.Invoke();
     }
 }

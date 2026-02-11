@@ -11,6 +11,7 @@ public class PlayerData : MonoBehaviour
     public UnityEvent<int> onProfileImageChanged = new();
     private int localDiamond;
     public UnityEvent<int> onDiamondChanged = new();
+    public string nickName;
     private int equippedProfileImage = 0;
     public int EquippedProfileImage
     {

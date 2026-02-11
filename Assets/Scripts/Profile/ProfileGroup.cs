@@ -32,6 +32,7 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
                 if (int.TryParse(result.AccountInfo.TitleInfo.AvatarUrl, out int index)) profileImage.sprite = ProfileList.Instance.profileList[index];//기본프로필 시작 : 저장된 프로필 시작
                 else profileImage.sprite = ProfileList.Instance.profileList[0];
                 PlayerData.Instance.EquippedProfileImage = index;
+                PlayerData.Instance.nickName = result.AccountInfo.TitleInfo.DisplayName;
             },
             error =>
             {

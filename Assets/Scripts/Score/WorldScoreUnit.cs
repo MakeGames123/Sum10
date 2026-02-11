@@ -30,8 +30,14 @@ public class WorldScoreUnit : MonoBehaviour
             profile.sprite = ProfileList.Instance.profileList[profileIndex];
         }
 
-
-        if (rank > 3)
+        if(rank < 0)
+        {
+            badge.enabled = false;
+            rankText.enabled = true;
+            rankText.text = "-";
+            background.sprite = backgrounds[3];
+        }
+        else if (rank > 2)
         {
             badge.enabled = false;
             rankText.enabled = true;
@@ -42,8 +48,8 @@ public class WorldScoreUnit : MonoBehaviour
         {
             badge.enabled = true;
             rankText.enabled = false;
-            badge.sprite = badges[rank - 1];
-            background.sprite = backgrounds[rank - 1];
+            badge.sprite = badges[rank];
+            background.sprite = backgrounds[rank];
         }
     }
 }

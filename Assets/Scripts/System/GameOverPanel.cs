@@ -78,11 +78,14 @@ public class GameOverPanel : MonoBehaviour
         if (finalScore > previousBestScore)
             scoreManager.SaveHighScore(finalScore);
 
-        // 6. Top 50 캐시 갱신 (백그라운드)
-        _ = scoreManager.FetchTop50WithProfilesAsync();
-
+        Invoke(nameof(delay), 0.5f);
         // 7. 순위 애니메이션 시작
         ShowRankAnimation(prevRank, currentRank);
+    }
+    private void delay()
+    {
+        // 6. Top 50 캐시 갱신 (백그라운드)
+        _ = scoreManager.FetchTop50WithProfilesAsync();
     }
 
     private async void ShowRankAnimation(int prevRank, int currentRank)

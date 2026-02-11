@@ -63,6 +63,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
     private List<PlayerLeaderboardEntry> leaderboardData;
     private int currentDisplayRank;
     private string currentPlayerId;
+    private string myName;
     private int currentMyScore;
     private float extractMyY;  // Extract 시점의 내 Row Y 위치 (위/아래 구분 기준)
     private Dictionary<int, PlayerLeaderboardEntry> rankMap = new(); // 점수 기반 순위 맵 (Position 전파 지연 우회)
@@ -132,13 +133,14 @@ public class RankingOvertakeAnimation : MonoBehaviour
         }
 
         leaderboardData = data;
-        currentPlayerId = myPlayerId;
 
         // 주간 최고기록 표시: 리더보드 점수 우선, 없으면 max(방금판, 리더보드)
         var myEntry = FindEntryByPlayerId(myPlayerId);
         currentMyScore = myEntry != null
             ? Mathf.Max(myEntry.StatValue, myScore)
             : myScore;
+        currentPlayerId = myPlayerId;
+        myName = PlayerData.Instance.nickName;
 
         animCoroutine = StartCoroutine(AnimationSequence(prevRank, currentRank, onComplete));
     }
@@ -172,7 +174,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
         BuildRankMap(visualPrevRank);
         SetupInitialDisplay(visualPrevRank, currentRank, isCase2 || isCase3);
         currentDisplayRank = prevRank;  // 숫자는 실제 순위로 표시
-        myRow.SetCondition(prevRank, currentMyScore, currentPlayerId);
+        myRow.SetCondition(prevRank, currentMyScore, myName);
         yield return new WaitForSeconds(initialDisplayDelay);
 
         if (actualSteps == 0)
@@ -231,7 +233,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
         // 내 Row (이전 순위로 시작)
         myRow.gameObject.SetActive(true);
         myRowRect.anchoredPosition = new Vector2(0, myY);
-        myRow.SetCondition(myRank, currentMyScore, currentPlayerId);
+        myRow.SetCondition(myRank, currentMyScore, myName);
         myRow.transform.SetAsLastSibling();
 
         // poolDisplayRanks 초기화
@@ -358,14 +360,14 @@ public class RankingOvertakeAnimation : MonoBehaviour
                 {
                     currentDisplayRank = isRising ? prevRank - currentStep : prevRank + currentStep;
                     currentDisplayRank = Mathf.Max(1, currentDisplayRank);  // 순위는 1 미만 불가
-                    myRow.SetCondition(currentDisplayRank, currentMyScore, currentPlayerId);
+                    myRow.SetCondition(currentDisplayRank, currentMyScore, myName);
                     lastStep = currentStep;
                 }
 
                 if (progress >= 1f && currentDisplayRank != currentRank)
                 {
                     currentDisplayRank = currentRank;
-                    myRow.SetCondition(currentDisplayRank, currentMyScore, currentPlayerId);
+                    myRow.SetCondition(currentDisplayRank, currentMyScore, myName);
                 }
             }
 
@@ -374,7 +376,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
 
         // 최종 위치 확정
         currentDisplayRank = currentRank;
-        myRow.SetCondition(currentDisplayRank, currentMyScore, currentPlayerId);
+        myRow.SetCondition(currentDisplayRank, currentMyScore, myName);
     }
 
     private void RecycleRowToTop(int poolIdx, ref float startY, float currentOffset)
@@ -491,7 +493,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
             // 내 순위 숫자 업데이트
             int newRank = isRising ? currentDisplayRank - 1 : currentDisplayRank + 1;
             currentDisplayRank = Mathf.Max(1, newRank);  // 순위는 1 미만 불가
-            myRow.SetCondition(currentDisplayRank, currentMyScore, currentPlayerId);
+            myRow.SetCondition(currentDisplayRank, currentMyScore, myName);
 
             yield return new WaitForSeconds(swapDuration);
 
@@ -501,7 +503,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
 
         // 최종 순위 확인
         currentDisplayRank = currentRank;
-        myRow.SetCondition(currentDisplayRank, currentMyScore, currentPlayerId);
+        myRow.SetCondition(currentDisplayRank, currentMyScore, myName);
     }
 
     private IEnumerator PhaseInsert(int finalRank)
@@ -568,7 +570,7 @@ public class RankingOvertakeAnimation : MonoBehaviour
         rank = Mathf.Max(1, rank);  // 순위는 1 미만 불가
         var entry = FindEntryByRankExcludePlayer(rank, currentPlayerId);
         if (entry != null)
-            otherPool[poolIndex].SetCondition(rank, entry.StatValue, entry.PlayFabId);
+            otherPool[poolIndex].SetCondition(rank, entry.StatValue, entry.DisplayName);
         else
             otherPool[poolIndex].SetCondition(rank, 0, "---");
     }

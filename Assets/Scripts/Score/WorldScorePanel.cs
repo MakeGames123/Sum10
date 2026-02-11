@@ -9,6 +9,7 @@ public interface IMainPanel
 }
 public class WorldScorePanel : MonoBehaviour, IMainPanel
 {
+    public WorldScoreUnit myUnit = new();
     public List<WorldScoreUnit> units = new();
     public List<PodiumUnit> podiumUnits = new();
     public GameManager gameManager;
@@ -31,11 +32,8 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
         if (scoreManager != null)
             scoreManager.OnTop50Updated -= RefreshFromCache;
     }
-
-    // IMainPanel: 탭 클릭 시 호출
     public void SetCondition()
     {
-        RefreshFromCache();
     }
 
     public void OnDisable()
@@ -47,12 +45,6 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
         ClearUI();
 
         if (scoreManager == null) return;
-
-        if (!scoreManager.IsTop50Ready)
-        {
-            _ = scoreManager.FetchTop50WithProfilesAsync();
-            return;
-        }
 
         DrawLeaderboard(scoreManager.CachedTop50);
     }
@@ -66,18 +58,17 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
             leaderboard.Find(e => e.PlayFabId == myPlayFabId);
 
         // 내 점수
-        if (myEntry != null && units.Count > 0)
+        if (myEntry != null)
         {
-            units[0].SetCondition(
-                myEntry.Position + 1,
+            myUnit.SetCondition(
+                myEntry.Position,
                 string.IsNullOrEmpty(myEntry.DisplayName)
                     ? myEntry.PlayFabId
                     : myEntry.DisplayName,
                 myEntry.StatValue,
                 PlayerData.Instance.EquippedProfileImage
             );
-            units[0].gameObject.SetActive(true);
-            uiIndex = 1;
+            myUnit.gameObject.SetActive(true);
         }
 
         // 월드 랭킹
@@ -86,7 +77,7 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
             if (uiIndex >= units.Count) break;
 
             units[uiIndex].SetCondition(
-                entry.Position + 1,
+                entry.Position,
                 string.IsNullOrEmpty(entry.DisplayName)
                     ? entry.PlayFabId
                     : entry.DisplayName,
@@ -122,11 +113,12 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
     }
     private void ClearUI()
     {
-        int uiIndex = 1;
+        int uiIndex = 0;
         foreach (var unit in units)
         {
             unit.SetCondition(uiIndex++, "---", -1, -1);
         }
+        myUnit.SetCondition(-1, "---", -1, -1);
 
         foreach (var unit in podiumUnits)
         {
