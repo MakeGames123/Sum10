@@ -37,8 +37,6 @@ public class HighScoreFireworksEffect : MonoBehaviour
 
         if (fireworksSound != null)
             fireworksSound.Play();
-
-        Debug.Log("New High Score!");
     }
 
     /// <summary>
@@ -64,6 +62,20 @@ public class HighScoreFireworksEffect : MonoBehaviour
     private void TestPlay()
     {
         Play();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F5))
+            Play();
+        if (Input.GetKeyDown(KeyCode.F6))
+        {
+            Stop();
+            foreach (var particle in fireworksParticles)
+                if (particle != null)
+                    particle.Clear();
+            Play();
+        }
     }
 #endif
 }

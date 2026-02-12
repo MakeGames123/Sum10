@@ -62,7 +62,7 @@ public class GameOverPanel : MonoBehaviour
 
         // 3. 하이스코어 체크
         if (animationController != null)
-            animationController.SetHighScoreStatus(finalScore > previousBestScore);
+            animationController.SetHighScoreStatus(finalScore > weeklyBest);
 
         int currentRank = prevRank;
 

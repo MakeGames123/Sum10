@@ -8,11 +8,17 @@ public class ShopDataLoader : MonoBehaviour
 {
     private const string SHEET_URL =
         "https://docs.google.com/spreadsheets/d/e/2PACX-1vSAy4_XuF853XvFJebjCEz4QBB8ohAbsazu3m4suh8EmGiqTPLWg4rSsKuwcl5RWVHyT5vVLrpyaE5Z/pub?output=tsv";
+    private const string AD_REMOVE_URL =
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vSAy4_XuF853XvFJebjCEz4QBB8ohAbsazu3m4suh8EmGiqTPLWg4rSsKuwcl5RWVHyT5vVLrpyaE5Z/pub?gid=1284289808&single=true&output=tsv";
 
     private const string CACHE_KEY = "ShopDataCache";
+    private const string AD_REMOVE_CACHE_KEY = "AdRemoveDataCache";
 
     private List<ShopItemData> _items = new List<ShopItemData>();
     public List<ShopItemData> Items => _items;
+
+    private Dictionary<string, string> _adRemoveData = new Dictionary<string, string>();
+    public Dictionary<string, string> AdRemoveData => _adRemoveData;
 
     public event Action OnDataLoaded;
 
@@ -60,7 +66,37 @@ public class ShopDataLoader : MonoBehaviour
             }
         }
 
+        // 광고제거 데이터 로드
+        yield return LoadAdRemoveData();
+
         OnDataLoaded?.Invoke();
+    }
+
+    private IEnumerator LoadAdRemoveData()
+    {
+        using (UnityWebRequest request = UnityWebRequest.Get(AD_REMOVE_URL))
+        {
+            request.timeout = 5;
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string tsv = request.downloadHandler.text;
+                ParseKeyValueTSV(tsv, _adRemoveData);
+                PlayerPrefs.SetString(AD_REMOVE_CACHE_KEY, tsv);
+                PlayerPrefs.Save();
+                Debug.Log($"ShopDataLoader: 광고제거 데이터 로드 완료 ({_adRemoveData.Count}개 항목)");
+            }
+            else
+            {
+                Debug.LogWarning($"ShopDataLoader: 광고제거 네트워크 실패, 캐시 사용");
+                string cached = PlayerPrefs.GetString(AD_REMOVE_CACHE_KEY, "");
+                if (!string.IsNullOrEmpty(cached))
+                {
+                    ParseKeyValueTSV(cached, _adRemoveData);
+                }
+            }
+        }
     }
 
     private void LoadFromCache()
@@ -74,6 +110,20 @@ public class ShopDataLoader : MonoBehaviour
         else
         {
             Debug.LogError("ShopDataLoader: 캐시도 없음, 데이터 로드 실패");
+        }
+    }
+
+    private void ParseKeyValueTSV(string tsv, Dictionary<string, string> dict)
+    {
+        dict.Clear();
+        string[] lines = tsv.Split('\n');
+        for (int i = 1; i < lines.Length; i++)
+        {
+            string line = lines[i].Trim();
+            if (string.IsNullOrEmpty(line)) continue;
+            string[] cols = line.Split('\t');
+            if (cols.Length < 2) continue;
+            dict[cols[0]] = cols[1];
         }
     }
 
