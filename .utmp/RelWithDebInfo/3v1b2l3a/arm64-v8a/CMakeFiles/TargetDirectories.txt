@@ -1,0 +1,5 @@
+C:/Users/swjwp/Downloads/Sum10/.utmp/RelWithDebInfo/3v1b2l3a/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/swjwp/Downloads/Sum10/.utmp/RelWithDebInfo/3v1b2l3a/arm64-v8a/CMakeFiles/rebuild_cache.dir
+C:/Users/swjwp/Downloads/Sum10/.utmp/RelWithDebInfo/3v1b2l3a/arm64-v8a/FramePacing/CMakeFiles/swappywrapper.dir
+C:/Users/swjwp/Downloads/Sum10/.utmp/RelWithDebInfo/3v1b2l3a/arm64-v8a/FramePacing/CMakeFiles/edit_cache.dir
+C:/Users/swjwp/Downloads/Sum10/.utmp/RelWithDebInfo/3v1b2l3a/arm64-v8a/FramePacing/CMakeFiles/rebuild_cache.dir

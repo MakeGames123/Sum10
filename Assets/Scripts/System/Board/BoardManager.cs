@@ -242,6 +242,7 @@ public class BoardManager : MonoBehaviour
         var config = cellUIs[0].config;
         float interval = config.hintBounceDuration * config.hintBounceCount + config.hintPauseDuration;
         hintSoundCoroutine = StartCoroutine(HintSoundLoop(interval));
+        VibrationManager.Instance.Light();
     }
 
     public void CancelHint()

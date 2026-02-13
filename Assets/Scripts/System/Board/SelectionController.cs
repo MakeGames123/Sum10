@@ -118,6 +118,8 @@ public class SelectionController
             newCell.OnSelect();
             OnCellSelected?.Invoke(selectedCells.Count);
         }
+
+        VibrationManager.Instance.Light();
     }
 
     private void BacktrackToIndex(int idx)
