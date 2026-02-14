@@ -9,6 +9,7 @@ using UnityEngine.Events;
 public class PlayFabLoginManager : MonoBehaviour
 {
     public UnityEvent onLogined = new();
+    public GameObject reconnectPanel;
     void Start()
     {
         Login();
@@ -71,6 +72,7 @@ public class PlayFabLoginManager : MonoBehaviour
     {
         Debug.Log("플레이팹 로그인 성공!");
         Debug.Log($"사용자 ID: {result.PlayFabId}");
+        reconnectPanel.SetActive(false);
 
         onLogined.Invoke();
         // 새로 생성된 계정인지 확인
@@ -85,5 +87,6 @@ public class PlayFabLoginManager : MonoBehaviour
     {
         Debug.LogError("로그인 실패...");
         Debug.LogError(error.GenerateErrorReport());
+        reconnectPanel.SetActive(true);
     }
 }
