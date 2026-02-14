@@ -21,6 +21,8 @@ public class VibrationManager : MonoBehaviour
 
     public void Light()
     {
+        if(!SettingManager.Instance.vibrationToggle.isOn) return;
+
         try
         {
             using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))

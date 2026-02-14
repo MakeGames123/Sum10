@@ -9,7 +9,7 @@ public class SettingManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] Slider masterVolumeSlider;
     [SerializeField] Slider musicVolumeSlider;
-    [SerializeField] Toggle vibrationToggle;
+    public Toggle vibrationToggle;
     public Button homeButton;
     [SerializeField] Button linkButton;
     [SerializeField] Button button1;
