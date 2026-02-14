@@ -241,7 +241,7 @@ public class BoardManager : MonoBehaviour
         // 힌트 사운드 루프 시작
         var config = cellUIs[0].config;
         float interval = config.hintBounceDuration * config.hintBounceCount + config.hintPauseDuration;
-        hintSoundCoroutine = StartCoroutine(HintSoundLoop(interval));
+        if(gameObject.activeSelf) hintSoundCoroutine = StartCoroutine(HintSoundLoop(interval));
         VibrationManager.Instance.Light();
     }
 

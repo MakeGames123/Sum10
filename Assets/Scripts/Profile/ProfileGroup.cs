@@ -12,10 +12,12 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
     public ProfilePanel panel;
     [SerializeField] TextMeshProUGUI nickName;
     [SerializeField] TextMeshProUGUI rank;
+    [SerializeField] GameManager game;
     public PlayFabLoginManager login;
     void Awake()
     {
         login.onLogined.AddListener(UpdateProfile);
+        game.OnGameOver.AddListener((value)=>UpdateRank());
     }
     public void OnPointerClick(PointerEventData data)
     {
@@ -41,28 +43,32 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
             }
         );
 
+        UpdateRank();
+    }
+    public void UpdateRank()
+    {
         PlayFabClientAPI.GetLeaderboardAroundPlayer(
-        new GetLeaderboardAroundPlayerRequest
-        {
-            StatisticName = "HighScore",
-            MaxResultsCount = 1 // 내 순위만 필요
-        },
-        result =>
-        {
-            if (result.Leaderboard.Count > 0)
+            new GetLeaderboardAroundPlayerRequest
             {
-                var entry = result.Leaderboard[0];
-                rank.text = "#" + (entry.Position + 1).ToString(); // 0-based → 1-based
-            }
-            else
+                StatisticName = "HighScore",
+                MaxResultsCount = 1 // 내 순위만 필요
+            },
+            result =>
             {
-                rank.text = "#--";
+                if (result.Leaderboard.Count > 0)
+                {
+                    var entry = result.Leaderboard[0];
+                    rank.text = "#" + (entry.Position + 1).ToString(); // 0-based → 1-based
+                }
+                else
+                {
+                    rank.text = "#--";
+                }
+            },
+            error =>
+            {
+                Debug.LogError(error.GenerateErrorReport());
             }
-        },
-        error =>
-        {
-            Debug.LogError(error.GenerateErrorReport());
-        }
-    );
+        );
     }
 }

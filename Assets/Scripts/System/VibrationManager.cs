@@ -21,7 +21,8 @@ public class VibrationManager : MonoBehaviour
 
     public void Light()
     {
-        if(!SettingManager.Instance.vibrationToggle.isOn) return;
+        if (Application.isEditor) return;
+        if (!SettingManager.Instance.vibrationToggle.isOn) return;
 
         try
         {
@@ -37,7 +38,7 @@ public class VibrationManager : MonoBehaviour
                         // createOneShot(시간ms, 세기0~255)
                         // 시간 30ms, 세기 30 정도로 설정하면 아주 미약한 진동이 옵니다.
                         long milliseconds = 30;
-                        int amplitude = 30; 
+                        int amplitude = 30;
 
                         AndroidJavaObject effect = effectClass.CallStatic<AndroidJavaObject>("createOneShot", milliseconds, amplitude);
                         vibrator.Call("vibrate", effect);

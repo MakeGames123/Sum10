@@ -41,7 +41,7 @@ public class WorldScoreUnit : MonoBehaviour
         {
             badge.enabled = false;
             rankText.enabled = true;
-            rankText.text = rank.ToString();
+            rankText.text = (rank + 1).ToString();
             background.sprite = backgrounds[3];
         }
         else
