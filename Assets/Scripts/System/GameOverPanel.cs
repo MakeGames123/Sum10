@@ -78,7 +78,7 @@ public class GameOverPanel : MonoBehaviour
         if (finalScore > previousBestScore)
             scoreManager.SaveHighScore(finalScore);
 
-        Invoke(nameof(delay), 0.5f);
+        Invoke(nameof(delay), 1f);
         // 7. 순위 애니메이션 시작
         ShowRankAnimation(prevRank, currentRank);
     }
