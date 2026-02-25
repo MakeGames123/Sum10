@@ -116,6 +116,10 @@ public class IntroController : MonoBehaviour
         _canTouch = false;
         StopAllCoroutines();
 
+        // 팝 사운드 재생
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayButtonSFX();
+
         // 인트로 로고 + TapToStart 숨김
         tapToStartGroup.alpha = 0f;
         tapToStartGroup.blocksRaycasts = false;

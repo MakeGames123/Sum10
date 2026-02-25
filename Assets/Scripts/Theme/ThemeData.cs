@@ -19,6 +19,7 @@ public class ThemeData : ScriptableObject
     public float boardWidth;
     public float boardHeight;
     public float boardOffset;
+    public float boardOffsetX;
     public Sprite cellBackground;
     public List<float> scale;
 

@@ -19,6 +19,7 @@ public class ThemeDataEditor : Editor
     SerializedProperty boardWidth;
     SerializedProperty boardHeight;
     SerializedProperty boardOffset;
+    SerializedProperty boardOffsetX;
 
     SerializedProperty themeThumbnail;
     SerializedProperty cellBackground;
@@ -44,6 +45,7 @@ public class ThemeDataEditor : Editor
         boardWidth = serializedObject.FindProperty("boardWidth");
         boardHeight = serializedObject.FindProperty("boardHeight");
         boardOffset = serializedObject.FindProperty("boardOffset");
+        boardOffsetX = serializedObject.FindProperty("boardOffsetX");
 
         themeThumbnail = serializedObject.FindProperty("themeThumbnail");
         cellBackground = serializedObject.FindProperty("cellBackground");
@@ -75,6 +77,7 @@ public class ThemeDataEditor : Editor
         EditorGUILayout.PropertyField(boardWidth, new GUIContent("보드 길이"));
         EditorGUILayout.PropertyField(boardHeight, new GUIContent("보드 세로 길이"));
         EditorGUILayout.PropertyField(boardOffset, new GUIContent("보드 세로축 보정"));
+        EditorGUILayout.PropertyField(boardOffsetX, new GUIContent("보드 가로축 보정"));
 
         DrawHeader("Cell");
         EditorGUILayout.PropertyField(themeThumbnail, new GUIContent("대표 이미지"));

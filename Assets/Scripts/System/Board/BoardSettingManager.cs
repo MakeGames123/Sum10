@@ -45,8 +45,10 @@ public class BoardSettingManager : MonoBehaviour
 
         boardSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardHeight);
         boardLowSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardHeight);
-        boardSkin.anchoredPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.boardOffset);
-        boardLowSkin.anchoredPosition = new Vector2(0, ThemeManager.Instance.selectedTheme.boardOffset);
+        float offsetX = ThemeManager.Instance.selectedTheme.boardOffsetX;
+        float offsetY = ThemeManager.Instance.selectedTheme.boardOffset;
+        boardSkin.anchoredPosition = new Vector2(offsetX, offsetY);
+        boardLowSkin.anchoredPosition = new Vector2(offsetX, offsetY);
 
 
         boardRoot.localScale = Vector3.one * ThemeManager.Instance.selectedTheme.scale[n - 3];

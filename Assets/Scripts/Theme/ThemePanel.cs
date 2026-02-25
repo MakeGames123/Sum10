@@ -64,6 +64,10 @@ public class ThemePanel : MonoBehaviour, IMainPanel
         boardBackground.sprite = themeDatas[index].boardSkin;
         boardLowSpecial.sprite = themeDatas[index].boardLowSkin;
 
+        var bg = ThemeManager.Instance.background;
+        if (bg != null && themeDatas[index].background != null)
+            bg.sprite = themeDatas[index].background;
+
         SetUp();
     }
     public void SetUp()
@@ -77,4 +81,13 @@ public class ThemePanel : MonoBehaviour, IMainPanel
         ThemeManager.Instance.ChangeTheme(themeDatas[index]);
         appliedTheme = themeDatas[index]; // 적용 완료 → 닫을 때 복원 안 함
     }
+
+#if UNITY_EDITOR
+    private void Update()
+    {
+        // F7: SO 값 변경 후 즉시 프리뷰 리빌드
+        if (Input.GetKeyDown(KeyCode.F7))
+            UpdateUI();
+    }
+#endif
 }

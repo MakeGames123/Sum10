@@ -31,6 +31,7 @@ MonoBehaviour:
   boardWidth: 1080
   boardHeight: 1311
   boardOffset: -160
+  boardOffsetX: 0
   cellBackground: {fileID: 21300000, guid: 9734c47fd6abe1b41968e9336be4ca17, type: 3}
   scale:
   - 3.53
