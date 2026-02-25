@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ff26c4546c9f20498ddea60a84094fa, type: 3}
+  m_Name: BEE
+  m_EditorClassIdentifier: 
+  themeName: BEE
+  textOffset: 5
+  themeThumbnail: {fileID: 5278371825924123630, guid: b0c42f9c1b8deb24ba905fff1b1c6fbb, type: 3}
+  normalSpriteSets:
+  - normalSprite: {fileID: 5278371825924123630, guid: b0c42f9c1b8deb24ba905fff1b1c6fbb, type: 3}
+    hintSprite: {fileID: 21300000, guid: df848fb703050d3469da13e5f859d8da, type: 3}
+    selectedSprite: {fileID: 6892587076353406558, guid: 04d7ede81844ad24ab68f08ce5dc7c00, type: 3}
+  blankSpriteSets:
+  - normalSprite: {fileID: 4337406369055556848, guid: 7334aaa78f9f76647a5ccd39951af3ff, type: 3}
+    hintSprite: {fileID: 21300000, guid: ea52fd9668b3cbf419c21e2cb65f25bd, type: 3}
+    selectedSprite: {fileID: -1053024128120557044, guid: 94bf0314e5d591745947185b875e8e02, type: 3}
+  cellScale: 1
+  backgroundScale: 1
+  boardLowSkin: {fileID: 21300000, guid: 7ab56946e4789314dbc27cabc427a39a, type: 3}
+  boardSkin: {fileID: -5439123841192295821, guid: b24f36465208d0d4ea2a6eeff07dc0bd, type: 3}
+  background: {fileID: -8810762404053262125, guid: aa1fc07389e325e458694fb707052793, type: 3}
+  boardWidth: 1080
+  boardHeight: 1311
+  boardOffset: -160
+  cellBackground: {fileID: 4431838649263540353, guid: b51443e3a8320cf46a6e0d9bb790f428, type: 3}
+  scale:
+  - 3.53
+  - 2.65
+  - 2.13
+  - 1.77
+  normalFontColor: {r: 0.294, g: 0.216, b: 0.188, a: 1}
+  selectedFontColor: {r: 0.9607843, g: 0.7294118, b: 0.7254902, a: 1}

@@ -8934,6 +8934,30 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 840196560}
     - target: {fileID: 4382964366636308883, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
+      propertyPath: cheerVolume
+      value: 0.075
+      objectReference: {fileID: 0}
+    - target: {fileID: 4382964366636308883, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
+      propertyPath: fireworksVolume
+      value: 0.218
+      objectReference: {fileID: 0}
+    - target: {fileID: 4382964366636308883, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
+      propertyPath: cheerFadeDuration
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4382964366636308883, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
+      propertyPath: cheerPlayDuration
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4382964366636308883, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
+      propertyPath: fireworksEndOffset
+      value: 3.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 4382964366636308883, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
+      propertyPath: fireworksStartOffset
+      value: 1.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 4382964366636308883, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
       propertyPath: 'fireworksParticles.Array.data[0]'
       value: 
       objectReference: {fileID: 1651821417}
