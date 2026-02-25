@@ -117,8 +117,8 @@ public class SettingManager : MonoBehaviour
 
     void LoadSettings()
     {
-        float master = PlayerPrefs.GetFloat(MASTER_VOL_KEY, 1f);
-        float music = PlayerPrefs.GetFloat(MUSIC_VOL_KEY, 1f);
+        float master = PlayerPrefs.GetFloat(MASTER_VOL_KEY, 5f);
+        float music = PlayerPrefs.GetFloat(MUSIC_VOL_KEY, 5f);
         bool vibration = PlayerPrefs.GetInt(VIBRATION_KEY, 1) == 1;
 
         masterVolumeSlider.value = master;

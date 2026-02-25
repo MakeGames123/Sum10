@@ -17,7 +17,7 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
     void Awake()
     {
         login.onLogined.AddListener(UpdateProfile);
-        game.OnGameOver.AddListener((value) => DelayUpdateRank());
+        game.OnGameOver.AddListener((value) => UpdateProfile());
     }
     public void OnPointerClick(PointerEventData data)
     {
