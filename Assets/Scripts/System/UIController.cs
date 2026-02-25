@@ -65,7 +65,7 @@ public class UIController : MonoBehaviour
         gameManager.OnGameOver.AddListener(TransitionToGameOver);
         setting.homeButton.onClick.AddListener(TransitionToLobby);
         gameOverPanel.homeButton.onClick.AddListener(TransitionToLobby);
-        gameOverPanel.replayButton.onClick.AddListener(TransitionToInGame);
+        gameOverPanel.replayButton.onClick.AddListener(HandleReplayRequested);
     }
     /// <summary>
     /// 로비 상태로 전환
@@ -147,14 +147,23 @@ public class UIController : MonoBehaviour
     }
 
     /// <summary>
+    /// 게임오버 패널 재시작 버튼 핸들러 (Panel_Board 활성화 후 보드 초기화 보장)
+    /// </summary>
+    private void HandleReplayRequested()
+    {
+        TransitionToInGame();
+        if (gameManager != null)
+            gameManager.RestartRun();
+    }
+
+    /// <summary>
     /// 빠른 재시작 요청 핸들러
     /// </summary>
     private void HandleFastRestartRequested()
     {
+        TransitionToInGame();
         if (gameManager != null)
             gameManager.RestartRun();
-
-        TransitionToInGame();
     }
 
     /// <summary>

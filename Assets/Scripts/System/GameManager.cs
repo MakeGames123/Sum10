@@ -65,7 +65,6 @@ public class GameManager : MonoBehaviour
         }
         SetupFrameRate();
         //boardManager.OnCellsRemoved += HandleCellsRemoved;
-        gameOverPanel.replayButton.onClick.AddListener(StartNewRun);
     }
     private void Start()
     {
