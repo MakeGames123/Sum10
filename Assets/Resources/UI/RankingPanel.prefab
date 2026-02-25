@@ -123,9 +123,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9e938e58e92094e8d5d0d26e99fd9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mode: 0
   referenceWidth: 1080
   referenceHeight: 2340
-  allowScaleUp: 1
+  allowScaleUp: 0
 --- !u!1 &520115392566022908
 GameObject:
   m_ObjectHideFlags: 0
