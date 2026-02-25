@@ -6,9 +6,11 @@ using UnityEngine.UI;
 public class ThemeManager : MonoBehaviour
 {
     public static ThemeManager Instance;
-    
+    private const string ThemeIndexKey = "SelectedThemeIndex";
+    public List<ThemeData> themeDatas = new();
     // 현재 선택된 테마 데이터
     public ThemeData selectedTheme;
+    public int selectedIndex = 0;
     public Image board;
     public Image boardLowSkin;
     public Image background;
@@ -21,15 +23,20 @@ public class ThemeManager : MonoBehaviour
         }
         else { Destroy(gameObject); }
 
-        ChangeTheme(selectedTheme);
+        int selectedIndex = PlayerPrefs.GetInt(ThemeIndexKey, 0);
+        ChangeTheme(themeDatas[selectedIndex], selectedIndex);
     }
 
-    public void ChangeTheme(ThemeData newTheme)
+    public void ChangeTheme(ThemeData newTheme, int index)
     {
+        selectedIndex = index;
         selectedTheme = newTheme;
         board.sprite = selectedTheme.boardSkin;
         boardLowSkin.sprite = selectedTheme.boardLowSkin;
         if (background != null && selectedTheme.background != null)
             background.sprite = selectedTheme.background;
+
+        PlayerPrefs.SetInt(ThemeIndexKey, selectedIndex);
+        PlayerPrefs.Save();
     }
 }

@@ -4814,7 +4814,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac05e56343d813044aa917624bb8e020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  themeDatas:
+  - {fileID: 11400000, guid: b245025fa5e9bb847b1d4d1ec5f71862, type: 2}
+  - {fileID: 11400000, guid: 4811af7394773074f8b98ac653b85418, type: 2}
   selectedTheme: {fileID: 11400000, guid: b245025fa5e9bb847b1d4d1ec5f71862, type: 2}
+  selectedIndex: 0
   board: {fileID: 857052774}
   boardLowSkin: {fileID: 3745441372945622}
   background: {fileID: 2061416606}

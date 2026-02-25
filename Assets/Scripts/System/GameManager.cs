@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float hintFlashDuration = 3.0f;
     public Vector2 scoreTextPosition = new();
     public Vector2 timeTextPosition = new();
+    private const string ExitTimeKey = "GM_ExitTime";
+    private const float MaxOfflineApplySeconds = 300f; // 최대 5분만 적용 (치팅 방지)
     private float remainingTime;
     public float RemainingTime
     {
@@ -109,6 +111,70 @@ public class GameManager : MonoBehaviour
             EndRun();
             return;
         }
+    }
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            SaveExitTime();
+        }
+        else
+        {
+            ApplyOfflineTime();
+        }
+    }
+    private void SaveExitTime()
+    {
+        if (!isRunning)
+            return;
+
+        long ticks = System.DateTime.UtcNow.Ticks;
+        PlayerPrefs.SetString(ExitTimeKey, ticks.ToString());
+        PlayerPrefs.Save();
+    }
+    private void ApplyOfflineTime()
+    {
+        if (!isRunning)
+            return;
+
+        if (!PlayerPrefs.HasKey(ExitTimeKey))
+            return;
+
+        long oldTicks = long.Parse(PlayerPrefs.GetString(ExitTimeKey));
+        System.DateTime oldTime = new System.DateTime(oldTicks);
+        System.DateTime currentTime = System.DateTime.UtcNow;
+
+        double seconds = (currentTime - oldTime).TotalSeconds;
+
+        if (seconds < 0)
+            seconds = 0;
+
+        if (seconds > MaxOfflineApplySeconds)
+            seconds = MaxOfflineApplySeconds;
+
+        ProcessOfflineTime((float)seconds);
+    }
+    private void ProcessOfflineTime(float seconds)
+    {
+        if (seconds <= 0f)
+            return;
+
+        // 게임 타이머 감소
+        RemainingTime -= seconds;
+        timeProgress += seconds;
+
+        // 힌트 idle 타이머도 같이 진행
+        idleTimer += seconds;
+
+        if (RemainingTime <= 0f)
+        {
+            RemainingTime = 0f;
+            OnTimeChanged?.Invoke(RemainingTime);
+            EndRun();
+            return;
+        }
+
+        OnTimeChanged?.Invoke(RemainingTime);
     }
     private void ProgressHintTime()
     {
