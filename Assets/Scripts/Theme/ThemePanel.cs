@@ -40,7 +40,7 @@ public class ThemePanel : MonoBehaviour, IMainPanel
 
         // Apply 안 하고 닫았으면 원래 테마로 복원
         if (appliedTheme != null)
-            ThemeManager.Instance.ChangeTheme(appliedTheme);
+            ThemeManager.Instance.ChangeTheme(appliedTheme, index);
     }
     private void MoveToRight()
     {
@@ -78,7 +78,7 @@ public class ThemePanel : MonoBehaviour, IMainPanel
     }
     private void Apply()
     {
-        ThemeManager.Instance.ChangeTheme(themeDatas[index]);
+        ThemeManager.Instance.ChangeTheme(themeDatas[index], index);
         appliedTheme = themeDatas[index]; // 적용 완료 → 닫을 때 복원 안 함
     }
 
