@@ -18,6 +18,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private RectTransform inGameUIRoot;       // 인게임 UI 루트
 
     [Header("Lobby UI Elements")]
+    [SerializeField] private GameObject homePanel;          // 홈 패널 (버튼 묶음)
     [SerializeField] private GameObject topBar;             // 상단 바
     [SerializeField] private GameObject bottomNavBar;       // 하단 네비게이션 바
     [SerializeField] private GameObject startButton;        // 시작 버튼
@@ -75,6 +76,7 @@ public class UIController : MonoBehaviour
 
         // 로비 UI 표시
         lobbyUIRoot.anchoredPosition = Vector2.zero;
+        SetActive(homePanel, true);
         SetActive(topBar, true);
         SetActive(bottomNavBar, true);
         SetActive(startButton, true);
