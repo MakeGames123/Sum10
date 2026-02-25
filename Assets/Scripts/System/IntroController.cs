@@ -14,6 +14,7 @@ public class IntroController : MonoBehaviour
     [SerializeField] private GameObject homePanel;      // HomePanel 통째로
     [SerializeField] private GameObject topBar;
     [SerializeField] private GameObject bottomNavBar;
+    [SerializeField] private GameObject settingButton;   // 설정 버튼
 
     [Header("Settings")]
     [SerializeField] private float riseOffset = 80f;
@@ -49,6 +50,7 @@ public class IntroController : MonoBehaviour
         if (homePanel != null) homePanel.SetActive(false);
         if (topBar != null) topBar.SetActive(false);
         if (bottomNavBar != null) bottomNavBar.SetActive(false);
+        if (settingButton != null) settingButton.SetActive(false);
 
         StartCoroutine(PlayIntro());
     }
@@ -118,6 +120,9 @@ public class IntroController : MonoBehaviour
         tapToStartGroup.alpha = 0f;
         tapToStartGroup.blocksRaycasts = false;
         logoRect.gameObject.SetActive(false);
+
+        // 설정 버튼 복원
+        if (settingButton != null) settingButton.SetActive(true);
 
         // 로비 전환 (HomePanel의 실제 로고 + 버튼들 표시)
         uiController.TransitionToLobby();
