@@ -67,9 +67,11 @@ public class CellView : MonoBehaviour
         }
     }
 
-    public void Init(Cell cellInfo)
+    public void Init(Cell newCellInfo)
     {
-        this.cellInfo = cellInfo;
+        Unsubscribe();
+
+        this.cellInfo = newCellInfo;
 
         // 기존 애니메이션 정리 및 위치/상태 초기화
         StopAnimation();
@@ -90,15 +92,37 @@ public class CellView : MonoBehaviour
 
         textOriginalPos = numberText.transform.localPosition;
 
+        Subscribe();
+    }
+    public void Unsubscribe()
+    {
+        if (cellInfo == null)
+            return;
+
+        cellInfo.onValueChanged -= UpdateVisualState;
+        cellInfo.onCellSelectedEvent -= HandleSelect;
+        cellInfo.onCellUnSelectedEvent -= HandleUnSelect;
+        cellInfo.onEnableHintEvent -= StartHintAnimation;
+        cellInfo.onDisableHintEvent -= StopHintAnimation;
+    }
+    public void Subscribe()
+    {
         cellInfo.onValueChanged += UpdateVisualState;
-        cellInfo.onCellSelectedEvent += () => PlayAnimation(CellAnimState.Select, GetSelectSprite());
-        cellInfo.onCellSelectedEvent += () => UpdateFontColor(true);
-        cellInfo.onCellUnSelectedEvent += () => PlayAnimation(CellAnimState.Deselect, GetNormalSprite());
-        cellInfo.onCellUnSelectedEvent += () => UpdateFontColor(false);
+        cellInfo.onCellSelectedEvent += HandleSelect;
+        cellInfo.onCellUnSelectedEvent += HandleUnSelect;
         cellInfo.onEnableHintEvent += StartHintAnimation;
         cellInfo.onDisableHintEvent += StopHintAnimation;
     }
-
+    public void HandleSelect()
+    {
+        PlayAnimation(CellAnimState.Select, GetSelectSprite());
+        UpdateFontColor(true);
+    }
+    public void HandleUnSelect()
+    {
+        PlayAnimation(CellAnimState.Deselect, GetNormalSprite());
+        UpdateFontColor(false);
+    }
     public void PlayAnimation(CellAnimState state, Sprite targetSprite = null, Action onComplete = null)
     {
         //Debug.Log(state);
