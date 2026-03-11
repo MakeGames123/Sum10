@@ -7,13 +7,13 @@ using TMPro;
 using System;
 public class HintAnimation : CellAnim
 {
-    
+
     public HintAnimation(CellView cellView, RectTransform rect, CellAnimConfig config) : base(cellView, rect, config)
     {
         this.cellView = cellView;
         this.config = config;
         this.rect = rect;
-        
+
         cellIamge = cellView.cellImage;
         numberText = cellView.numberText;
     }
@@ -75,6 +75,10 @@ public class HintAnimation : CellAnim
     }
     public override void KillAnim()
     {
-        seq.Kill();
+        if (seq != null)
+        {
+            seq.Kill(true);
+            seq = null;
+        }
     }
 }

@@ -98,9 +98,18 @@ public class GameManager : MonoBehaviour
     }
     private void ProgressTime()
     {
-        // ----- 게임 타이머 -----
-        RemainingTime -= Time.deltaTime;
-        timeProgress += Time.deltaTime;
+        float delta = Time.unscaledDeltaTime;
+
+        // 0.5초 이상 프레임 멈춤 → 강제 오프라인 처리
+        if (delta > 0.5f)
+        {
+            ProcessOfflineTime(delta);
+            return;
+        }
+
+        RemainingTime -= delta;
+        timeProgress += delta;
+
         if (RemainingTime < 0f)
             RemainingTime = 0f;
 
@@ -109,7 +118,6 @@ public class GameManager : MonoBehaviour
         if (RemainingTime <= 0f)
         {
             EndRun();
-            return;
         }
     }
     private void OnApplicationPause(bool pause)

@@ -1,7 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
+using TMPro;
+using UnityEngine.UI;
 public interface IMainPanel
 {
     void SetCondition();
@@ -14,11 +17,15 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
     public List<PodiumUnit> podiumUnits = new();
     public GameManager gameManager;
     public ScoreManager scoreManager;
-
+    public TextMeshProUGUI coolTimeText;
+    public Button refreshButton;
+    private Coroutine coolTimeCoroutine;
+    private const float CoolTimeDuration = 60f;
     private void Awake()
     {
         // OnGameOver 리스너는 1회만 등록
         gameManager.OnGameOver.AddListener((val) => RefreshFromCache());
+        refreshButton.onClick.AddListener(RefreshCache);
     }
 
     private void Start()
@@ -38,6 +45,34 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
 
     public void OnDisable()
     {
+    }
+    public void RefreshCache()
+    {
+        refreshButton.gameObject.SetActive(false);
+
+        if (coolTimeCoroutine != null)
+            StopCoroutine(coolTimeCoroutine);
+
+        coolTimeCoroutine = StartCoroutine(UpdateCoolTime());
+
+        _ = scoreManager.FetchTop50WithProfilesAsync();
+    }
+    private IEnumerator UpdateCoolTime()
+    {
+        coolTimeText.enabled = true;
+
+        float remaining = CoolTimeDuration;
+
+        while (remaining > 0)
+        {
+            coolTimeText.text = $"{Mathf.CeilToInt(remaining)}초";
+            yield return new WaitForSeconds(1f);
+            remaining -= 1f;
+        }
+
+        coolTimeText.enabled = false;
+        refreshButton.gameObject.SetActive(true);
+        coolTimeCoroutine = null;
     }
 
     private void RefreshFromCache()
