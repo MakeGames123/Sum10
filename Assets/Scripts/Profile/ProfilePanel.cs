@@ -7,6 +7,7 @@ using PlayFab.ClientModels;
 public class ProfilePanel : MonoBehaviour
 {
     [SerializeField] Image profileImage;
+    [SerializeField] ScrollRect scrollRect;
     public List<ProfileSlot> slots = new();
     public Button equipButton;
     public Button buyButton;
@@ -31,7 +32,14 @@ public class ProfilePanel : MonoBehaviour
     }
     public void SetCondition()
     {
+        if (scrollRect != null)
+            StartCoroutine(ResetScroll());
         SelectProfile(PlayerData.Instance.EquippedProfileImage);
+    }
+    private IEnumerator ResetScroll()
+    {
+        yield return null;
+        scrollRect.verticalNormalizedPosition = 1f;
     }
     private void SyncCheck(int index)
     {
@@ -61,7 +69,7 @@ public class ProfilePanel : MonoBehaviour
         else if (PlayerData.Instance.profileStatus[currentIndex] == 1 && PlayerData.Instance.EquippedProfileImage == currentIndex)
         {
             buyButton.gameObject.SetActive(false);
-            equipButton.gameObject.SetActive(false);
+            equipButton.gameObject.SetActive(true);
         }
         else
         {
@@ -76,7 +84,6 @@ public class ProfilePanel : MonoBehaviour
             slots[i].DisableCheck();
         }
         slots[currentIndex].EnableCheck();
-        equipButton.gameObject.SetActive(false);
         PlayerData.Instance.EquippedProfileImage = currentIndex;
         profileImage.sprite = ProfileList.Instance.profileList[currentIndex];
         SaveProfileIndexToPlayFab(currentIndex);

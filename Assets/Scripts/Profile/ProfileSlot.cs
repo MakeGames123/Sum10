@@ -19,6 +19,8 @@ public class ProfileSlot : MonoBehaviour, IPointerClickHandler
     }
     public void OnPointerClick(PointerEventData data)
     {
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayButtonSFX();
         onClick.Invoke(index);
     }
     public void EnableCheck()
