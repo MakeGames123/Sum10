@@ -8,6 +8,8 @@ public class SettingDisableClick : MonoBehaviour, IPointerClickHandler
     public SettingManager panel;
     public void OnPointerClick(PointerEventData data)
     {
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayButtonSFX();
         panel.Hide();
     }
 }

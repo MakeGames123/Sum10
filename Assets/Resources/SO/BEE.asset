@@ -16,13 +16,13 @@ MonoBehaviour:
   textOffset: 5
   themeThumbnail: {fileID: 21300000, guid: aa1fc07389e325e458694fb707052793, type: 3}
   normalSpriteSets:
-  - normalSprite: {fileID: 21300000, guid: b0c42f9c1b8deb24ba905fff1b1c6fbb, type: 3}
+  - normalSprite: {fileID: 21300000, guid: f6c1fb2a8022dec428af221b29b2f9e6, type: 3}
     hintSprite: {fileID: 21300000, guid: df848fb703050d3469da13e5f859d8da, type: 3}
-    selectedSprite: {fileID: 21300000, guid: 04d7ede81844ad24ab68f08ce5dc7c00, type: 3}
+    selectedSprite: {fileID: 21300000, guid: 7b6fb58f61852224e82e68a599c43157, type: 3}
   blankSpriteSets:
-  - normalSprite: {fileID: 21300000, guid: 7334aaa78f9f76647a5ccd39951af3ff, type: 3}
+  - normalSprite: {fileID: 21300000, guid: d072800aaa20f574fbc2d7eb62d67667, type: 3}
     hintSprite: {fileID: 21300000, guid: ea52fd9668b3cbf419c21e2cb65f25bd, type: 3}
-    selectedSprite: {fileID: 21300000, guid: 125a1e4b756bedd4b8560b842976188b, type: 3}
+    selectedSprite: {fileID: 21300000, guid: c328cb3542339524485995493df96578, type: 3}
   cellScale: 1.1
   backgroundScale: 1.1
   boardLowSkin: {fileID: 21300000, guid: 7ab56946e4789314dbc27cabc427a39a, type: 3}

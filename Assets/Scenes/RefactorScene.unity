@@ -6842,6 +6842,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2004880565887305331, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
+      propertyPath: m_MovementType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2056107575127224123, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
@@ -9378,6 +9382,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ReconnectPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 2872145397040439569, guid: e7eb907ce86eec742803acfd4ea60ecd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3512504163194117897, guid: e7eb907ce86eec742803acfd4ea60ecd, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -9822,6 +9830,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2446069597331219361, guid: eb2811e5a3f8eed4a8ab720adf0045f7, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2733684036159943880, guid: eb2811e5a3f8eed4a8ab720adf0045f7, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3344773253858916357, guid: eb2811e5a3f8eed4a8ab720adf0045f7, type: 3}
