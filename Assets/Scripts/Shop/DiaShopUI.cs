@@ -1,10 +1,14 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class DiaShopUI : MonoBehaviour
 {
     [SerializeField] private Transform productGrid;
+    [SerializeField] private DiaPopup diaPopup;
 
     void Start()
     {
@@ -21,9 +25,9 @@ public class DiaShopUI : MonoBehaviour
 
         ShopDataLoader.Instance.OnDataLoaded += UpdateUI;
     }
-
-    private void UpdateUI()
+    public void UpdateUI()
     {
+        diaPopup.gameObject.SetActive(false);
         if (productGrid == null)
         {
             Debug.LogError("DiaShopUI: productGrid가 null!");
@@ -32,57 +36,117 @@ public class DiaShopUI : MonoBehaviour
 
         var items = ShopDataLoader.Instance.Items;
 
-        foreach (var item in items)
+        var firstItem = items[0];
+        SetupFreeBonusButton(firstItem);
+
+        foreach (var item in items.Skip(1))
         {
             Transform product = productGrid.Find($"Product_{item.slot}");
             if (product == null) continue;
 
             // BonusTag > BonusText
-            var bonusTag = product.Find("BonusTag");
-            if (bonusTag != null)
-            {
-                var bonusText = bonusTag.Find("BonusText");
-                var tmp = bonusText != null ? bonusText.GetComponent<TextMeshProUGUI>() : null;
 
-                if (item.bonusTag == "-" || string.IsNullOrEmpty(item.bonusTag))
-                {
-                    bonusTag.gameObject.SetActive(false);
-                }
-                else
-                {
-                    bonusTag.gameObject.SetActive(true);
-                    if (tmp != null) tmp.text = item.bonusTag;
-                }
+            UpdateProductSlotUI(product, item);
+
+            var button = product.GetComponent<Button>();
+
+            string id = item.productId;
+            ShopItemData data = item;
+
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(() => IAPManager.Instance.BuyProduct(id, () => OnSuccess(data)));
+        }
+    }
+    private void SetupFreeBonusButton(ShopItemData data)
+    {
+        Transform product = productGrid.Find($"Product_{0}");
+        Button freeBonusButton = product.GetComponent<Button>();
+        freeBonusButton.onClick.RemoveAllListeners();
+
+        UpdateProductSlotUI(product, data);
+
+        var freeBonusStatusText = product.Find("Button_Price").Find("PriceText").GetComponent<TextMeshProUGUI>();
+
+        // PlayFab에서 유저 데이터를 가져와 상태 체크
+        PlayFabClientAPI.GetUserData(new GetUserDataRequest(), result =>
+        {
+            bool isPaid = result.Data.ContainsKey("IsPaidUser");
+            bool isClaimed = result.Data.ContainsKey("FirstBonusClaimed");
+
+            if (!isPaid)
+            {
+                freeBonusButton.interactable = false;
+                if (freeBonusStatusText) freeBonusStatusText.text = "결제 후 활성화";
             }
-
-            // AmountText
-            var amountArea = product.Find("AmountArea");
-            if (amountArea != null)
+            else if (isClaimed)
             {
-                var amountText = amountArea.Find("AmountText");
-                if (amountText != null)
-                {
-                    var tmp = amountText.GetComponent<TextMeshProUGUI>();
-                    if (tmp != null)
-                    {
-                        tmp.text = item.displayString;
-                    }
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(amountArea.GetComponent<RectTransform>());
-                }
+                freeBonusButton.interactable = false;
+                if (freeBonusStatusText) freeBonusStatusText.text = "수령 완료";
             }
-
-            // Button_Price > PriceText
-            var buttonPrice = product.Find("Button_Price");
-            if (buttonPrice != null)
+            else
             {
-                var priceText = buttonPrice.Find("PriceText");
-                if (priceText != null)
+                freeBonusButton.interactable = true;
+                if (freeBonusStatusText) freeBonusStatusText.text = "무료";
+
+                // 버튼 클릭 시 CloudScript 호출
+                freeBonusButton.onClick.AddListener(() =>
                 {
-                    var tmp = priceText.GetComponent<TextMeshProUGUI>();
-                    if (tmp != null)
+                    PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest
                     {
-                        tmp.text = item.priceText;
-                    }
+                        FunctionName = "ClaimPaidBonus"
+                    }, result =>
+                    {
+                        OnSuccess(data); // 성공 시 다이아 지급 연출
+                        UpdateUI();      // UI 새로고침
+                    }, null);
+                });
+            }
+        }, null);
+    }
+    private void UpdateProductSlotUI(Transform product, ShopItemData item)
+    {
+        var bonusTag = product.Find("BonusTag");
+        if (bonusTag != null)
+        {
+            var bonusText = bonusTag.Find("BonusText");
+            var tmp = bonusText != null ? bonusText.GetComponent<TextMeshProUGUI>() : null;
+
+            if (item.bonusTag == "-" || string.IsNullOrEmpty(item.bonusTag))
+            {
+                bonusTag.gameObject.SetActive(false);
+            }
+            else
+            {
+                bonusTag.gameObject.SetActive(true);
+                if (tmp != null) tmp.text = item.bonusTag;
+            }
+        }
+        var amountArea = product.Find("AmountArea");
+        if (amountArea != null)
+        {
+            var amountText = amountArea.Find("AmountText");
+            if (amountText != null)
+            {
+                var tmp = amountText.GetComponent<TextMeshProUGUI>();
+                if (tmp != null)
+                {
+                    tmp.text = item.displayString;
+                }
+                LayoutRebuilder.ForceRebuildLayoutImmediate(amountArea.GetComponent<RectTransform>());
+            }
+        }
+
+        // Button_Price > PriceText
+        var buttonPrice = product.Find("Button_Price");
+        if (buttonPrice != null)
+        {
+            var priceText = buttonPrice.Find("PriceText");
+            if (priceText != null)
+            {
+                var tmp = priceText.GetComponent<TextMeshProUGUI>();
+                if (tmp != null)
+                {
+                    tmp.text = item.priceText;
                 }
             }
         }
@@ -94,5 +158,12 @@ public class DiaShopUI : MonoBehaviour
         {
             ShopDataLoader.Instance.OnDataLoaded -= UpdateUI;
         }
+    }
+    void OnSuccess(ShopItemData data)
+    {
+        Debug.Log("성공");
+        diaPopup.gameObject.SetActive(true);
+        diaPopup.SetCondition(data.totalQty);
+        PlayerData.Instance.AdjustDiamond(data.totalQty);
     }
 }

@@ -6,17 +6,19 @@ using UnityEngine.UI;
 public class AdRemove : MonoBehaviour
 {
     [SerializeField] Button diamondRemoveButton;
+    [SerializeField] Button cashRemoveButton;
     [SerializeField] AdRemoveButton adRemoveButton;
+    public const string Product_NoAds = "ad_removal_1";
     void Awake()
     {
-        diamondRemoveButton.onClick.AddListener(BuyRemoveAds);
+        diamondRemoveButton.onClick.AddListener(BuyRemoveAdsWithDia);
     }
     private void Start()
     {
         if (adRemoveButton == null)
             adRemoveButton = FindObjectOfType<AdRemoveButton>();
     }
-    public void BuyRemoveAds()
+    public void BuyRemoveAdsWithDia()
     {
         PlayFabClientAPI.ExecuteCloudScript(
             new ExecuteCloudScriptRequest
@@ -26,6 +28,10 @@ public class AdRemove : MonoBehaviour
             OnSuccess,
             OnError
         );
+    }
+    public void BuyRemoveAdsWithCash()
+    {
+        IAPManager.Instance.BuyProduct(Product_NoAds, OnSuccess);
     }
 
     private void OnSuccess(ExecuteCloudScriptResult result)
@@ -48,6 +54,16 @@ public class AdRemove : MonoBehaviour
         //배너 제거
         gameObject.SetActive(false);
     }
+    private void OnSuccess()
+    {
+        PlayerData.Instance.SetAdStatus(true);
+
+        Debug.Log("광고 제거 구매 완료");
+        adRemoveButton.gameObject.SetActive(false);
+        //배너 제거
+        gameObject.SetActive(false);
+    }
+
 
     private void OnError(PlayFabError error)
     {
