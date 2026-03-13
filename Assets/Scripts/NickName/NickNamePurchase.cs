@@ -3,41 +3,22 @@ using System;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
-using TMPro; // TMP 사용을 위해 필수
+using TMPro;
+using GooglePlayGames.BasicApi; // TMP 사용을 위해 필수
 
-public class NicknameManager : MonoBehaviour
+
+public class NickNamePurchase : MonoBehaviour
 {
     [Header("UI 연동")]
     public TMP_InputField nicknameInputField;
     public TextMeshProUGUI statusText; // 상태 메시지를 보여줄 텍스트 (선택사항)
-    public PlayFabLoginManager login;
     public ProfileGroup profile;
-    void Awake()
-    {
-        login.onLogined.AddListener(CheckNewbie);
-    }
-    private void CheckNewbie()
-    {
-        PlayFabClientAPI.GetAccountInfo(
-            new GetAccountInfoRequest(),
-            result =>
-            {
-                string nickname = result.AccountInfo.TitleInfo.DisplayName;
-                if(nickname == "" || nickname == null) transform.localPosition = Vector2.zero;
-                else gameObject.SetActive(false);
-            },
-            error =>
-            {
-                Debug.LogError(error.GenerateErrorReport());
-            }
-        );
-    }
+
     public void OnClickNicknameChange()
     {
         string inputName = nicknameInputField.text;
         RequestNicknameToken(inputName);
     }
-
     public void RequestNicknameToken(string nickname)
     {
         PlayFabClientAPI.ExecuteCloudScript(
@@ -77,8 +58,6 @@ public class NicknameManager : MonoBehaviour
             }
         );
     }
-
-
     void ApplyNickname(string nickname, string token)
     {
         // 토큰 검증용으로 서버에 다시 전달
@@ -103,8 +82,8 @@ public class NicknameManager : MonoBehaviour
                     {
                         Debug.Log("닉네임 변경 성공");
                         profile.UpdateProfile();
-                        SaveNewbieProfile();
-                        gameObject.SetActive(false);
+                        PlayerData.Instance.AdjustDiamond(-10);
+
                         // 토큰 소모 (삭제)
                         PlayFabClientAPI.UpdateUserData(
                             new UpdateUserDataRequest
@@ -121,17 +100,10 @@ public class NicknameManager : MonoBehaviour
             error => Debug.LogError(error.GenerateErrorReport())
         );
     }
-    private void SaveNewbieProfile()
+    public void ResetInput()
     {
-        var request = new UpdateAvatarUrlRequest
-        {
-            ImageUrl = "0"
-        };
-
-        PlayFabClientAPI.UpdateAvatarUrl(request, result =>
-        {
-            Debug.Log("클라우드 프로필 인덱스 업데이트 완료");
-        }, error => Debug.LogError(error.GenerateErrorReport()));
+        nicknameInputField.text = "";
+        SetStatus("");
     }
     void HandleNicknameFailReason(string reason)
     {
@@ -139,6 +111,10 @@ public class NicknameManager : MonoBehaviour
         {
             case "EMPTY":
                 SetStatus("닉네임을 입력해주세요.");
+                break;
+
+            case "INSUFFICIENT_DIAMOND":
+                SetStatus("다이아가 모자랍니다.");
                 break;
 
             case "INVALID_LENGTH":
@@ -158,10 +134,8 @@ public class NicknameManager : MonoBehaviour
                 break;
         }
     }
-
     private void SetStatus(string msg)
     {
         if (statusText != null) statusText.text = msg;
-        Debug.Log(msg);
     }
 }

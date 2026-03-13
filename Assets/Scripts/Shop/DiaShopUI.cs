@@ -27,7 +27,6 @@ public class DiaShopUI : MonoBehaviour
     }
     public void UpdateUI()
     {
-        diaPopup.gameObject.SetActive(false);
         if (productGrid == null)
         {
             Debug.LogError("DiaShopUI: productGrid가 null!");
@@ -70,8 +69,8 @@ public class DiaShopUI : MonoBehaviour
         // PlayFab에서 유저 데이터를 가져와 상태 체크
         PlayFabClientAPI.GetUserData(new GetUserDataRequest(), result =>
         {
-            bool isPaid = result.Data.ContainsKey("IsPaidUser");
-            bool isClaimed = result.Data.ContainsKey("FirstBonusClaimed");
+            bool isPaid = result.Data.ContainsKey("IsPaidUser") && result.Data["IsPaidUser"].Value == "1";
+            bool isClaimed = result.Data.ContainsKey("FirstBonusClaimed") && result.Data["FirstBonusClaimed"].Value == "1";
 
             if (!isPaid)
             {
@@ -97,7 +96,6 @@ public class DiaShopUI : MonoBehaviour
                     }, result =>
                     {
                         OnSuccess(data); // 성공 시 다이아 지급 연출
-                        UpdateUI();      // UI 새로고침
                     }, null);
                 });
             }
@@ -161,9 +159,9 @@ public class DiaShopUI : MonoBehaviour
     }
     void OnSuccess(ShopItemData data)
     {
-        Debug.Log("성공");
         diaPopup.gameObject.SetActive(true);
         diaPopup.SetCondition(data.totalQty);
         PlayerData.Instance.AdjustDiamond(data.totalQty);
+        UpdateUI();
     }
 }
