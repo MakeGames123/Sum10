@@ -67,33 +67,66 @@ public class PlayFabLoginManager : MonoBehaviour
     // [연동하기 버튼용] - 설정창의 '연동 버튼'에 연결
     public void ClickLinkButton()
     {
+        // 1. Google Play Games 인증 시작
         PlayGamesPlatform.Instance.Authenticate((status) =>
         {
             if (status == SignInStatus.Success)
             {
+                // 2. 서버 인증 코드 요청
                 PlayGamesPlatform.Instance.RequestServerSideAccess(true, (authCode) =>
                 {
+                    if (string.IsNullOrEmpty(authCode))
+                    {
+                        Debug.LogError("Google 서버 인증 코드를 가져오지 못했습니다.");
+                        return;
+                    }
+
                     var request = new LinkGooglePlayGamesServicesAccountRequest
                     {
                         ServerAuthCode = authCode,
-                        ForceLink = false
+                        ForceLink = false // 이미 연결된 계정이 있을 경우 에러를 발생시켜 안전하게 처리
                     };
+
+                    // 3. PlayFab 계정 연동 시도
                     PlayFabClientAPI.LinkGooglePlayGamesServicesAccount(request,
                         result =>
                         {
                             PlayerPrefs.SetInt(GOOGLE_LINK_KEY, 1);
-                            Debug.Log("연동 성공!");
+                            PlayerPrefs.Save();
+                            Debug.LogError("구글 연동 성공!");
                         },
                         error =>
                         {
-                            if (error.Error == PlayFabErrorCode.AccountAlreadyLinked)
-                            {
-                                // "이미 연동된 계정이 있습니다. 불러올까요?" 팝업 처리 로직
-                            }
+                            HandleLinkError(error);
                         });
                 });
             }
+            else
+            {
+                Debug.LogError($"Google 로그인 실패: {status}");
+                // UI에 "로그인에 실패했습니다" 등의 메시지 표시 권장
+            }
         });
+    }
+
+    private void HandleLinkError(PlayFabError error)
+    {
+        switch (error.Error)
+        {
+            // 케이스 1: 현재 PlayFab 계정에 이미 구글 계정이 연동되어 있는 경우
+            case PlayFabErrorCode.AccountAlreadyLinked:
+                Debug.LogError("이 PlayFab 계정은 이미 다른 구글 계정과 연동되어 있습니다.");
+                break;
+
+            // 케이스 3: 서버 코드 만료 또는 잘못된 구성
+            case PlayFabErrorCode.InvalidGooglePlayGamesServerAuthCode:
+                Debug.LogError("구글 서버 인증 코드가 유효하지 않습니다. 설정을 확인하세요.");
+                break;
+
+            default:
+                Debug.LogError($"연동 실패 (에러코드: {error.Error}): {error.ErrorMessage}");
+                break;
+        }
     }
     private void LoginToPlayFabWithGoogle(string serverAuthCode)
     {
