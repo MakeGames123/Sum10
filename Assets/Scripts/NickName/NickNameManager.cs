@@ -23,7 +23,7 @@ public class NicknameManager : MonoBehaviour
             result =>
             {
                 string nickname = result.AccountInfo.TitleInfo.DisplayName;
-                if(nickname == "" || nickname == null) transform.localPosition = Vector2.zero;
+                if (nickname == "" || nickname == null) transform.localPosition = Vector2.zero;
                 else gameObject.SetActive(false);
             },
             error =>
@@ -44,7 +44,7 @@ public class NicknameManager : MonoBehaviour
             new ExecuteCloudScriptRequest
             {
                 FunctionName = "RequestNicknameToken",
-                FunctionParameter = new { nickname = nickname }
+                FunctionParameter = new { nickname = nickname, isFree = true }
             },
             result =>
             {
@@ -154,6 +154,7 @@ public class NicknameManager : MonoBehaviour
                 break;
 
             default:
+                Debug.Log(reason);
                 SetStatus("닉네임을 변경할 수 없습니다.");
                 break;
         }

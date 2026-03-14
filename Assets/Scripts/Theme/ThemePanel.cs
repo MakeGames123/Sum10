@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class ThemePanel : MonoBehaviour, IMainPanel
 {
     public Button rightButton;
     public Button leftButton;
     public Button applyButton;
+    public Button buyButton;
     public List<ThemeData> themeDatas = new();
     public Image boardBackground;
     public Image boardLowSpecial;
@@ -16,12 +19,14 @@ public class ThemePanel : MonoBehaviour, IMainPanel
     public BoardManager board;
     private int index = 0;
     private ThemeData appliedTheme;
+    public RectTransform diaShop;
 
     void Awake()
     {
         rightButton.onClick.AddListener(MoveToRight);
         leftButton.onClick.AddListener(MoveToLeft);
         applyButton.onClick.AddListener(Apply);
+        buyButton.onClick.AddListener(RequestUnlockTheme);
     }
     public void SetCondition()
     {
@@ -68,6 +73,17 @@ public class ThemePanel : MonoBehaviour, IMainPanel
         if (bg != null && themeDatas[index].background != null)
             bg.sprite = themeDatas[index].background;
 
+        if (ThemeManager.Instance.themeStatus[index] == 1)
+        {
+            applyButton.gameObject.SetActive(true);
+            buyButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            applyButton.gameObject.SetActive(false);
+            buyButton.gameObject.SetActive(true);
+        }
+
         SetUp();
     }
     public void SetUp()
@@ -80,6 +96,55 @@ public class ThemePanel : MonoBehaviour, IMainPanel
     {
         ThemeManager.Instance.ChangeTheme(themeDatas[index], index);
         appliedTheme = themeDatas[index]; // 적용 완료 → 닫을 때 복원 안 함
+    }
+
+    public void RequestUnlockTheme()
+    {
+        if (PlayerData.Instance.GetDiamond() < 20)
+        {
+            diaShop.anchoredPosition = Vector2.zero;
+            return;
+        }
+
+        var request = new ExecuteCloudScriptRequest
+        {
+            FunctionName = "UnlockTheme",
+            FunctionParameter = new { index = index }
+        };
+
+        PlayFabClientAPI.ExecuteCloudScript(
+            request,
+            result =>
+            {
+                if (result.FunctionResult != null)
+                {
+                    var data = result.FunctionResult as IDictionary<string, object>;
+                    Debug.Log((bool)data["success"]);
+                    if ((bool)data["success"])
+                    {
+                        var diamond = System.Convert.ToInt32(data["newDiamond"]);
+                        PlayerData.Instance.SetDiamond(diamond);
+
+                        var statusList = data["themeStatus"] as List<object>;
+
+                        ThemeManager.Instance.themeStatus.Clear();
+
+                        foreach (var s in statusList)
+                        {
+                            ThemeManager.Instance.themeStatus.Add(
+                                System.Convert.ToInt32(s)
+                            );
+                        }
+
+                        UpdateUI();
+                    }
+                }
+            },
+            error =>
+            {
+                Debug.LogError("해금 요청 실패: " + error.GenerateErrorReport());
+            }
+        );
     }
 
 #if UNITY_EDITOR

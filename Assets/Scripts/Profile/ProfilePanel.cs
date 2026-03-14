@@ -11,6 +11,7 @@ public class ProfilePanel : MonoBehaviour
     public List<ProfileSlot> slots = new();
     public Button equipButton;
     public Button buyButton;
+    public RectTransform diaShop;
     int currentIndex = 0;
     private const string PROFILE_INDEX_KEY = "ProfileIndex";
     void Awake()
@@ -90,6 +91,12 @@ public class ProfilePanel : MonoBehaviour
     }
     public void RequestUnlockProfile(int index)
     {
+        if (PlayerData.Instance.GetDiamond() < 20)
+        {
+            diaShop.anchoredPosition = Vector2.zero;
+            return;
+        }
+
         var request = new ExecuteCloudScriptRequest
         {
             FunctionName = "UnlockProfile",

@@ -54,7 +54,7 @@ public class IAPManager : MonoBehaviour, IStoreListener
             if (string.IsNullOrEmpty(item.productId)) continue;
 
             builder.AddProduct(item.productId, ProductType.Consumable);
-            Debug.Log($"IAP 등록 (소모성): {item.productId}");
+            //Debug.Log($"IAP 등록 (소모성): {item.productId}");
         }
 
         builder.AddProduct(Product_NoAds, ProductType.NonConsumable);

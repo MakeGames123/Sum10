@@ -90,7 +90,7 @@ public class PlayerData : MonoBehaviour
                     Debug.Log("프로필 데이터 없음 → 기본값 생성");
 
                     // 기본값 필요하면 여기서 초기화
-                    profileStatus = new List<int> { 1, 0, 0, 0, 0, 0, 0, 0 }; // 기본 프로필 0번 해금
+                    profileStatus = new List<int> { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 기본 프로필 0번 해금
                     SaveProfileStatusToServer();
                 }
             },

@@ -58,13 +58,15 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
             },
             result =>
             {
-                if (result.Leaderboard.Count > 0)
+                // 1. 리더보드 데이터가 있고, 2. 그 점수가 0보다 클 때만 순위 표시
+                if (result.Leaderboard.Count > 0 && result.Leaderboard[0].StatValue > 0)
                 {
                     var entry = result.Leaderboard[0];
                     rank.text = "#" + (entry.Position + 1).ToString(); // 0-based → 1-based
                 }
                 else
                 {
+                    // 데이터가 아예 없거나 점수가 0점인 경우
                     rank.text = "#--";
                 }
             },
