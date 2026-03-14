@@ -27,11 +27,12 @@ public class AdDiamond : MonoBehaviour, IPointerClickHandler
     {
         if(rewardCount <= 0) return;
 
-        if(PlayerData.Instance.GetAdStatus()) AdDiamondReward(true);
-        else AdMobManager.Instance.ShowRewardedAd(AdDiamondReward);
+        //if(PlayerData.Instance.GetAdStatus()) AdDiamondReward(true);
+        //else AdMobManager.Instance.ShowRewardedAd(AdDiamondReward);
     }
     private void AdDiamondReward(bool flag)
     {
+        /*
         if (!flag) return;
 
         PlayFabClientAPI.ExecuteCloudScript(
@@ -52,7 +53,7 @@ public class AdDiamond : MonoBehaviour, IPointerClickHandler
             {
                 Debug.LogError(error.GenerateErrorReport());
             }
-        );
+        );*/
     }
     private void GetDiamondCount()
     {
