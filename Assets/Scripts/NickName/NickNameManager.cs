@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 using PlayFab;
 using PlayFab.ClientModels;
-using TMPro; // TMP 사용을 위해 필수
+using TMPro;
 
 public class NicknameManager : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class NicknameManager : MonoBehaviour
     public PlayFabLoginManager login;
     public ProfileGroup profile;
     private string pendingToken;
+    public Image intro;
     void Awake()
     {
         login.onLogined.AddListener(CheckNewbie);
@@ -25,7 +27,11 @@ public class NicknameManager : MonoBehaviour
             {
                 string nickname = result.AccountInfo.TitleInfo.DisplayName;
                 if (nickname == "" || nickname == null) transform.localPosition = Vector2.zero;
-                else gameObject.SetActive(false);
+                else
+                {
+                    intro.raycastTarget = true;
+                    gameObject.SetActive(false);
+                }
             },
             error =>
             {
@@ -153,6 +159,7 @@ public class NicknameManager : MonoBehaviour
                 profile.UpdateProfile();
                 SaveNewbieProfile();
                 SetStatus("닉네임 변경 성공!");
+                intro.raycastTarget = true;
                 gameObject.SetActive(false);
             },
             error =>
@@ -165,6 +172,7 @@ public class NicknameManager : MonoBehaviour
                 if (error.ErrorMessage.Contains("display name"))
                 {
                     SetStatus("닉네임 변경 성공!");
+                    intro.raycastTarget = true;
                     profile.UpdateProfile();
                     gameObject.SetActive(false);
                     return;

@@ -1,8 +1,10 @@
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
-public class IntroController : MonoBehaviour
+public class IntroController : MonoBehaviour, IPointerClickHandler
 {
     [Header("References")]
     [SerializeField] private UIController uiController;
@@ -67,7 +69,24 @@ public class IntroController : MonoBehaviour
 
         StartCoroutine(PlayIntro());
     }
+    public void OnPointerClick(PointerEventData data) // 인트로 레이캐스트는 닉네임 패널에서 관리
+    {
+        if (!_canTouch) return;
 
+        _canTouch = false;
+        StopAllCoroutines();
+
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayButtonSFX();
+
+        tapToStartGroup.alpha = 0f;
+        tapToStartGroup.blocksRaycasts = false;
+        logoRect.gameObject.SetActive(false);
+
+        StartCoroutine(PlayLobbyEntrance());
+
+        this.enabled = false;
+    }
     private IEnumerator PlayIntro()
     {
         float t = 0f;
@@ -112,30 +131,6 @@ public class IntroController : MonoBehaviour
         }
         tf.localScale = Vector3.one;
     }
-
-    private void Update()
-    {
-        if (!_canTouch) return;
-
-        bool touched = Input.GetMouseButtonDown(0) ||
-                       (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
-        if (!touched) return;
-
-        _canTouch = false;
-        StopAllCoroutines();
-
-        if (AudioManager.Instance != null)
-            AudioManager.Instance.PlayButtonSFX();
-
-        tapToStartGroup.alpha = 0f;
-        tapToStartGroup.blocksRaycasts = false;
-        logoRect.gameObject.SetActive(false);
-
-        StartCoroutine(PlayLobbyEntrance());
-
-        this.enabled = false;
-    }
-
     private Vector2 _topBarOrig;
     private Vector2 _bottomNavOrig;
     private Vector2 _startButtonOrig;

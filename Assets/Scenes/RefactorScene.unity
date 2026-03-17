@@ -1076,6 +1076,9 @@ GameObject:
   m_Component:
   - component: {fileID: 406781138}
   - component: {fileID: 406781139}
+  - component: {fileID: 406781141}
+  - component: {fileID: 406781140}
+  - component: {fileID: 406781142}
   m_Layer: 5
   m_Name: IntroPanel
   m_TagString: Untagged
@@ -1120,6 +1123,82 @@ MonoBehaviour:
   referenceWidth: 1080
   referenceHeight: 2340
   allowScaleUp: 1
+--- !u!114 &406781140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406781137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &406781141
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406781137}
+  m_CullTransparentMesh: 1
+--- !u!114 &406781142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406781137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469825d0989f70b4899d6f1fb6a352f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiController: {fileID: 2045668168}
+  lobbyUIRoot: {fileID: 1398119018}
+  logoRect: {fileID: 1295589898}
+  logoGroup: {fileID: 1295589899}
+  tapToStartGroup: {fileID: 1331970997}
+  homePanel: {fileID: 1889333001}
+  topBar: {fileID: 453986639}
+  bottomNavBar: {fileID: 640119101}
+  settingButton: {fileID: 2069645351}
+  topBarRect: {fileID: 1575351741}
+  bottomNavBarRect: {fileID: 1023930805}
+  homeLogo: {fileID: 0}
+  startButtonRect: {fileID: 2005678223}
+  adRemoveButtonRect: {fileID: 1524039534}
+  settingButtonRect: {fileID: 2069645352}
+  riseOffset: 80
+  logoAnimDuration: 1
+  waitAfterLogo: 0.33
+  breathSpeed: 0.5
+  breathAmount: 0.03
+  lobbyAnimDuration: 0.4
+  lobbyStagger: 0.06
+  topBarSlideOffset: 250
+  bottomNavSlideOffset: 260
+  startButtonSlideOffset: 0
+  startButtonStartScale: 0
 --- !u!1 &453986639 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 925022095046518378, guid: ebc9ab647be1bb74baa1ab6262799cde, type: 3}
@@ -3289,11 +3368,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 974299024}
   m_CullTransparentMesh: 1
---- !u!1 &977421772 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8671470871572878939, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
-  m_PrefabInstance: {fileID: 3745441372945620}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &977421773 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2209860383156037202, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
@@ -11420,130 +11494,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 82025596048230148, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: mainButton
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 82025596048230148, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: gameManager
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 82025596048230148, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: retryButton
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 82025596048230148, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: startButton
-      value: 
-      objectReference: {fileID: 2005678220}
-    - target: {fileID: 82025596048230148, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: gameOverRoot
-      value: 
-      objectReference: {fileID: 977421772}
-    - target: {fileID: 82025596048230148, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: inGameUIRoot
-      value: 
-      objectReference: {fileID: 977421772}
-    - target: {fileID: 82025596048230148, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: fastRestartButton
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: topBar
-      value: 
-      objectReference: {fileID: 453986639}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: logoRect
-      value: 
-      objectReference: {fileID: 1295589898}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: homePanel
-      value: 
-      objectReference: {fileID: 1889333001}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: logoGroup
-      value: 
-      objectReference: {fileID: 1295589899}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: topBarRect
-      value: 
-      objectReference: {fileID: 1575351741}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: lobbyUIRoot
-      value: 
-      objectReference: {fileID: 1398119018}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: scoreButton
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: startButton
-      value: 
-      objectReference: {fileID: 2005678220}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: bottomNavBar
-      value: 
-      objectReference: {fileID: 640119101}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: breathAmount
-      value: 0.03
-      objectReference: {fileID: 0}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: uiController
-      value: 
-      objectReference: {fileID: 2045668168}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: homePanelRect
-      value: 
-      objectReference: {fileID: 400342544}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: settingButton
-      value: 
-      objectReference: {fileID: 2069645351}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: waitAfterLogo
-      value: 0.33
-      objectReference: {fileID: 0}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: startButtonRect
-      value: 
-      objectReference: {fileID: 2005678223}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: tapToStartGroup
-      value: 
-      objectReference: {fileID: 1331970997}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: bottomNavBarRect
-      value: 
-      objectReference: {fileID: 1023930805}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: settingButtonRect
-      value: 
-      objectReference: {fileID: 2069645352}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: topBarSlideOffset
-      value: 250
-      objectReference: {fileID: 0}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: adRemoveButtonRect
-      value: 
-      objectReference: {fileID: 1524039534}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: bottomNavSlideOffset
-      value: 260
-      objectReference: {fileID: 0}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: startButtonStartScale
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: startButtonSlideOffset
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: settingButtonSlideOffset
-      value: 611.4
-      objectReference: {fileID: 0}
     - target: {fileID: 6407875833251232571, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 411.26212
@@ -11609,17 +11559,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1471298993}
     - target: {fileID: 8352245093095510782, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: gameManager
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8352245093095510782, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
       propertyPath: lobbyUIRoot
       value: 
       objectReference: {fileID: 1398119018}
-    - target: {fileID: 8352245093095510782, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
-      propertyPath: scoreButton
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 8352245093095510782, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
       propertyPath: startButton
       value: 
@@ -11644,8 +11586,7 @@ PrefabInstance:
       propertyPath: fastRestartButton
       value: 
       objectReference: {fileID: 840196560}
-    m_RemovedComponents:
-    - {fileID: 82025596048230148, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

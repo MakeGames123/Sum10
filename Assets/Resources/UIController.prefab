@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6407875833251232571}
   - component: {fileID: 6982340759165470953}
   - component: {fileID: 8352245093095510782}
-  - component: {fileID: 558406526410365701}
   m_Layer: 0
   m_Name: UIController
   m_TagString: Untagged
@@ -62,6 +61,7 @@ MonoBehaviour:
   gameManager: {fileID: 0}
   lobbyUIRoot: {fileID: 0}
   inGameUIRoot: {fileID: 0}
+  homePanel: {fileID: 0}
   topBar: {fileID: 0}
   bottomNavBar: {fileID: 0}
   startButton: {fileID: 0}
@@ -71,29 +71,3 @@ MonoBehaviour:
   fastRestartButton: {fileID: 0}
   gameOverPanel: {fileID: 0}
   setting: {fileID: 0}
---- !u!114 &558406526410365701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7767561982726342471}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 469825d0989f70b4899d6f1fb6a352f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiController: {fileID: 0}
-  lobbyUIRoot: {fileID: 0}
-  logoRect: {fileID: 0}
-  logoGroup: {fileID: 0}
-  tapToStartGroup: {fileID: 0}
-  topBar: {fileID: 0}
-  bottomNavBar: {fileID: 0}
-  startButton: {fileID: 0}
-  scoreButton: {fileID: 0}
-  riseOffset: 80
-  logoAnimDuration: 1
-  waitAfterLogo: 1
-  breathSpeed: 0.5
-  breathAmount: 0.05
