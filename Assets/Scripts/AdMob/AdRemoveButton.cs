@@ -7,20 +7,14 @@ using TMPro;
 
 public class AdRemoveButton : MonoBehaviour
 {
-    PlayFabLoginManager login;
+    public PlayFabLoginManager login;
     [SerializeField] Image image;
     [SerializeField] TextMeshProUGUI text;
     private const string REMOVE_ADS_KEY = "removeAds";
 
-    private void Start()
+    private void Awake()
     {
-        if (login == null)
-            login = FindObjectOfType<PlayFabLoginManager>();
-
-        if (login != null)
-        {
-            login.onLogined.AddListener(CheckRemoveAdsStatus);
-        }
+        login.onLogined.AddListener(CheckRemoveAdsStatus);
     }
 
     private void CheckRemoveAdsStatus()
@@ -51,6 +45,7 @@ public class AdRemoveButton : MonoBehaviour
 
     private void ApplyRemoveAdsStatus(bool removed)
     {
+        Debug.Log(removed);
         // 이미 구매했다면 버튼 비활성화
         image.enabled = !removed;
         text.enabled = !removed;

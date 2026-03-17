@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class AdRemoveShopUI : MonoBehaviour
 {
+    [SerializeField] TextMeshProUGUI origText;
+    [SerializeField] Transform originalSection;
     void Start()
     {
         if (ShopDataLoader.Instance == null) return;
@@ -32,13 +34,12 @@ public class AdRemoveShopUI : MonoBehaviour
             }
 
             // PriceSection > OriginalSection
-            var originalSection = diaBtn.Find("PriceSection/OriginalSection");
             if (originalSection != null)
             {
                 if (data.ContainsKey("diaOriginalPrice") && data["diaOriginalPrice"] != "-")
                 {
                     originalSection.gameObject.SetActive(true);
-                    var origText = originalSection.Find("OriginalPriceText");
+
                     if (origText != null)
                     {
                         var tmp = origText.GetComponent<TextMeshProUGUI>();
