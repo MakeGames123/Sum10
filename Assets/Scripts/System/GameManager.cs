@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
     }
     private void ApplyOfflineTime()
     {
-        if (!isRunning)
+        if (!isRunning || !TutorialStatusManager.Instance.isTutorialCompleted)
             return;
 
         if (!PlayerPrefs.HasKey(ExitTimeKey))
@@ -164,7 +164,7 @@ public class GameManager : MonoBehaviour
     }
     private void ProcessOfflineTime(float seconds)
     {
-        if (seconds <= 0f)
+        if (seconds <= 0f || !TutorialStatusManager.Instance.isTutorialCompleted)
             return;
 
         // 게임 타이머 감소
