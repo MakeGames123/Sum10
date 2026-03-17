@@ -12,6 +12,7 @@ public class NicknameManager : MonoBehaviour
     public TextMeshProUGUI statusText; // 상태 메시지를 보여줄 텍스트 (선택사항)
     public PlayFabLoginManager login;
     public ProfileGroup profile;
+    private string pendingToken;
     void Awake()
     {
         login.onLogined.AddListener(CheckNewbie);
@@ -32,19 +33,25 @@ public class NicknameManager : MonoBehaviour
             }
         );
     }
+    bool isProcessing = false;
     public void OnClickNicknameChange()
     {
+        if (isProcessing)
+            return;
+
+        isProcessing = true;
+
         string inputName = nicknameInputField.text;
         RequestNicknameToken(inputName);
     }
-
     public void RequestNicknameToken(string nickname)
     {
         PlayFabClientAPI.ExecuteCloudScript(
             new ExecuteCloudScriptRequest
             {
                 FunctionName = "RequestNicknameToken",
-                FunctionParameter = new { nickname = nickname, isFree = true }
+                FunctionParameter = new { nickname = nickname, isFree = true },
+                GeneratePlayStreamEvent = true
             },
             result =>
             {
@@ -66,9 +73,9 @@ public class NicknameManager : MonoBehaviour
                     return;
                 }
 
-                // 성공
-                string token = data["token"].ToString();
-                ApplyNickname(nickname, token);
+                pendingToken = data["token"].ToString();
+
+                ConfirmNickname();
             },
             error =>
             {
@@ -77,48 +84,94 @@ public class NicknameManager : MonoBehaviour
             }
         );
     }
-
-
-    void ApplyNickname(string nickname, string token)
+    public void ConfirmNickname()
     {
-        // 토큰 검증용으로 서버에 다시 전달
-        PlayFabClientAPI.GetUserData(
-            new GetUserDataRequest(),
+        if (string.IsNullOrEmpty(pendingToken))
+        {
+            Debug.LogError("토큰 없음");
+            return;
+        }
+
+        PlayFabClientAPI.ExecuteCloudScript(
+            new ExecuteCloudScriptRequest
+            {
+                FunctionName = "ConfirmNickname",
+                FunctionParameter = new { token = pendingToken },
+                GeneratePlayStreamEvent = true
+            },
             result =>
             {
-                if (!result.Data.ContainsKey("NicknameToken") ||
-                    result.Data["NicknameToken"].Value != token)
+                var data = result.FunctionResult as IDictionary<string, object>;
+                if (data == null)
                 {
-                    Debug.LogError("❌ 토큰 불일치");
+                    SetStatus("서버 응답 오류");
                     return;
                 }
 
-                // 토큰이 유효하면 닉네임 적용
-                PlayFabClientAPI.UpdateUserTitleDisplayName(
-                    new UpdateUserTitleDisplayNameRequest
-                    {
-                        DisplayName = nickname
-                    },
-                    success =>
-                    {
-                        Debug.Log("닉네임 변경 성공");
-                        profile.UpdateProfile();
-                        SaveNewbieProfile();
-                        gameObject.SetActive(false);
-                        // 토큰 소모 (삭제)
-                        PlayFabClientAPI.UpdateUserData(
-                            new UpdateUserDataRequest
-                            {
-                                KeysToRemove = new List<string> { "NicknameToken" }
-                            },
-                            _ => { },
-                            _ => { }
-                        );
-                    },
-                    error => Debug.LogError(error.GenerateErrorReport())
-                );
+                bool ok = data.ContainsKey("ok") && (bool)data["ok"];
+                if (!ok)
+                {
+                    string reason = data.ContainsKey("reason")
+                        ? data["reason"].ToString()
+                        : "UNKNOWN";
+
+                    HandleNicknameFailReason(reason);
+                    return;
+                }
+
+                string nickname = data["nickname"].ToString();
+
+                ApplyNickname(nickname);
+
+                pendingToken = null;
             },
-            error => Debug.LogError(error.GenerateErrorReport())
+            error =>
+            {
+                Debug.LogError(error.GenerateErrorReport());
+                SetStatus("서버 오류");
+            }
+        );
+    }
+    bool isApplying = false;
+
+    void ApplyNickname(string nickname)
+    {
+        if (isApplying)
+            return;
+        isApplying = true;
+
+        PlayFabClientAPI.UpdateUserTitleDisplayName(
+            new UpdateUserTitleDisplayNameRequest
+            {
+                DisplayName = nickname
+            },
+            result =>
+            {
+                isApplying = false;
+                isProcessing = false;
+
+                profile.UpdateProfile();
+                SaveNewbieProfile();
+                SetStatus("닉네임 변경 성공!");
+                gameObject.SetActive(false);
+            },
+            error =>
+            {
+                isApplying = false;
+                isProcessing = false;
+
+                Debug.LogError(error.GenerateErrorReport());
+
+                if (error.ErrorMessage.Contains("display name"))
+                {
+                    SetStatus("닉네임 변경 성공!");
+                    profile.UpdateProfile();
+                    gameObject.SetActive(false);
+                    return;
+                }
+
+                SetStatus("이미 사용중인 닉네임입니다.");
+            }
         );
     }
     private void SaveNewbieProfile()
@@ -139,6 +192,10 @@ public class NicknameManager : MonoBehaviour
         {
             case "EMPTY":
                 SetStatus("닉네임을 입력해주세요.");
+                break;
+
+            case "ALREADY_EXISTS":
+                SetStatus("이미 사용중인 닉네임 입니다.");
                 break;
 
             case "INVALID_LENGTH":
