@@ -4874,6 +4874,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!224 &1524039534 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2292664335256255597, guid: f4805bbc2748ce3408797ba96c5847c4, type: 3}
+  m_PrefabInstance: {fileID: 1975775275}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1575351740
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7537,6 +7542,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &2005678223 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2097971664475750646, guid: f4805bbc2748ce3408797ba96c5847c4, type: 3}
+  m_PrefabInstance: {fileID: 1975775275}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2020028320
 GameObject:
   m_ObjectHideFlags: 0
@@ -7753,7 +7763,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 482413672}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8217,7 +8227,7 @@ MonoBehaviour:
   boardManager: {fileID: 1471298999}
   boardSettingManager: {fileID: 1471298998}
   scoreManager: {fileID: 899309715}
-  gameDuration: 1
+  gameDuration: 30
   hintIdleThreshold: 5
   hintFlashDuration: 1
   scoreTextPosition: {x: 0, y: 700}
@@ -10538,6 +10548,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1295589899}
     - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+      propertyPath: topBarRect
+      value: 
+      objectReference: {fileID: 1575351741}
+    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
       propertyPath: lobbyUIRoot
       value: 
       objectReference: {fileID: 1398119018}
@@ -10562,6 +10576,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2045668168}
     - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+      propertyPath: homePanelRect
+      value: 
+      objectReference: {fileID: 400342544}
+    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
       propertyPath: settingButton
       value: 
       objectReference: {fileID: 2069645351}
@@ -10570,9 +10588,45 @@ PrefabInstance:
       value: 0.33
       objectReference: {fileID: 0}
     - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+      propertyPath: startButtonRect
+      value: 
+      objectReference: {fileID: 2005678223}
+    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
       propertyPath: tapToStartGroup
       value: 
       objectReference: {fileID: 1331970997}
+    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+      propertyPath: bottomNavBarRect
+      value: 
+      objectReference: {fileID: 1023930805}
+    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+      propertyPath: settingButtonRect
+      value: 
+      objectReference: {fileID: 2069645352}
+    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+      propertyPath: topBarSlideOffset
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+      propertyPath: adRemoveButtonRect
+      value: 
+      objectReference: {fileID: 1524039534}
+    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+      propertyPath: bottomNavSlideOffset
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+      propertyPath: startButtonStartScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+      propertyPath: startButtonSlideOffset
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 558406526410365701, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
+      propertyPath: settingButtonSlideOffset
+      value: 611.4
+      objectReference: {fileID: 0}
     - target: {fileID: 6407875833251232571, guid: 9dd730967f73e4b4387835b7dbea28dd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 411.26212

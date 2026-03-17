@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using DG.Tweening;
 
 public class IntroController : MonoBehaviour
 {
@@ -11,42 +12,54 @@ public class IntroController : MonoBehaviour
     [SerializeField] private CanvasGroup tapToStartGroup;
 
     [Header("인트로 중 숨길 요소")]
-    [SerializeField] private GameObject homePanel;      // HomePanel 통째로
+    [SerializeField] private GameObject homePanel;
     [SerializeField] private GameObject topBar;
     [SerializeField] private GameObject bottomNavBar;
-    [SerializeField] private GameObject settingButton;   // 설정 버튼
+    [SerializeField] private GameObject settingButton;
 
-    [Header("Settings")]
+    [Header("로비 등장 애니메이션 대상")]
+    [SerializeField] private RectTransform topBarRect;
+    [SerializeField] private RectTransform bottomNavBarRect;
+    [SerializeField] private RectTransform homeLogo;         // HomePanel 안의 Logo
+    [SerializeField] private RectTransform startButtonRect;   // 시작 버튼
+    [SerializeField] private RectTransform adRemoveButtonRect; // 광고 제거 버튼
+    [SerializeField] private RectTransform settingButtonRect;  // 설정 버튼
+
+    [Header("Intro Settings")]
     [SerializeField] private float riseOffset = 80f;
     [SerializeField] private float logoAnimDuration = 1f;
     [SerializeField] private float waitAfterLogo = 1f;
     [SerializeField] private float breathSpeed = 0.5f;
     [SerializeField] private float breathAmount = 0.05f;
 
+    [Header("로비 등장 애니메이션 설정")]
+    [SerializeField] private float lobbyAnimDuration = 0.4f;
+    [SerializeField] private float lobbyStagger = 0.06f;
+
+    [Header("시작값 폴리싱")]
+    [SerializeField] private float topBarSlideOffset = 250f;
+    [SerializeField] private float bottomNavSlideOffset = 250f;
+    [SerializeField] private float startButtonSlideOffset = 0f;
+    [SerializeField] private float startButtonStartScale = 0f;
+
     private Vector2 _logoTargetPos;
     private bool _canTouch;
 
     private void Awake()
     {
-        // LobbyUIRoot 표시 (Logo가 안에 있으므로)
         if (lobbyUIRoot != null)
             lobbyUIRoot.anchoredPosition = Vector2.zero;
 
-        // 로고 초기 상태: 아래 + 투명
         _logoTargetPos = logoRect.anchoredPosition;
         logoRect.anchoredPosition = _logoTargetPos + Vector2.down * riseOffset;
         logoGroup.alpha = 0f;
 
-        // TapToStart 초기 상태: 활성 유지 + 투명 (SetActive 리빌드 방지)
         tapToStartGroup.alpha = 0f;
         tapToStartGroup.blocksRaycasts = false;
     }
 
     private void Start()
     {
-        // 인트로 중 숨길 것들 — Start()에서 처리하여
-        // topBar 등의 자식 컴포넌트 Awake()가 먼저 실행되도록 보장
-        // (Awake에서 SetActive(false) 하면 ProfileGroup.Awake 등이 스킵됨)
         if (homePanel != null) homePanel.SetActive(false);
         if (topBar != null) topBar.SetActive(false);
         if (bottomNavBar != null) bottomNavBar.SetActive(false);
@@ -57,7 +70,6 @@ public class IntroController : MonoBehaviour
 
     private IEnumerator PlayIntro()
     {
-        // 1. 로고 Ease-up (아래 → 원위치, 투명 → 불투명)
         float t = 0f;
         Vector2 startPos = logoRect.anchoredPosition;
         while (t < logoAnimDuration)
@@ -71,10 +83,8 @@ public class IntroController : MonoBehaviour
         logoRect.anchoredPosition = _logoTargetPos;
         logoGroup.alpha = 1f;
 
-        // 2. 대기
         yield return new WaitForSeconds(waitAfterLogo);
 
-        // 3. TapToStart 페이드인
         t = 0f;
         while (t < 0.4f)
         {
@@ -85,7 +95,6 @@ public class IntroController : MonoBehaviour
         tapToStartGroup.alpha = 1f;
         tapToStartGroup.blocksRaycasts = true;
 
-        // 4. 터치 대기 + Breath 루프
         _canTouch = true;
         StartCoroutine(BreathLoop());
     }
@@ -97,7 +106,6 @@ public class IntroController : MonoBehaviour
         while (_canTouch)
         {
             float elapsed = Time.time - startTime;
-            // elapsed=0에서 Sin(0)=0 → scale=1.0부터 부드럽게 시작
             float s = 1f + breathAmount * Mathf.Sin(elapsed * breathSpeed * Mathf.PI * 2f);
             tf.localScale = Vector3.one * s;
             yield return null;
@@ -116,21 +124,86 @@ public class IntroController : MonoBehaviour
         _canTouch = false;
         StopAllCoroutines();
 
-        // 팝 사운드 재생
         if (AudioManager.Instance != null)
             AudioManager.Instance.PlayButtonSFX();
 
-        // 인트로 로고 + TapToStart 숨김
         tapToStartGroup.alpha = 0f;
         tapToStartGroup.blocksRaycasts = false;
         logoRect.gameObject.SetActive(false);
 
-        // 설정 버튼 복원
-        if (settingButton != null) settingButton.SetActive(true);
-
-        // 로비 전환 (HomePanel의 실제 로고 + 버튼들 표시)
-        uiController.TransitionToLobby();
+        StartCoroutine(PlayLobbyEntrance());
 
         this.enabled = false;
+    }
+
+    private Vector2 _topBarOrig;
+    private Vector2 _bottomNavOrig;
+    private Vector2 _startButtonOrig;
+
+    private IEnumerator PlayLobbyEntrance()
+    {
+        if (topBarRect != null) _topBarOrig = topBarRect.anchoredPosition;
+        if (bottomNavBarRect != null) _bottomNavOrig = bottomNavBarRect.anchoredPosition;
+        if (startButtonRect != null) _startButtonOrig = startButtonRect.anchoredPosition;
+
+        // 위치: 시작 오프셋 세팅
+        if (topBarRect != null)
+            topBarRect.anchoredPosition = _topBarOrig + Vector2.up * topBarSlideOffset;
+        if (startButtonRect != null)
+            startButtonRect.anchoredPosition = _startButtonOrig + Vector2.down * startButtonSlideOffset;
+        if (bottomNavBarRect != null)
+            bottomNavBarRect.anchoredPosition = _bottomNavOrig + Vector2.down * bottomNavSlideOffset;
+
+        // 설정 버튼: 그냥 활성화만
+        if (settingButton != null) settingButton.SetActive(true);
+        if (homeLogo != null) homeLogo.localScale = Vector3.zero;
+        if (startButtonRect != null) startButtonRect.localScale = Vector3.zero;
+        if (adRemoveButtonRect != null) adRemoveButtonRect.localScale = Vector3.zero;
+
+        uiController.TransitionToLobby();
+
+        // 1프레임 대기 — AspectSafeScaler.Start()가 localScale을 최종값으로 세팅
+        yield return null;
+
+        // AspectSafeScaler가 있는 요소는 최종 스케일이 세팅됨, 없으면 0 그대로이므로 1로 대체
+        Vector3 logoScale = homeLogo != null && homeLogo.localScale != Vector3.zero ? homeLogo.localScale : Vector3.one;
+        Vector3 startBtnScale = startButtonRect != null && startButtonRect.localScale != Vector3.zero ? startButtonRect.localScale : Vector3.one;
+        Vector3 adRemoveScale = adRemoveButtonRect != null && adRemoveButtonRect.localScale != Vector3.zero ? adRemoveButtonRect.localScale : Vector3.one;
+
+        if (homeLogo != null) homeLogo.localScale = Vector3.zero;
+        if (startButtonRect != null) startButtonRect.localScale = Vector3.zero;
+        if (adRemoveButtonRect != null) adRemoveButtonRect.localScale = Vector3.zero;
+
+        float dur = lobbyAnimDuration;
+        WaitForSeconds wait = new WaitForSeconds(lobbyStagger);
+
+        // 1. TopBar
+        if (topBarRect != null)
+            topBarRect.DOAnchorPos(_topBarOrig, dur).SetEase(Ease.OutBack);
+        yield return wait;
+
+        yield return wait;
+
+        // 2. 홈 로고
+        if (homeLogo != null)
+            homeLogo.DOScale(logoScale, dur).SetEase(Ease.OutBack);
+        yield return wait;
+
+        // 4. 시작 버튼
+        if (startButtonRect != null)
+        {
+            startButtonRect.DOAnchorPos(_startButtonOrig, dur).SetEase(Ease.OutBack);
+            startButtonRect.DOScale(startBtnScale, dur).SetEase(Ease.OutBack);
+        }
+        yield return wait;
+
+        // 5. 광고 제거 버튼
+        if (adRemoveButtonRect != null)
+            adRemoveButtonRect.DOScale(adRemoveScale, dur).SetEase(Ease.OutBack);
+        yield return wait;
+
+        // 6. BottomNavBar
+        if (bottomNavBarRect != null)
+            bottomNavBarRect.DOAnchorPos(_bottomNavOrig, dur).SetEase(Ease.OutBack);
     }
 }
