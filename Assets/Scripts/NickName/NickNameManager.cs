@@ -65,6 +65,7 @@ public class NicknameManager : MonoBehaviour
                 if (data == null)
                 {
                     SetStatus("서버 응답이 올바르지 않습니다.");
+                    isProcessing = false;
                     return;
                 }
 
@@ -76,6 +77,7 @@ public class NicknameManager : MonoBehaviour
                         : "UNKNOWN";
 
                     HandleNicknameFailReason(reason);
+                    isProcessing = false;
                     return;
                 }
 
@@ -111,6 +113,7 @@ public class NicknameManager : MonoBehaviour
                 if (data == null)
                 {
                     SetStatus("서버 응답 오류");
+                    isProcessing = false;
                     return;
                 }
 
@@ -122,6 +125,7 @@ public class NicknameManager : MonoBehaviour
                         : "UNKNOWN";
 
                     HandleNicknameFailReason(reason);
+                    isProcessing = false;
                     return;
                 }
 

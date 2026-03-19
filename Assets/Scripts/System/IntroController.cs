@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
@@ -12,6 +13,7 @@ public class IntroController : MonoBehaviour, IPointerClickHandler
     [SerializeField] private RectTransform logoRect;
     [SerializeField] private CanvasGroup logoGroup;
     [SerializeField] private CanvasGroup tapToStartGroup;
+    [SerializeField] private Image image;
 
     [Header("인트로 중 숨길 요소")]
     [SerializeField] private GameObject homePanel;
@@ -86,6 +88,7 @@ public class IntroController : MonoBehaviour, IPointerClickHandler
         StartCoroutine(PlayLobbyEntrance());
 
         this.enabled = false;
+        image.enabled = false;
     }
     private IEnumerator PlayIntro()
     {

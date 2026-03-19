@@ -1180,6 +1180,7 @@ MonoBehaviour:
   logoRect: {fileID: 1295589898}
   logoGroup: {fileID: 1295589899}
   tapToStartGroup: {fileID: 1331970997}
+  image: {fileID: 406781140}
   homePanel: {fileID: 1889333001}
   topBar: {fileID: 453986639}
   bottomNavBar: {fileID: 640119101}
@@ -2933,7 +2934,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 980, y: 2240}
+  m_SizeDelta: {x: 2460.2761, y: 5447.2646}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &813187933
 MonoBehaviour:
@@ -4183,7 +4184,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -4403,7 +4404,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -9856,6 +9857,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 482413672}
     m_Modifications:
+    - target: {fileID: 100391795519159292, guid: e7eb907ce86eec742803acfd4ea60ecd, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2872145397040439569, guid: e7eb907ce86eec742803acfd4ea60ecd, type: 3}
       propertyPath: m_Name
       value: ReconnectPanel
@@ -9948,6 +9953,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1800247904}
+    - target: {fileID: 8459119164250982362, guid: e7eb907ce86eec742803acfd4ea60ecd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
