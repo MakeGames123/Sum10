@@ -299,7 +299,8 @@ public class GameManager : MonoBehaviour
         combo++;
         if (maxCombo < combo) maxCombo = combo;
         int comboBonus = (int)(combo / 10);  // 0~9: 0점, 10~19: 1점, 20~29: 2점...
-        int scoreGain = gained + comboBonus;
+        int lengthBonus = Mathf.Max(0, gained - 2); // 3개:+1, 4개:+2, ..., 10개:+8
+        int scoreGain = gained + lengthBonus + comboBonus;
         score += scoreGain;
 
         GameObject text = Instantiate(floatingText, textGroup.transform);

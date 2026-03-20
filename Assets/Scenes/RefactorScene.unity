@@ -1219,6 +1219,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 2095667360644044712, guid: ef3dd3592472b9f47b2e037608ba5858, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5066494075547747901, guid: ef3dd3592472b9f47b2e037608ba5858, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3815,6 +3819,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1134347761}
   - component: {fileID: 1134347762}
+  - component: {fileID: 1134347763}
   m_Layer: 0
   m_Name: DiaPurchaseBtn
   m_TagString: Untagged
@@ -3890,6 +3895,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1134347763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1134347760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19107e453cea61c449a2a06e6598e042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1138671695
 GameObject:
   m_ObjectHideFlags: 0
@@ -4656,8 +4673,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 465003367}
-  - {fileID: 1482100869229773880}
   - {fileID: 406781138}
+  - {fileID: 1482100869229773880}
   - {fileID: 400342544}
   - {fileID: 1985453432}
   - {fileID: 1575351741}
@@ -4721,7 +4738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.69803923}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.8509804}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5450,6 +5467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1646105918}
   - component: {fileID: 1646105919}
+  - component: {fileID: 1646105920}
   m_Layer: 0
   m_Name: CashPurchaseBtn
   m_TagString: Untagged
@@ -5525,6 +5543,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1646105920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646105917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19107e453cea61c449a2a06e6598e042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!198 &1651821417 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 8806479256595618022, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
@@ -10406,6 +10436,10 @@ PrefabInstance:
     - target: {fileID: 3881095955214991046, guid: eb2811e5a3f8eed4a8ab720adf0045f7, type: 3}
       propertyPath: m_Name
       value: DiaPopupPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 3881095955214991046, guid: eb2811e5a3f8eed4a8ab720adf0045f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4455492419917673666, guid: eb2811e5a3f8eed4a8ab720adf0045f7, type: 3}
       propertyPath: m_AnchorMax.y
