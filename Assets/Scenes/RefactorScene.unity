@@ -3497,6 +3497,14 @@ PrefabInstance:
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
       objectReference: {fileID: 0}
+    - target: {fileID: 2220139890244524125, guid: e9da0f039ed79a944834b8a348b124f7, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 344.905
+      objectReference: {fileID: 0}
+    - target: {fileID: 2220139890244524125, guid: e9da0f039ed79a944834b8a348b124f7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -172.45251
+      objectReference: {fileID: 0}
     - target: {fileID: 2482547989924904865, guid: e9da0f039ed79a944834b8a348b124f7, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
