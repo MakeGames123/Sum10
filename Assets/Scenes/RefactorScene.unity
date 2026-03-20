@@ -6001,7 +6001,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1891781740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6962,6 +6962,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3229719367130583760, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229719367130583760, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229719367130583760, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229719367130583760, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3280417849974208359, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -7471,6 +7487,22 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8818464533447606223, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8961711924265739366, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8961711924265739366, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8961711924265739366, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8961711924265739366, guid: 94e8a4582e3134347848a82d191983a9, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
@@ -10240,6 +10272,10 @@ PrefabInstance:
       propertyPath: retryButton
       value: 
       objectReference: {fileID: 840196562}
+    - target: {fileID: 6690994415840149820, guid: f6abebddb00dbc44e857f30250ba5a67, type: 3}
+      propertyPath: settingButton
+      value: 
+      objectReference: {fileID: 2069645352}
     - target: {fileID: 8518858507850619270, guid: f6abebddb00dbc44e857f30250ba5a67, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

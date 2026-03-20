@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using Unity.VisualScripting;
 
 public class SettingManager : MonoBehaviour
 {
@@ -11,10 +12,10 @@ public class SettingManager : MonoBehaviour
     [SerializeField] Slider musicVolumeSlider;
     public Toggle vibrationToggle;
     public Button homeButton;
+    public RectTransform settingButton;
     [SerializeField] Button linkButton;
     [SerializeField] Button button1;
     [SerializeField] Button button2;
-    [SerializeField] Button button3;
     [SerializeField] Button retryButton;
     [SerializeField] GameManager game;
     [SerializeField] BoardManager board;
@@ -23,6 +24,7 @@ public class SettingManager : MonoBehaviour
     const string MUSIC_VOL_KEY = "MUSIC_VOLUME";
     const string VIBRATION_KEY = "VIBRATION";
     Vector2 disablePos = new Vector2(9999, 9999);
+    Vector2 originPos = new();
 
     void Awake()
     {
@@ -40,6 +42,11 @@ public class SettingManager : MonoBehaviour
         BindUI();
         homeButton.onClick.AddListener(game.ForceEnd);
         retryButton.onClick.AddListener(Hide);
+    }
+    void Start()
+    {
+        originPos = settingButton.position;
+        ApplySettings();
     }
     public void Show()
     {
@@ -61,7 +68,6 @@ public class SettingManager : MonoBehaviour
             linkButton.gameObject.SetActive(false);
             button1.gameObject.SetActive(false);
             button2.gameObject.SetActive(false);
-            button3.gameObject.SetActive(false);
             board.LockCells();
         }
         else
@@ -71,19 +77,21 @@ public class SettingManager : MonoBehaviour
             linkButton.gameObject.SetActive(true);
             button1.gameObject.SetActive(true);
             button2.gameObject.SetActive(true);
-            button3.gameObject.SetActive(true);
         }
+    }
+    public void ResetPosition()
+    {
+        settingButton.position = originPos;
+    }
+    public void LowerPosition(float y)
+    {
+        settingButton.position = originPos - new Vector2(0, y);
     }
     public void Hide()
     {
         Time.timeScale = 1;
         rect.anchoredPosition = disablePos;
         board.UnlockCells();
-    }
-
-    void Start()
-    {
-        ApplySettings();
     }
     void BindUI()
     {

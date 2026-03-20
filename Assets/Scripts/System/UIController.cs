@@ -73,6 +73,8 @@ public class UIController : MonoBehaviour
     public void TransitionToLobby()
     {
         CurrentState = UIState.Lobby;
+        
+        TopBanner.Instance.RemoveBanner();
 
         // 로비 UI 표시
         lobbyUIRoot.anchoredPosition = Vector2.zero;
@@ -140,6 +142,7 @@ public class UIController : MonoBehaviour
     {
         // UI 먼저 전환 (panelBoard 활성화)
         TransitionToInGame();
+        TopBanner.Instance.PlaceBannerAd();
 
         // 그 다음 게임 시작 (보드 생성 + 스폰 애니메이션)
         if (gameManager != null)
