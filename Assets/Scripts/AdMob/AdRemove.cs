@@ -42,11 +42,13 @@ public class AdRemove : MonoBehaviour
         bool success = (bool)data["success"];
         if (!success)
         {
-            Debug.Log("이미 광고 제거 구매됨");
+            Debug.Log("이미 광고 제거 구매됨 혹은 다이아 부족");
             return;
         }
 
-        PlayerData.Instance.AdjustDiamond(-15);
+        int remaining = System.Convert.ToInt32(data["remaining"]);
+
+        PlayerData.Instance.SetDiamond(remaining);
         PlayerData.Instance.SetAdStatus(true);
 
         Debug.Log("광고 제거 구매 완료");

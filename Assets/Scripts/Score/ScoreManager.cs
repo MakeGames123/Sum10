@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-    public const string STAT_HIGH_SCORE = "HighScore";
+    public const string STAT_WEEKLY_HIGH_SCORE = "HighScore";
+    public const string STAT_HIGH_SCORE = "PermanentHighScore";
 
     // 이전 주간 순위 + 주간 최고점수 (게임 시작 시 저장)
     private int previousWeeklyRank = -1;
@@ -24,9 +25,10 @@ public class ScoreManager : MonoBehaviour
     private int cachedRankScore = -1;
 
     // ===== Top 50 공유 캐시 =====
+    private List<PlayerLeaderboardEntry> cachedWeeklyTop50;
+    public List<PlayerLeaderboardEntry> CachedWeeklyTop50 => cachedWeeklyTop50;
     private List<PlayerLeaderboardEntry> cachedTop50;
     public List<PlayerLeaderboardEntry> CachedTop50 => cachedTop50;
-    public bool IsTop50Ready => cachedTop50 != null;
     public System.Action OnTop50Updated;
 
     private void Start()
@@ -38,6 +40,7 @@ public class ScoreManager : MonoBehaviour
         {
             login.onLogined.AddListener(() =>
             {
+                _ = FetchWeeklyTop50WithProfilesAsync();
                 _ = FetchTop50WithProfilesAsync();
                 _ = SyncHighScoreFromServerAsync();
             });
@@ -61,12 +64,12 @@ public class ScoreManager : MonoBehaviour
         var tcs = new TaskCompletionSource<(bool, int)>();
 
         PlayFabClientAPI.GetUserData(
-            new GetUserDataRequest { Keys = new List<string> { STAT_HIGH_SCORE } },
+            new GetUserDataRequest { Keys = new List<string> { STAT_WEEKLY_HIGH_SCORE } },
             result =>
             {
                 int highScore = 0;
                 if (result.Data != null &&
-                    result.Data.TryGetValue(STAT_HIGH_SCORE, out var data))
+                    result.Data.TryGetValue(STAT_WEEKLY_HIGH_SCORE, out var data))
                 {
                     int.TryParse(data.Value, out highScore);
                 }
@@ -100,7 +103,7 @@ public class ScoreManager : MonoBehaviour
 
         var request = new GetLeaderboardAroundPlayerRequest
         {
-            StatisticName = STAT_HIGH_SCORE,
+            StatisticName = STAT_WEEKLY_HIGH_SCORE,
             MaxResultsCount = 1
         };
 
@@ -152,12 +155,12 @@ public class ScoreManager : MonoBehaviour
             new GetUserDataRequest
             {
                 PlayFabId = PlayFabSettings.staticPlayer.PlayFabId,
-                Keys = new List<string> { STAT_HIGH_SCORE }
+                Keys = new List<string> { STAT_WEEKLY_HIGH_SCORE, STAT_HIGH_SCORE }
             },
             result =>
             {
                 if (result.Data != null &&
-                    result.Data.TryGetValue(STAT_HIGH_SCORE, out var data))
+                    result.Data.TryGetValue(STAT_WEEKLY_HIGH_SCORE, out var data))
                 {
                     int.TryParse(data.Value, out int score);
                     previousHighScore = score;
@@ -174,6 +177,35 @@ public class ScoreManager : MonoBehaviour
     /// 리더보드에 점수 제출 (주간 최고 갱신 시에만 호출할 것)
     /// </summary>
     public Task<bool> SubmitWeeklyScoreAsync(int score)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+
+        var request = new UpdatePlayerStatisticsRequest
+        {
+            Statistics = new List<StatisticUpdate>
+            {
+                new StatisticUpdate
+                {
+                    StatisticName = STAT_WEEKLY_HIGH_SCORE,
+                    Value = score
+                }
+            }
+        };
+
+        PlayFabClientAPI.UpdatePlayerStatistics(
+            request,
+            result => tcs.TrySetResult(true),
+            error =>
+            {
+                Debug.LogError("리더보드 전송 실패: " + error.GenerateErrorReport());
+                tcs.TrySetResult(false);
+            }
+        );
+
+        return tcs.Task;
+    }
+
+    public Task<bool> SubmitHighScore(int score)
     {
         var tcs = new TaskCompletionSource<bool>();
 
@@ -200,24 +232,6 @@ public class ScoreManager : MonoBehaviour
         );
 
         return tcs.Task;
-    }
-
-    /// <summary>
-    /// 역대 최고기록 저장 (로컬 PlayerPrefs + PlayFab UserData 백업)
-    /// </summary>
-    public void SaveHighScore(int score)
-    {
-        var request = new UpdateUserDataRequest
-        {
-            Data = new Dictionary<string, string>
-            {
-                { STAT_HIGH_SCORE, score.ToString() }
-            }
-        };
-
-        PlayFabClientAPI.UpdateUserData(request, null,
-            error => Debug.LogError("UserData 백업 실패: " + error.GenerateErrorReport())
-        );
     }
 
     /// <summary>
@@ -262,7 +276,7 @@ public class ScoreManager : MonoBehaviour
 
         var request = new GetUserDataRequest
         {
-            Keys = new List<string> { STAT_HIGH_SCORE }
+            Keys = new List<string> { STAT_WEEKLY_HIGH_SCORE }
         };
 
         PlayFabClientAPI.GetUserData(
@@ -271,7 +285,7 @@ public class ScoreManager : MonoBehaviour
             {
                 int highScore = 0;
                 if (result.Data != null &&
-                    result.Data.TryGetValue(STAT_HIGH_SCORE, out var data))
+                    result.Data.TryGetValue(STAT_WEEKLY_HIGH_SCORE, out var data))
                 {
                     int.TryParse(data.Value, out highScore);
                 }
@@ -300,7 +314,7 @@ public class ScoreManager : MonoBehaviour
 
         var request = new GetLeaderboardRequest
         {
-            StatisticName = STAT_HIGH_SCORE,
+            StatisticName = STAT_WEEKLY_HIGH_SCORE,
             StartPosition = startPosition,
             MaxResultsCount = count
         };
@@ -321,6 +335,37 @@ public class ScoreManager : MonoBehaviour
     /// <summary>
     /// Top 50 리더보드 + 프로필 인덱스를 조회하여 캐시에 저장
     /// </summary>
+    public async Task FetchWeeklyTop50WithProfilesAsync()
+    {
+        var tcs = new TaskCompletionSource<List<PlayerLeaderboardEntry>>();
+
+        var request = new GetLeaderboardRequest
+        {
+            StatisticName = STAT_WEEKLY_HIGH_SCORE,
+            StartPosition = 0,
+            MaxResultsCount = 50,
+            ProfileConstraints = new PlayerProfileViewConstraints
+            {
+                ShowDisplayName = true,
+                ShowAvatarUrl = true
+            }
+        };
+
+        PlayFabClientAPI.GetLeaderboard(request,
+            result =>
+            {
+                tcs.TrySetResult(result.Leaderboard);
+                cachedWeeklyTop50 = result.Leaderboard;
+                OnTop50Updated?.Invoke();
+            },
+            error =>
+            {
+                Debug.LogError("Top 50 조회 실패: " + error.GenerateErrorReport());
+                tcs.TrySetResult(null);
+            }
+        );
+    }
+
     public async Task FetchTop50WithProfilesAsync()
     {
         var tcs = new TaskCompletionSource<List<PlayerLeaderboardEntry>>();
@@ -342,7 +387,6 @@ public class ScoreManager : MonoBehaviour
             {
                 tcs.TrySetResult(result.Leaderboard);
                 cachedTop50 = result.Leaderboard;
-                OnTop50Updated?.Invoke();
             },
             error =>
             {
@@ -350,6 +394,5 @@ public class ScoreManager : MonoBehaviour
                 tcs.TrySetResult(null);
             }
         );
-
     }
 }

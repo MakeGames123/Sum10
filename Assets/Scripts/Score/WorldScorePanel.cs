@@ -17,27 +17,48 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
     public List<PodiumUnit> podiumUnits = new();
     public GameManager gameManager;
     public ScoreManager scoreManager;
+    public TextMeshProUGUI resetTimeText;
+    public Image resetTimeIcon;
     public TextMeshProUGUI coolTimeText;
     public Button refreshButton;
     private Coroutine coolTimeCoroutine;
     private const float CoolTimeDuration = 60f;
+    bool isWeekly = true;
     private void Awake()
     {
         // OnGameOver 리스너는 1회만 등록
         gameManager.OnGameOver.AddListener((val) => RefreshFromCache());
         refreshButton.onClick.AddListener(RefreshCache);
     }
-
     private void Start()
     {
         if (scoreManager != null)
             scoreManager.OnTop50Updated += RefreshFromCache;
     }
-
     private void OnDestroy()
     {
         if (scoreManager != null)
             scoreManager.OnTop50Updated -= RefreshFromCache;
+    }
+    public void ChangeToWeek()
+    {
+        if (!isWeekly)
+        {
+            isWeekly = true;
+            resetTimeText.enabled = true;
+            resetTimeIcon.enabled = true;
+            RefreshFromCache();
+        }
+    }
+    public void ChangeToAll()
+    {
+        if (isWeekly)
+        {
+            isWeekly = false;
+            resetTimeText.enabled = false;
+            resetTimeIcon.enabled = false;
+            RefreshFromCache();
+        }
     }
     public void SetCondition()
     {
@@ -55,7 +76,7 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
 
         coolTimeCoroutine = StartCoroutine(UpdateCoolTime());
 
-        _ = scoreManager.FetchTop50WithProfilesAsync();
+        _ = scoreManager.FetchWeeklyTop50WithProfilesAsync();
     }
     private IEnumerator UpdateCoolTime()
     {
@@ -81,7 +102,7 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
 
         if (scoreManager == null) return;
 
-        DrawLeaderboard(scoreManager.CachedTop50);
+        DrawLeaderboard(isWeekly ? scoreManager.CachedWeeklyTop50 : scoreManager.CachedTop50);
     }
 
     private void DrawLeaderboard(List<PlayerLeaderboardEntry> leaderboard)

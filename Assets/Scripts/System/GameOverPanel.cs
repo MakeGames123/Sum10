@@ -72,15 +72,23 @@ public class GameOverPanel : MonoBehaviour
             currentRank = await scoreManager.CalculateRankForScoreAsync(finalScore);
             await scoreManager.SubmitWeeklyScoreAsync(finalScore);
             scoreManager.CacheCalculatedRank(currentRank, finalScore);
+            Invoke(nameof(delayWeek), 1f);
         }
 
         // 5. 역대 최고 갱신 시 저장 (로컬 + 서버 백업)
         if (finalScore > previousBestScore)
-            scoreManager.SaveHighScore(finalScore);
+        {
+            await scoreManager.SubmitHighScore(finalScore);
+            Invoke(nameof(delay), 1f);
+        }
 
-        Invoke(nameof(delay), 1f);
         // 7. 순위 애니메이션 시작
         ShowRankAnimation(prevRank, currentRank);
+    }
+    private void delayWeek()
+    {
+        // 6. Top 50 캐시 갱신 (백그라운드)
+        _ = scoreManager.FetchWeeklyTop50WithProfilesAsync();
     }
     private void delay()
     {
