@@ -18,7 +18,8 @@ public class SettingManager : MonoBehaviour
     [SerializeField] Button button2;
     [SerializeField] Button retryButton;
     [SerializeField] GameManager game;
-    [SerializeField] BoardManager board;
+    [SerializeField] BoardManager inGameBoard;
+    [SerializeField] BoardManager skinBoard;
     RectTransform rect;
     const string MASTER_VOL_KEY = "MASTER_VOLUME";
     const string MUSIC_VOL_KEY = "MUSIC_VOLUME";
@@ -68,7 +69,6 @@ public class SettingManager : MonoBehaviour
             linkButton.gameObject.SetActive(false);
             button1.gameObject.SetActive(false);
             button2.gameObject.SetActive(false);
-            board.LockCells();
         }
         else
         {
@@ -78,6 +78,8 @@ public class SettingManager : MonoBehaviour
             button1.gameObject.SetActive(true);
             button2.gameObject.SetActive(true);
         }
+        inGameBoard.LockCells();
+        skinBoard.LockCells();
     }
     public void ResetPosition()
     {
@@ -91,7 +93,8 @@ public class SettingManager : MonoBehaviour
     {
         Time.timeScale = 1;
         rect.anchoredPosition = disablePos;
-        board.UnlockCells();
+        inGameBoard.UnlockCells();
+        skinBoard.UnlockCells();
     }
     void BindUI()
     {

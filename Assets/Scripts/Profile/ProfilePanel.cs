@@ -12,6 +12,7 @@ public class ProfilePanel : MonoBehaviour
     public Button equipButton;
     public Button buyButton;
     public RectTransform diaShop;
+    [SerializeField] BoardManager skinBoard;
     int currentIndex = 0;
     private const string PROFILE_INDEX_KEY = "ProfileIndex";
     void Awake()
@@ -36,6 +37,11 @@ public class ProfilePanel : MonoBehaviour
         if (scrollRect != null)
             StartCoroutine(ResetScroll());
         SelectProfile(PlayerData.Instance.EquippedProfileImage);
+        skinBoard.LockCells();
+    }
+    public void Disable()
+    {
+        skinBoard.UnlockCells();
     }
     private IEnumerator ResetScroll()
     {
