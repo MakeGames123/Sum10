@@ -125,7 +125,6 @@ public class PlayerData : MonoBehaviour
         );
     }
 
-
     public int GetDiamond()
     {
         return localDiamond;

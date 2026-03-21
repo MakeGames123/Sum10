@@ -8,6 +8,7 @@ public class AdRemove : MonoBehaviour
     [SerializeField] Button diamondRemoveButton;
     [SerializeField] Button cashRemoveButton;
     [SerializeField] AdRemoveButton adRemoveButton;
+    [SerializeField] private PlayFabLoginManager login;
     public const string Product_NoAds = "ad_removal_1";
     void Awake()
     {
@@ -20,18 +21,23 @@ public class AdRemove : MonoBehaviour
     }
     public void BuyRemoveAdsWithDia()
     {
-        PlayFabClientAPI.ExecuteCloudScript(
+        if (!login.isLinked) login.ClickLinkButton();
+        else
+        {
+            PlayFabClientAPI.ExecuteCloudScript(
             new ExecuteCloudScriptRequest
-            {
-                FunctionName = "BuyRemoveAdsWithDiamond"
-            },
-            OnSuccess,
-            OnError
-        );
+                {
+                    FunctionName = "BuyRemoveAdsWithDiamond"
+                },
+                OnSuccess,
+                OnError
+            );
+        }
     }
     public void BuyRemoveAdsWithCash()
     {
-        IAPManager.Instance.BuyProduct(Product_NoAds, OnSuccess);
+        if (!login.isLinked) login.ClickLinkButton();
+        else IAPManager.Instance.BuyProduct(Product_NoAds, OnSuccess);
     }
 
     private void OnSuccess(ExecuteCloudScriptResult result)

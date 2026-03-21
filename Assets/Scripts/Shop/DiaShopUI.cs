@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 using PlayFab;
 using PlayFab.ClientModels;
 
@@ -9,6 +10,7 @@ public class DiaShopUI : MonoBehaviour
 {
     [SerializeField] private Transform productGrid;
     [SerializeField] private DiaPopup diaPopup;
+    [SerializeField] private PlayFabLoginManager login;
 
     void Start()
     {
@@ -53,7 +55,7 @@ public class DiaShopUI : MonoBehaviour
             ShopItemData data = item;
 
             button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(() => IAPManager.Instance.BuyProduct(id, () => OnSuccess(data)));
+            button.onClick.AddListener(() => OnClickNormal(id, data));
         }
     }
     private void SetupFreeBonusButton(ShopItemData data)
@@ -88,16 +90,7 @@ public class DiaShopUI : MonoBehaviour
                 if (freeBonusStatusText) freeBonusStatusText.text = "무료";
 
                 // 버튼 클릭 시 CloudScript 호출
-                freeBonusButton.onClick.AddListener(() =>
-                {
-                    PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest
-                    {
-                        FunctionName = "ClaimPaidBonus"
-                    }, result =>
-                    {
-                        OnSuccess(data); // 성공 시 다이아 지급 연출
-                    }, null);
-                });
+                freeBonusButton.onClick.AddListener(() => OnClickFree(data));
             }
         }, null);
     }
@@ -149,7 +142,25 @@ public class DiaShopUI : MonoBehaviour
             }
         }
     }
-
+    void OnClickNormal(string id, ShopItemData data)
+    {
+        if (!login.isLinked) login.ClickLinkButton();
+        else IAPManager.Instance.BuyProduct(id, () => OnSuccess(data));
+    }
+    void OnClickFree(ShopItemData data)
+    {
+        if (!login.isLinked) login.ClickLinkButton();
+        else
+        {
+            PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest
+            {
+                FunctionName = "ClaimPaidBonus"
+            }, result =>
+            {
+                OnSuccess(data); // 성공 시 다이아 지급 연출
+            }, null);
+        }
+    }
     void OnDestroy()
     {
         if (ShopDataLoader.Instance != null)

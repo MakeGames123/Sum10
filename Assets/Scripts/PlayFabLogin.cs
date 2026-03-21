@@ -11,6 +11,7 @@ public class PlayFabLoginManager : MonoBehaviour
     public UnityEvent onLogined = new();
     private const string GOOGLE_LINK_KEY = "IsGoogleLinked";
     public GameObject reconnectPanel;
+    public bool isLinked = false;
 
     void Awake()
     {
@@ -43,6 +44,7 @@ public class PlayFabLoginManager : MonoBehaviour
                 {
                     LoginToPlayFabWithGoogle(authCode);
                 });
+                isLinked = true;
             }
             else
             {
@@ -94,6 +96,7 @@ public class PlayFabLoginManager : MonoBehaviour
                             PlayerPrefs.SetInt(GOOGLE_LINK_KEY, 1);
                             PlayerPrefs.Save();
                             Debug.LogError("구글 연동 성공!");
+                            isLinked = true;
                         },
                         error =>
                         {

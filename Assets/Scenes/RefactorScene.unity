@@ -459,6 +459,7 @@ MonoBehaviour:
   diamondRemoveButton: {fileID: 1134347762}
   cashRemoveButton: {fileID: 1646105919}
   adRemoveButton: {fileID: 0}
+  login: {fileID: 1800247904}
 --- !u!114 &157598158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5765,6 +5766,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   reconnectPanel: {fileID: 1918428979}
+  isLinked: 0
 --- !u!4 &1800247905
 Transform:
   m_ObjectHideFlags: 0
@@ -10477,6 +10479,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3874696609199822993, guid: eb2811e5a3f8eed4a8ab720adf0045f7, type: 3}
+      propertyPath: login
+      value: 
+      objectReference: {fileID: 1800247904}
     - target: {fileID: 3881095955214991046, guid: eb2811e5a3f8eed4a8ab720adf0045f7, type: 3}
       propertyPath: m_Name
       value: DiaPopupPanel
