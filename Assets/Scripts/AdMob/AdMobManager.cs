@@ -13,8 +13,7 @@ public class AdMobManager : MonoBehaviour
 #else
     private string _adUnitId = "unused";
 #endif
-
-    private RewardedAd _rewardedAd;
+    private InterstitialAd _interstitialAd;
     private void Awake()
     {
         // 싱글톤 구현: 이미 존재하면 파괴, 없으면 유지
@@ -33,43 +32,52 @@ public class AdMobManager : MonoBehaviour
         // SDK 초기화
         MobileAds.Initialize((InitializationStatus status) =>
         {
-            LoadRewardedAd();
+            LoadInterstitialAd();
         });
     }
 
     // 1. 광고 로드하기
-    public void LoadRewardedAd()
+    public void LoadInterstitialAd()
     {
-        if (_rewardedAd != null)
+        if (_interstitialAd != null)
         {
-            _rewardedAd.Destroy();
-            _rewardedAd = null;
+            _interstitialAd.Destroy();
+            _interstitialAd = null;
         }
 
         var adRequest = new AdRequest();
-        RewardedAd.Load(_adUnitId, adRequest, (RewardedAd ad, LoadAdError error) =>
+
+        InterstitialAd.Load(_adUnitId, adRequest, (InterstitialAd ad, LoadAdError error) =>
         {
             if (error != null || ad == null)
             {
                 Debug.LogError("보상형 광고 로드 실패: " + error);
                 return;
             }
-            _rewardedAd = ad;
-            RegisterEventHandlers(_rewardedAd); // 이벤트 연결
+
+            _interstitialAd = ad;
+            RegisterEventHandlers(_interstitialAd);
+
+            // 🔥 처음 로드된 경우에만 쿨타임 시작
+            if (!PlayerPrefs.HasKey(LastAdTimeKey))
+            {
+                SaveLastAdTime();
+            }
         });
     }
     // 3. 광고 이벤트 핸들러 (광고가 닫혔을 때 다시 로드하는 등)
-    private void RegisterEventHandlers(RewardedAd ad)
+    private void RegisterEventHandlers(InterstitialAd ad)
     {
         ad.OnAdFullScreenContentClosed += () =>
         {
-            Debug.Log("광고가 닫혔습니다. 다음 광고를 로드합니다.");
-            LoadRewardedAd(); // 닫히면 바로 다음 광고 미리 준비
+            Debug.Log("광고 닫힘 → 다시 로드");
+            LoadInterstitialAd();
         };
+
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
-            Debug.LogError("광고 표시에 실패했습니다: " + error);
-            LoadRewardedAd();
+            Debug.LogError("광고 표시 실패: " + error);
+            LoadInterstitialAd();
         };
     }
 
@@ -77,30 +85,25 @@ public class AdMobManager : MonoBehaviour
     private const float AdCooldownSeconds = 300f;
     private const string LastAdTimeKey = "LastRewardedAdTime";
 
-    public void ShowRewardedAd()
+    public void ShowInterstitialAd()
     {
-        // 1. 쿨타임 체크
         if (!IsCooldownOver())
         {
             float remaining = GetRemainingCooldown();
-            Debug.Log($"광고 쿨타임 중입니다. 남은 시간: {remaining:F0}초");
+            Debug.Log($"쿨타임: {remaining:F0}초 남음");
             return;
         }
 
-        // 2. 광고 로드 여부 체크 및 표시
-        if (_rewardedAd != null && _rewardedAd.CanShowAd())
+        if (_interstitialAd != null && _interstitialAd.CanShowAd())
         {
-            _rewardedAd.Show((Reward reward) =>
-            {
-                // 광고 시청 완료 시점 기록 (쿨타임 시작)
-                SaveLastAdTime();
-                Debug.Log("보상 지급 로직을 여기에 실행하세요.");
-            });
+            _interstitialAd.Show();
+
+            SaveLastAdTime(); // 보상 대신 그냥 여기서 쿨타임 시작
         }
         else
         {
-            Debug.Log("광고가 아직 준비되지 않았습니다.");
-            LoadRewardedAd(); // 누락되었다면 로드 시도
+            Debug.Log("광고 준비 안됨");
+            LoadInterstitialAd();
         }
     }
 

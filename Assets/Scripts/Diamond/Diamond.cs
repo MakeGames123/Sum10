@@ -9,6 +9,7 @@ public class Diamond : MonoBehaviour
     [SerializeField] TextMeshProUGUI text;
     [SerializeField] Button button;
     [SerializeField] RectTransform panel;
+    [SerializeField] BoardManager skinBoard;
 
     void Start()
     {
@@ -23,5 +24,6 @@ public class Diamond : MonoBehaviour
     private void EnablePanel()
     {
         panel.anchoredPosition = Vector2.zero;
+        skinBoard.LockCells();
     }
 }

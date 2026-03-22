@@ -276,7 +276,7 @@ public class GameManager : MonoBehaviour
 
         OnGameOver?.Invoke(score);
 
-        AdMobManager.Instance.ShowRewardedAd();
+        AdMobManager.Instance.ShowInterstitialAd();
     }
 
     public void ResetIdleTimer()

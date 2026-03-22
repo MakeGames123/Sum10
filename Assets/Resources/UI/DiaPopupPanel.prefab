@@ -1044,6 +1044,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   productGrid: {fileID: 5932228759872125843}
   diaPopup: {fileID: 2576705282384081718}
+  login: {fileID: 0}
+  skinBoard: {fileID: 0}
 --- !u!1 &4202185051426854261
 GameObject:
   m_ObjectHideFlags: 0
@@ -1754,7 +1756,6 @@ GameObject:
   - component: {fileID: 6321930386175593581}
   - component: {fileID: 2912109833156041070}
   - component: {fileID: 1473632347874445867}
-  - component: {fileID: 4094897874191285652}
   m_Layer: 0
   m_Name: DimBackground
   m_TagString: Untagged
@@ -1832,19 +1833,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 7507129657734950232}
---- !u!114 &4094897874191285652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8145223222057200521}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9fea0f142c84f547ac5c7bf6f2b50dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 7193793580797885056}
 --- !u!1001 &231934162126433057
 PrefabInstance:
   m_ObjectHideFlags: 0

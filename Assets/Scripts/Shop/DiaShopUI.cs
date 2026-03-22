@@ -11,6 +11,7 @@ public class DiaShopUI : MonoBehaviour
     [SerializeField] private Transform productGrid;
     [SerializeField] private DiaPopup diaPopup;
     [SerializeField] private PlayFabLoginManager login;
+    [SerializeField] BoardManager skinBoard;
 
     void Start()
     {
@@ -160,6 +161,10 @@ public class DiaShopUI : MonoBehaviour
                 OnSuccess(data); // 성공 시 다이아 지급 연출
             }, null);
         }
+    }
+    public void Disable()
+    {
+        skinBoard.UnlockCells();
     }
     void OnDestroy()
     {
