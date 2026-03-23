@@ -14,7 +14,7 @@ public class ScreenCornerAnchor : MonoBehaviour
     private RectTransform rectTransform;
     private Canvas canvas;
 
-    void Start()
+    void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();

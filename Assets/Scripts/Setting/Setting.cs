@@ -46,8 +46,8 @@ public class SettingManager : MonoBehaviour
     }
     void Start()
     {
-        originPos = settingButton.position;
         ApplySettings();
+        originPos = settingButton.position;
     }
     public void Show()
     {
