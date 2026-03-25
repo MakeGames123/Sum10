@@ -11,6 +11,7 @@ public class PlayFabLoginManager : MonoBehaviour
     public UnityEvent onLogined = new();
     private const string GOOGLE_LINK_KEY = "IsGoogleLinked";
     public GameObject reconnectPanel;
+    public GameObject linkButton;
     public bool isLinked = false;
 
     void Awake()
@@ -45,6 +46,7 @@ public class PlayFabLoginManager : MonoBehaviour
                     LoginToPlayFabWithGoogle(authCode);
                 });
                 isLinked = true;
+                linkButton.SetActive(false);
             }
             else
             {
@@ -67,7 +69,7 @@ public class PlayFabLoginManager : MonoBehaviour
     }
 
     // [연동하기 버튼용] - 설정창의 '연동 버튼'에 연결
-    public void ClickLinkButton()
+    public void ClickLinkButton(System.Action<bool> onComplete)
     {
         // 1. Google Play Games 인증 시작
         PlayGamesPlatform.Instance.Authenticate((status) =>
@@ -80,13 +82,14 @@ public class PlayFabLoginManager : MonoBehaviour
                     if (string.IsNullOrEmpty(authCode))
                     {
                         Debug.LogError("Google 서버 인증 코드를 가져오지 못했습니다.");
+                        onComplete?.Invoke(false);
                         return;
                     }
 
                     var request = new LinkGooglePlayGamesServicesAccountRequest
                     {
                         ServerAuthCode = authCode,
-                        ForceLink = false // 이미 연결된 계정이 있을 경우 에러를 발생시켜 안전하게 처리
+                        ForceLink = false
                     };
 
                     // 3. PlayFab 계정 연동 시도
@@ -95,23 +98,28 @@ public class PlayFabLoginManager : MonoBehaviour
                         {
                             PlayerPrefs.SetInt(GOOGLE_LINK_KEY, 1);
                             PlayerPrefs.Save();
+
                             Debug.LogError("구글 연동 성공!");
                             isLinked = true;
+                            linkButton.SetActive(false);
+
+                            onComplete?.Invoke(true);
                         },
                         error =>
                         {
+                            Debug.LogError("구글 연동 실패!");
                             HandleLinkError(error);
+                            onComplete?.Invoke(false);
                         });
                 });
             }
             else
             {
                 Debug.LogError($"Google 로그인 실패: {status}");
-                // UI에 "로그인에 실패했습니다" 등의 메시지 표시 권장
+                onComplete?.Invoke(false);
             }
         });
     }
-
     private void HandleLinkError(PlayFabError error)
     {
         switch (error.Error)

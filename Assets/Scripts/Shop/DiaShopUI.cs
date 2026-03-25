@@ -12,6 +12,7 @@ public class DiaShopUI : MonoBehaviour
     [SerializeField] private DiaPopup diaPopup;
     [SerializeField] private PlayFabLoginManager login;
     [SerializeField] BoardManager skinBoard;
+    [SerializeField] GameObject linkPupUp;
 
     void Start()
     {
@@ -145,12 +146,12 @@ public class DiaShopUI : MonoBehaviour
     }
     void OnClickNormal(string id, ShopItemData data)
     {
-        if (!login.isLinked) login.ClickLinkButton();
+        if (!login.isLinked) linkPupUp.SetActive(true);
         else IAPManager.Instance.BuyProduct(id, () => OnSuccess(data));
     }
     void OnClickFree(ShopItemData data)
     {
-        if (!login.isLinked) login.ClickLinkButton();
+        if (!login.isLinked) linkPupUp.SetActive(true);
         else
         {
             PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest

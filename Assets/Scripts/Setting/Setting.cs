@@ -20,6 +20,7 @@ public class SettingManager : MonoBehaviour
     [SerializeField] GameManager game;
     [SerializeField] BoardManager inGameBoard;
     [SerializeField] BoardManager skinBoard;
+    [SerializeField] PlayFabLoginManager login;
     RectTransform rect;
     const string MASTER_VOL_KEY = "MASTER_VOLUME";
     const string MUSIC_VOL_KEY = "MUSIC_VOLUME";
@@ -74,7 +75,8 @@ public class SettingManager : MonoBehaviour
         {
             homeButton.gameObject.SetActive(false);
             retryButton.gameObject.SetActive(false);
-            linkButton.gameObject.SetActive(true);
+            if (!login.isLinked) linkButton.gameObject.SetActive(true);
+            else linkButton.gameObject.SetActive(false);
             button1.gameObject.SetActive(true);
             button2.gameObject.SetActive(true);
         }
