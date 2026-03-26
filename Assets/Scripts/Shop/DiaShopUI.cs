@@ -13,6 +13,8 @@ public class DiaShopUI : MonoBehaviour
     [SerializeField] private PlayFabLoginManager login;
     [SerializeField] BoardManager skinBoard;
     [SerializeField] GameObject linkPupUp;
+    private bool isShopDataReady = false;
+    private bool isLoginReady = false;
 
     void Start()
     {
@@ -22,12 +24,35 @@ public class DiaShopUI : MonoBehaviour
             return;
         }
 
+        // 시트 데이터 콜백 등록
+        ShopDataLoader.Instance.OnDataLoaded += OnShopDataLoaded;
+
+        // 로그인 콜백 등록
+        login.onLogined.AddListener(OnLoginSuccess);
+
+        // 이미 로드된 경우 대비
         if (ShopDataLoader.Instance.Items.Count > 0)
         {
-            UpdateUI();
+            OnShopDataLoaded();
         }
+    }
+    void OnShopDataLoaded()
+    {
+        isShopDataReady = true;
+        TryInitUI();
+    }
 
-        ShopDataLoader.Instance.OnDataLoaded += UpdateUI;
+    void OnLoginSuccess()
+    {
+        isLoginReady = true;
+        TryInitUI();
+    }
+    void TryInitUI()
+    {
+        if (!isShopDataReady || !isLoginReady)
+            return;
+
+        UpdateUI();
     }
     public void UpdateUI()
     {

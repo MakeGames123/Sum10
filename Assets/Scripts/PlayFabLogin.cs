@@ -21,17 +21,7 @@ public class PlayFabLoginManager : MonoBehaviour
 
     void Start()
     {
-        // 1. 이전에 구글 연동을 완료했었는지 확인
-        if (PlayerPrefs.GetInt(GOOGLE_LINK_KEY, 0) == 1)
-        {
-            Debug.LogError("구글 연동 유저: 구글 로그인 시도");
-            LoginWithGoogle();
-        }
-        else
-        {
-            Debug.LogError("게스트 유저: 게스트 로그인 시도");
-            LoginWithGuest();
-        }
+        LoginWithGoogle();
     }
 
     // [구글 로그인] - 기존 연동 유저용
@@ -45,12 +35,9 @@ public class PlayFabLoginManager : MonoBehaviour
                 {
                     LoginToPlayFabWithGoogle(authCode);
                 });
-                isLinked = true;
-                linkButton.SetActive(false);
             }
             else
             {
-                // 구글 로그인 실패 시 게스트로라도 들여보낼지 선택 (안전빵으로 게스트 로그인 호출 가능)
                 LoginWithGuest();
             }
         });
@@ -155,6 +142,9 @@ public class PlayFabLoginManager : MonoBehaviour
     {
         Debug.LogError("플레이팹(구글연동) 로그인 성공!");
         Debug.LogError($"사용자 ID: {result.PlayFabId}");
+        
+        isLinked = PlayerPrefs.GetInt(GOOGLE_LINK_KEY, 0) == 1;
+        linkButton.SetActive(!isLinked);
 
         if (reconnectPanel != null) reconnectPanel.SetActive(false);
         onLogined.Invoke();
