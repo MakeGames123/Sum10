@@ -1022,13 +1022,15 @@ MonoBehaviour:
   musicVolumeSlider: {fileID: 8537875101224513465}
   vibrationToggle: {fileID: 1198744475921347679}
   homeButton: {fileID: 3434521438415970357}
+  settingButton: {fileID: 0}
   linkButton: {fileID: 5709315050133686824}
   button1: {fileID: 3196683671363373022}
   button2: {fileID: 6962222919691883354}
-  button3: {fileID: 0}
-  retryButton: {fileID: 0}
+  retryButton: {fileID: 5808045499860073086}
   game: {fileID: 0}
-  board: {fileID: 0}
+  inGameBoard: {fileID: 0}
+  skinBoard: {fileID: 0}
+  login: {fileID: 0}
 --- !u!114 &4189354516892536665
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2467,8 +2469,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6636205852170810838}
   - component: {fileID: 6617432932249153727}
+  - component: {fileID: 2845637964612451550}
   m_Layer: 5
-  m_Name: 3Button Area
+  m_Name: SupportArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2521,6 +2524,18 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2845637964612451550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5664927186739632197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a5e56b9a40552f4fb83b4422b1191cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5876255522737324047
 GameObject:
   m_ObjectHideFlags: 0
@@ -3048,7 +3063,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7589467306003635458}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2845637964612451550}
+        m_TargetAssemblyTypeName: SupportManager, Assembly-CSharp
+        m_MethodName: OpenPrivacyPolicy
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7057072910131083690
 GameObject:
   m_ObjectHideFlags: 0
@@ -3535,7 +3562,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1498576950027054395}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2845637964612451550}
+        m_TargetAssemblyTypeName: SupportManager, Assembly-CSharp
+        m_MethodName: OpenSupportEmail
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7901816718277379990
 GameObject:
   m_ObjectHideFlags: 0
@@ -3953,7 +3992,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1605391217192852981}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!1 &8462349665013006471
 GameObject:
   m_ObjectHideFlags: 0
@@ -4262,19 +4313,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2982615880415407503}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6690994415840149820}
-        m_TargetAssemblyTypeName: SettingsManager, Assembly-CSharp
-        m_MethodName: Hide
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &578859812916705145
 MonoBehaviour:
   m_ObjectHideFlags: 0
