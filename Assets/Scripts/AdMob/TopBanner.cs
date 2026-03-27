@@ -68,6 +68,6 @@ public class TopBanner : MonoBehaviour
 
         Rect safeArea = Screen.safeArea;
         float unsafeHeight = Screen.height - (safeArea.y + safeArea.height);
-        return _bannerView.GetHeightInPixels() / (float)Screen.dpi * 160f + unsafeHeight;
+        return _bannerView.GetHeightInPixels() / (float)Screen.dpi * 160f + unsafeHeight + 75;
     }
 }

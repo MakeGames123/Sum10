@@ -241,12 +241,13 @@ public class BoardManager : MonoBehaviour
         // 힌트 사운드 루프 시작
         var config = cellUIs[0].config;
         float interval = config.hintBounceDuration * config.hintBounceCount + config.hintPauseDuration;
-        if(gameObject.activeSelf) hintSoundCoroutine = StartCoroutine(HintSoundLoop(interval));
+        if (gameObject.activeSelf) hintSoundCoroutine = StartCoroutine(HintSoundLoop(interval));
         VibrationManager.Instance.Light();
     }
 
     public void CancelHint()
     {
+        Debug.Log("Cancel");
         // 힌트 사운드 루프 중지
         if (hintSoundCoroutine != null)
         {
@@ -264,7 +265,7 @@ public class BoardManager : MonoBehaviour
             currentHintCells.Clear();
         }
 
-        gameManager?.ResetIdleTimer();
+        gameManager?.ResetHint();
     }
 
     private IEnumerator HintSoundLoop(float interval)

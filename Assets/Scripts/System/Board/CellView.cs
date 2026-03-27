@@ -69,12 +69,13 @@ public class CellView : MonoBehaviour
 
     public void Init(Cell newCellInfo)
     {
+        // 기존 애니메이션 정리 및 위치/상태 초기화
+        StopAnimation();
+        
         Unsubscribe();
 
         this.cellInfo = newCellInfo;
 
-        // 기존 애니메이션 정리 및 위치/상태 초기화
-        StopAnimation();
         parent.anchoredPosition = Vector3.zero;
         parent.localRotation = Quaternion.identity;
         if (numberText != null)

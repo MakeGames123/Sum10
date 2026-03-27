@@ -254,7 +254,7 @@ public class GameManager : MonoBehaviour
 
         if (!TutorialStatusManager.Instance.isTutorialCompleted) stageIndex = -1;
 
-        ResetIdleTimer();
+        ResetHint();
     }
     public void ForceEnd()
     {
@@ -280,6 +280,10 @@ public class GameManager : MonoBehaviour
     }
 
     public void ResetIdleTimer()
+    {
+        idleTimer = 0f;
+    }
+    public void ResetHint()
     {
         idleTimer = 0f;
         hintShownForCurrentIdle = false;
@@ -334,7 +338,7 @@ public class GameManager : MonoBehaviour
         currentBoardSize = GetBoardSizeForStage(stageIndex);
         boardManager.SetupBoardWithSize(currentBoardSize);
         boardSettingManager.SetupBoardWithSize(currentBoardSize);
-        ResetIdleTimer();
+        ResetHint();
     }
 
     // 스테이지별 보드 크기: 3, 3, 4, 4, 5, 5, 6, 6, 6...

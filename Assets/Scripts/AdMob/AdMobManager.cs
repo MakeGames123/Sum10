@@ -7,9 +7,7 @@ public class AdMobManager : MonoBehaviour
     public static AdMobManager Instance { get; private set; }
     // 테스트용 ID (개발 완료 후 실제 ID로 교체하세요)
 #if UNITY_ANDROID
-    private string _adUnitId = "ca-app-pub-3940256099942544/5224354917";
-#elif UNITY_IPHONE
-    private string _adUnitId = "ca-app-pub-3940256099942544/1712485313";
+    private string _adUnitId = "ca-app-pub-3940256099942544/1033173712";
 #else
     private string _adUnitId = "unused";
 #endif
@@ -87,10 +85,12 @@ public class AdMobManager : MonoBehaviour
 
     public void ShowInterstitialAd()
     {
+        if (PlayerData.Instance.GetAdStatus()) return;
+
         if (!IsCooldownOver())
         {
             float remaining = GetRemainingCooldown();
-            Debug.Log($"쿨타임: {remaining:F0}초 남음");
+            Debug.LogError($"쿨타임: {remaining:F0}초 남음");
             return;
         }
 

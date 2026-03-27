@@ -73,9 +73,6 @@ public class UIController : MonoBehaviour
     public void TransitionToLobby()
     {
         CurrentState = UIState.Lobby;
-        
-        TopBanner.Instance.RemoveBanner();
-
         // 로비 UI 표시
         lobbyUIRoot.anchoredPosition = Vector2.zero;
         SetActive(homePanel, true);
@@ -120,6 +117,7 @@ public class UIController : MonoBehaviour
     public void TransitionToGameOver(int val)
     {
         CurrentState = UIState.GameOver;
+        TopBanner.Instance.RemoveBanner();
 
         // 게임오버 패널이 InGameUIRoot 안에 있으므로 InGameUIRoot는 켜둠
         // 대신 인게임 요소들만 숨김
