@@ -20,20 +20,20 @@ public class TopBanner : MonoBehaviour
             DontDestroyOnLoad(gameObject); // 씬이 바뀌어도 파괴되지 않음
         }
         else { Destroy(gameObject); }
+
+        LoadBanner();
     }
 
     private void LoadBanner()
     {
         if (isInitialized)
         {
-            PlaceBannerAd();
             return;
         }
 
         MobileAds.Initialize(status =>
         {
             isInitialized = true;
-            PlaceBannerAd();
         });
     }
 

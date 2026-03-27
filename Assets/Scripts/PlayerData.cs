@@ -36,6 +36,7 @@ public class PlayerData : MonoBehaviour
 
         login.onLogined.AddListener(LoadDiamondFromServer);
         login.onLogined.AddListener(LoadProfileStatusFromServer);
+        login.onLogined.AddListener(LoadAdStatusFromServer);
     }
     public void LoadDiamondFromServer()
     {
@@ -124,7 +125,66 @@ public class PlayerData : MonoBehaviour
             }
         );
     }
+    public void LoadAdStatusFromServer()
+    {
+        PlayFabClientAPI.GetUserData(
+            new GetUserDataRequest(),
+            result =>
+            {
+                if (result.Data != null &&
+                    result.Data.TryGetValue("removeAds", out var data))
+                {
+                    if (int.TryParse(data.Value, out int parsed))
+                    {
+                        isAdRemoved = parsed == 1;
+                    }
+                    else
+                    {
+                        isAdRemoved = false;
+                    }
 
+                    onAdRemovedChanged?.Invoke(isAdRemoved);
+                    Debug.Log("광고 제거 상태 로드 완료: " + isAdRemoved);
+                }
+                else
+                {
+                    Debug.Log("광고 제거 데이터 없음 → 기본값 생성");
+
+                    // 기본값 false
+                    isAdRemoved = false;
+                    onAdRemovedChanged?.Invoke(isAdRemoved);
+
+                    SaveAdStatusToServer();
+                }
+            },
+            error =>
+            {
+                Debug.LogError("광고 제거 상태 로드 실패: " + error.GenerateErrorReport());
+            }
+        );
+    }
+    public void SaveAdStatusToServer()
+    {
+        var request = new UpdateUserDataRequest
+        {
+            Data = new Dictionary<string, string>
+        {
+            { "removeAds", isAdRemoved ? "1" : "0" }
+        }
+        };
+
+        PlayFabClientAPI.UpdateUserData(
+            request,
+            result =>
+            {
+                Debug.Log("광고 제거 상태 저장 완료");
+            },
+            error =>
+            {
+                Debug.LogError("광고 제거 상태 저장 실패: " + error.GenerateErrorReport());
+            }
+        );
+    }
     public int GetDiamond()
     {
         return localDiamond;
