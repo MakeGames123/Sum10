@@ -23,6 +23,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject bottomNavBar;       // 하단 네비게이션 바
     [SerializeField] private GameObject startButton;        // 시작 버튼
     [SerializeField] private GameObject scoreButton;        // 스코어 버튼
+    [SerializeField] private GameObject questButton;        // 스코어 버튼
 
     [Header("InGame UI Elements")]
     [SerializeField] private GameObject inGameBackground;   // 인게임 배경
@@ -79,6 +80,7 @@ public class UIController : MonoBehaviour
         SetActive(topBar, true);
         SetActive(bottomNavBar, true);
         SetActive(startButton, true);
+        SetActive(questButton, true);
         SetActive(scoreButton, true);
 
         // 인게임 UI 숨기기
@@ -101,6 +103,7 @@ public class UIController : MonoBehaviour
         SetActive(bottomNavBar, false);
         SetActive(startButton, false);
         SetActive(scoreButton, false);
+        SetActive(questButton, false);
 
         // 인게임 UI 표시
         inGameUIRoot.anchoredPosition = Vector2.zero;

@@ -53,6 +53,8 @@ public class GameManager : MonoBehaviour
 
     public int combo = 0;
     public int maxCombo = 0;
+    public int comboAccum = 0;
+    public int cellRemovedCount = 0;
     public bool isTutorial = false;
     Coroutine progress = null;
     private void Awake()
@@ -237,7 +239,9 @@ public class GameManager : MonoBehaviour
 
         score = 0;
         combo = 0;
+        comboAccum = 0;
         maxCombo = 0;
+        cellRemovedCount = 0;
         timeProgress = 0;
         OnScoreChanged?.Invoke(score);
         OnComboChanged?.Invoke(score);
@@ -277,6 +281,12 @@ public class GameManager : MonoBehaviour
         OnGameOver?.Invoke(score);
 
         AdMobManager.Instance.ShowInterstitialAd();
+
+        QuestManager.Instance.AddProgress("single_game_combo", maxCombo);
+        QuestManager.Instance.AddProgress("single_game_score", score);
+        QuestManager.Instance.AddProgress("single_game_cell_clear", cellRemovedCount);
+        QuestManager.Instance.AddProgress("play_count", 1);
+        QuestManager.Instance.AddProgress("daily_play_time", (int)timeProgress);
     }
 
     public void ResetIdleTimer()
@@ -301,6 +311,8 @@ public class GameManager : MonoBehaviour
         }
 
         combo++;
+        comboAccum++;
+        cellRemovedCount += gained;
         if (maxCombo < combo) maxCombo = combo;
         int comboBonus = (int)(combo / 10);  // 0~9: 0점, 10~19: 1점, 20~29: 2점...
         int lengthBonus = Mathf.Max(0, gained - 2); // 3개:+1, 4개:+2, ..., 10개:+8

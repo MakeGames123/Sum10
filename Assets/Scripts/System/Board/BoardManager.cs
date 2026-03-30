@@ -247,7 +247,6 @@ public class BoardManager : MonoBehaviour
 
     public void CancelHint()
     {
-        Debug.Log("Cancel");
         // 힌트 사운드 루프 중지
         if (hintSoundCoroutine != null)
         {
