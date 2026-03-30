@@ -201,6 +201,8 @@ public class QuestManager : MonoBehaviour
                 isRerolled = isRerolled,
                 isClaimed = isClaimed
             });
+
+            if(isClear && !isClaimed) alarm.enabled = true;
         }
     }
     public void RerollQuest(int index)
