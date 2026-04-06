@@ -139,7 +139,7 @@ public class ShopDataLoader : MonoBehaviour
             if (string.IsNullOrEmpty(line)) continue;
 
             string[] cols = line.Split('\t');
-            if (cols.Length < 8) continue;
+            if (cols.Length < 9) continue;
 
             var item = new ShopItemData
             {
@@ -150,7 +150,8 @@ public class ShopDataLoader : MonoBehaviour
                 bonusQty = int.Parse(cols[4]),
                 totalQty = int.Parse(cols[5]),
                 productId = cols[6],
-                priceText = cols[7]
+                priceText = cols[7],
+                bonusStringId = int.Parse(cols[8])
             };
 
             _items.Add(item);

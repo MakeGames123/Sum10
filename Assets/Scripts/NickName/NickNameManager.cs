@@ -64,7 +64,7 @@ public class NicknameManager : MonoBehaviour
                 var data = result.FunctionResult as IDictionary<string, object>;
                 if (data == null)
                 {
-                    SetStatus("서버 응답이 올바르지 않습니다.");
+                    SetStatus(StringTableLoader.Instance.GetText(57));
                     isProcessing = false;
                     return;
                 }
@@ -88,7 +88,7 @@ public class NicknameManager : MonoBehaviour
             error =>
             {
                 Debug.LogError(error.GenerateErrorReport());
-                SetStatus("서버 통신 오류가 발생했습니다.");
+                SetStatus(StringTableLoader.Instance.GetText(57));
             }
         );
     }
@@ -112,7 +112,7 @@ public class NicknameManager : MonoBehaviour
                 var data = result.FunctionResult as IDictionary<string, object>;
                 if (data == null)
                 {
-                    SetStatus("서버 응답 오류");
+                    SetStatus(StringTableLoader.Instance.GetText(57));
                     isProcessing = false;
                     return;
                 }
@@ -138,7 +138,7 @@ public class NicknameManager : MonoBehaviour
             error =>
             {
                 Debug.LogError(error.GenerateErrorReport());
-                SetStatus("서버 오류");
+                SetStatus(StringTableLoader.Instance.GetText(57));
             }
         );
     }
@@ -162,7 +162,7 @@ public class NicknameManager : MonoBehaviour
 
                 profile.UpdateProfile();
                 SaveNewbieProfile();
-                SetStatus("닉네임 변경 성공!");
+                SetStatus(StringTableLoader.Instance.GetText(56));
                 intro.raycastTarget = true;
                 gameObject.SetActive(false);
             },
@@ -175,14 +175,14 @@ public class NicknameManager : MonoBehaviour
 
                 if (error.ErrorMessage.Contains("display name"))
                 {
-                    SetStatus("닉네임 변경 성공!");
+                    SetStatus(StringTableLoader.Instance.GetText(56));
                     intro.raycastTarget = true;
                     profile.UpdateProfile();
                     gameObject.SetActive(false);
                     return;
                 }
 
-                SetStatus("이미 사용중인 닉네임입니다.");
+                SetStatus(StringTableLoader.Instance.GetText(55));
             }
         );
     }
@@ -203,28 +203,28 @@ public class NicknameManager : MonoBehaviour
         switch (reason)
         {
             case "EMPTY":
-                SetStatus("닉네임을 입력해주세요.");
+                SetStatus(StringTableLoader.Instance.GetText(48));
                 break;
 
             case "ALREADY_EXISTS":
-                SetStatus("이미 사용중인 닉네임 입니다.");
+                SetStatus(StringTableLoader.Instance.GetText(49));
                 break;
 
             case "INVALID_LENGTH":
-                SetStatus("닉네임 길이는 3~10자여야 합니다.");
+                SetStatus(StringTableLoader.Instance.GetText(50));
                 break;
 
             case "INVALID_CHAR":
-                SetStatus("닉네임에는 한글, 영문, 숫자만 사용할 수 있어요.");
+                SetStatus(StringTableLoader.Instance.GetText(51));
                 break;
 
             case "BANNED_WORD":
-                SetStatus("사용할 수 없는 단어가 포함되어 있어요.");
+                SetStatus(StringTableLoader.Instance.GetText(52));
                 break;
 
             default:
                 Debug.Log(reason);
-                SetStatus("닉네임을 변경할 수 없습니다.");
+                SetStatus(StringTableLoader.Instance.GetText(53));
                 break;
         }
     }

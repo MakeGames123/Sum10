@@ -104,17 +104,17 @@ public class DiaShopUI : MonoBehaviour
             if (!isPaid)
             {
                 freeBonusButton.interactable = false;
-                if (freeBonusStatusText) freeBonusStatusText.text = "결제 후 활성화";
+                if (freeBonusStatusText) freeBonusStatusText.text = StringTableLoader.Instance.GetText(29);
             }
             else if (isClaimed)
             {
                 freeBonusButton.interactable = false;
-                if (freeBonusStatusText) freeBonusStatusText.text = "수령 완료";
+                if (freeBonusStatusText) freeBonusStatusText.text = StringTableLoader.Instance.GetText(58);
             }
             else
             {
                 freeBonusButton.interactable = true;
-                if (freeBonusStatusText) freeBonusStatusText.text = "무료";
+                if (freeBonusStatusText) freeBonusStatusText.text = StringTableLoader.Instance.GetText(59);
 
                 // 버튼 클릭 시 CloudScript 호출
                 freeBonusButton.onClick.AddListener(() => OnClickFree(data));
@@ -136,7 +136,9 @@ public class DiaShopUI : MonoBehaviour
             else
             {
                 bonusTag.gameObject.SetActive(true);
-                if (tmp != null) tmp.text = item.bonusTag;
+                string localizedBonusString = StringTableLoader.Instance.GetText(item.bonusStringId);
+                if(item.bonusStringId == 32) tmp.text = string.Format(localizedBonusString, item.bonusQty);
+                else tmp.text = localizedBonusString;
             }
         }
         var amountArea = product.Find("AmountArea");

@@ -539,6 +539,7 @@ GameObject:
   - component: {fileID: 6611114764796028610}
   - component: {fileID: 6083732128142655529}
   - component: {fileID: 5736382479937696005}
+  - component: {fileID: 7594171553522944921}
   m_Layer: 0
   m_Name: GoHomeText
   m_TagString: Untagged
@@ -665,6 +666,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7594171553522944921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039158815222783602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ed8083342e188d48b1a65552f16fbb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stringId: 25
 --- !u!1 &2146976435358588584
 GameObject:
   m_ObjectHideFlags: 0
@@ -947,6 +961,7 @@ GameObject:
   - component: {fileID: 6135451449658933257}
   - component: {fileID: 6240184918575533943}
   - component: {fileID: 4328063324934476369}
+  - component: {fileID: 8184853198370428266}
   m_Layer: 0
   m_Name: HeaderText
   m_TagString: Untagged
@@ -1073,6 +1088,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8184853198370428266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3545447672195300074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ed8083342e188d48b1a65552f16fbb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stringId: 23
 --- !u!1 &3732348105659707308
 GameObject:
   m_ObjectHideFlags: 0
@@ -1322,6 +1350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9e938e58e92094e8d5d0d26e99fd9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mode: 0
   referenceWidth: 1080
   referenceHeight: 2340
   allowScaleUp: 0
@@ -1855,6 +1884,7 @@ GameObject:
   - component: {fileID: 3413258911895656734}
   - component: {fileID: 473115094390241980}
   - component: {fileID: 8582843514955769628}
+  - component: {fileID: 8041148267981440077}
   m_Layer: 0
   m_Name: BestScoreLabelText
   m_TagString: Untagged
@@ -1981,6 +2011,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8041148267981440077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7893523552033553325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ed8083342e188d48b1a65552f16fbb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stringId: 24
 --- !u!1 &7958774634414899382
 GameObject:
   m_ObjectHideFlags: 0
