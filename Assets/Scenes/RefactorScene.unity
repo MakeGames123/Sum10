@@ -11884,9 +11884,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 482413672}
     m_Modifications:
+    - target: {fileID: 1755643137585821936, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1889057690241081008, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887596800711964000, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5282983531147626312, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
       propertyPath: m_Name
       value: Quest
+      objectReference: {fileID: 0}
+    - target: {fileID: 5282983531147626312, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638011373054586425, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8564601763635868025, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
       propertyPath: m_Pivot.x
