@@ -1254,6 +1254,7 @@ GameObject:
   - component: {fileID: 9141432836615923205}
   - component: {fileID: 8570618278583805650}
   - component: {fileID: 1873240411519377787}
+  - component: {fileID: 4663581105602328429}
   m_Layer: 5
   m_Name: QuestButton
   m_TagString: Untagged
@@ -1388,6 +1389,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19107e453cea61c449a2a06e6598e042, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4663581105602328429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6475027927155697777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dfbb49b45ef8944393e9a5d65b24753, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressScale: 0.9
+  pressDuration: 0.1
+  releaseDuration: 0.15
+  pressEase: 6
+  releaseEase: 27
 --- !u!1 &6638011373054586425
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,6 +20,7 @@ public class IntroController : MonoBehaviour, IPointerClickHandler
     [SerializeField] private GameObject topBar;
     [SerializeField] private GameObject bottomNavBar;
     [SerializeField] private GameObject settingButton;
+    [SerializeField] private GameObject questButton;
 
     [Header("로비 등장 애니메이션 대상")]
     [SerializeField] private RectTransform topBarRect;
@@ -28,6 +29,7 @@ public class IntroController : MonoBehaviour, IPointerClickHandler
     [SerializeField] private RectTransform startButtonRect;   // 시작 버튼
     [SerializeField] private RectTransform adRemoveButtonRect; // 광고 제거 버튼
     [SerializeField] private RectTransform settingButtonRect;  // 설정 버튼
+    [SerializeField] private RectTransform questButtonRect;    // 퀘스트 버튼
 
     [Header("Intro Settings")]
     [SerializeField] private float riseOffset = 80f;
@@ -68,6 +70,7 @@ public class IntroController : MonoBehaviour, IPointerClickHandler
         if (topBar != null) topBar.SetActive(false);
         if (bottomNavBar != null) bottomNavBar.SetActive(false);
         if (settingButton != null) settingButton.SetActive(false);
+        if (questButton != null) questButton.SetActive(false);
 
         StartCoroutine(PlayIntro());
     }
@@ -152,11 +155,13 @@ public class IntroController : MonoBehaviour, IPointerClickHandler
         if (bottomNavBarRect != null)
             bottomNavBarRect.anchoredPosition = _bottomNavOrig + Vector2.down * bottomNavSlideOffset;
 
-        // 설정 버튼: 그냥 활성화만
+        // 설정 버튼, 퀘스트 버튼: 활성화
         if (settingButton != null) settingButton.SetActive(true);
+        if (questButton != null) questButton.SetActive(true);
         if (homeLogo != null) homeLogo.localScale = Vector3.zero;
         if (startButtonRect != null) startButtonRect.localScale = Vector3.zero;
         if (adRemoveButtonRect != null) adRemoveButtonRect.localScale = Vector3.zero;
+        if (questButtonRect != null) questButtonRect.localScale = Vector3.zero;
 
         uiController.TransitionToLobby();
 
@@ -167,10 +172,12 @@ public class IntroController : MonoBehaviour, IPointerClickHandler
         Vector3 logoScale = homeLogo != null && homeLogo.localScale != Vector3.zero ? homeLogo.localScale : Vector3.one;
         Vector3 startBtnScale = startButtonRect != null && startButtonRect.localScale != Vector3.zero ? startButtonRect.localScale : Vector3.one;
         Vector3 adRemoveScale = adRemoveButtonRect != null && adRemoveButtonRect.localScale != Vector3.zero ? adRemoveButtonRect.localScale : Vector3.one;
+        Vector3 questScale = questButtonRect != null && questButtonRect.localScale != Vector3.zero ? questButtonRect.localScale : Vector3.one;
 
         if (homeLogo != null) homeLogo.localScale = Vector3.zero;
         if (startButtonRect != null) startButtonRect.localScale = Vector3.zero;
         if (adRemoveButtonRect != null) adRemoveButtonRect.localScale = Vector3.zero;
+        if (questButtonRect != null) questButtonRect.localScale = Vector3.zero;
 
         float dur = lobbyAnimDuration;
         WaitForSeconds wait = new WaitForSeconds(lobbyStagger);
@@ -198,6 +205,11 @@ public class IntroController : MonoBehaviour, IPointerClickHandler
         // 5. 광고 제거 버튼
         if (adRemoveButtonRect != null)
             adRemoveButtonRect.DOScale(adRemoveScale, dur).SetEase(Ease.OutBack);
+        yield return wait;
+
+        // 5-1. 퀘스트 버튼
+        if (questButtonRect != null)
+            questButtonRect.DOScale(questScale, dur).SetEase(Ease.OutBack);
         yield return wait;
 
         // 6. BottomNavBar

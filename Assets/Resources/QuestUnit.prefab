@@ -684,8 +684,10 @@ GameObject:
   - component: {fileID: 3618661389503395244}
   - component: {fileID: 3577149931818265635}
   - component: {fileID: 6924123643642317951}
+  - component: {fileID: 6569242971024357683}
   m_Layer: 5
-  m_Name: "Reroll(\uC644\uB8CC \uC2DC \uBE44\uD65C\uC131\uD654 \uD574\uC8FC\uC138\uC694)"
+  m_Name: "Reroll(\uD074\uB9AD \uC2DC& \uD074\uB9AD \uC548\uD558\uACE0 \uD018\uC2A4\uD2B8
+    \uC644\uB8CC \uC2DC \uBE44\uD65C\uC131\uD654 \uD574\uC8FC\uC138\uC694)"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -792,6 +794,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6569242971024357683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3379704402809445985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19107e453cea61c449a2a06e6598e042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3436097469821601671
 GameObject:
   m_ObjectHideFlags: 0
