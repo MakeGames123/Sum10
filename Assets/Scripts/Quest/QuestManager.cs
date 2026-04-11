@@ -336,7 +336,7 @@ public class QuestManager : MonoBehaviour
             }
         );
     }
-    public void ClearQuestLocalData()
+    public void ClearQuestLocalData() // 테스트용
     {
         PlayerPrefs.DeleteKey(SAVE_KEY_DATE);
         PlayerPrefs.DeleteKey(SAVE_KEY_LIST);
