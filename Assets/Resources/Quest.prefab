@@ -1149,7 +1149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dataLoader: {fileID: 35551260494728225}
   todayQuests: []
-  alarm: {fileID: 5469981336906712337}
+  alarm: {fileID: 0}
   panel: {fileID: 2613982322698508328}
 --- !u!114 &35551260494728225
 MonoBehaviour:
@@ -1176,7 +1176,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2342169415776519291}
   - component: {fileID: 4279159271107973567}
-  - component: {fileID: 5469981336906712337}
+  - component: {fileID: 5999353951140159933}
   m_Layer: 5
   m_Name: Alarm
   m_TagString: Untagged
@@ -1194,14 +1194,14 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 448205439692646043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 48.160522, y: 52.805664}
-  m_SizeDelta: {x: 50.9321, y: 50.9321}
+  m_AnchoredPosition: {x: 45, y: 59.4}
+  m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4279159271107973567
 CanvasRenderer:
@@ -1211,29 +1211,29 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6417556511568155013}
   m_CullTransparentMesh: 1
---- !u!114 &5469981336906712337
+--- !u!114 &5999353951140159933
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6417556511568155013}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -7014583759790672016, guid: 088ddd07d47887f4fb5f65e6a6288677, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -1804,7 +1804,7 @@ MonoBehaviour:
   - {fileID: 6007624155318049223}
   - {fileID: 7024160072154378775}
   manager: {fileID: 775130053038110714}
-  alarm: {fileID: 5469981336906712337}
+  alarm: {fileID: 0}
   resetTime: {fileID: 4628742459094514942}
 --- !u!114 &503447093998347455
 MonoBehaviour:
