@@ -109,8 +109,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 29.1}
-  m_SizeDelta: {x: 987.6, y: 956.4}
+  m_AnchoredPosition: {x: 0, y: -136.17099}
+  m_SizeDelta: {x: 987.6, y: 1286.942}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1448988190103411135
 CanvasRenderer:
@@ -184,7 +184,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -623.42}
+  m_AnchoredPosition: {x: 0, y: -951}
   m_SizeDelta: {x: 800, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7475817373038141922
@@ -819,7 +819,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.9, g: 0.95, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1046,6 +1046,7 @@ MonoBehaviour:
   diaPopup: {fileID: 2576705282384081718}
   login: {fileID: 0}
   skinBoard: {fileID: 0}
+  linkPupUp: {fileID: 0}
 --- !u!1 &4202185051426854261
 GameObject:
   m_ObjectHideFlags: 0
@@ -1062,7 +1063,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7835685372164712038
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1833,6 +1834,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 7507129657734950232}
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &231934162126433057
 PrefabInstance:
   m_ObjectHideFlags: 0
