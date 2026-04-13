@@ -6079,6 +6079,10 @@ PrefabInstance:
       propertyPath: panel
       value: 
       objectReference: {fileID: 888498575}
+    - target: {fileID: 2740144595084090968, guid: ebc9ab647be1bb74baa1ab6262799cde, type: 3}
+      propertyPath: scoreManager
+      value: 
+      objectReference: {fileID: 899309715}
     - target: {fileID: 6972984061144276685, guid: ebc9ab647be1bb74baa1ab6262799cde, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1

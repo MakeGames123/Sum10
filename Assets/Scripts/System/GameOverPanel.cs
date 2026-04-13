@@ -48,7 +48,14 @@ public class GameOverPanel : MonoBehaviour
         if (animationController != null)
             animationController.PlayScoreCountUp(finalScore);
 
-        // 2. 이전 데이터 가져오기
+        // 2. 이전 기록 로드 완료 대기 (StartNewRun에서 시작된 Task)
+        // 이 await가 없으면 짧은 게임 시 로드 미완료 → 0과 비교 → 모든 점수가 신기록 판정됨
+        if (gameManager.PreviousWeeklyRankLoadTask != null)
+            await gameManager.PreviousWeeklyRankLoadTask;
+        if (gameManager.PreviousHighScoreLoadTask != null)
+            await gameManager.PreviousHighScoreLoadTask;
+
+        // 3. 이전 데이터 가져오기
         int prevRank = scoreManager.PreviousWeeklyRank;
         if (prevRank < 1) prevRank = 9999;
         int weeklyBest = scoreManager.PreviousWeeklyBestScore;

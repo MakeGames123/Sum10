@@ -57,6 +57,11 @@ public class GameManager : MonoBehaviour
     public int cellRemovedCount = 0;
     public bool isTutorial = false;
     Coroutine progress = null;
+
+    // 게임 시작 시 로드되는 이전 기록 조회 Task
+    // GameOverPanel이 점수 비교 전 await하여 로드 완료 보장
+    public System.Threading.Tasks.Task PreviousWeeklyRankLoadTask { get; private set; }
+    public System.Threading.Tasks.Task PreviousHighScoreLoadTask { get; private set; }
     private void Awake()
     {
         if (boardManager == null)
@@ -226,10 +231,11 @@ public class GameManager : MonoBehaviour
     private void StartNewRun()
     {
         // 게임 시작 전 현재 주간 순위 + 전체 최고기록 저장 (백그라운드)
+        // Task를 필드에 저장하여 GameOverPanel이 비교 전 await 가능하도록 함
         if (scoreManager != null)
         {
-            _ = scoreManager.SavePreviousWeeklyRankAsync();
-            scoreManager.LoadPreviousHighScore();
+            PreviousWeeklyRankLoadTask = scoreManager.SavePreviousWeeklyRankAsync();
+            PreviousHighScoreLoadTask = scoreManager.LoadPreviousHighScoreAsync();
         }
 
         if (progress != null) StopCoroutine(progress);

@@ -13,11 +13,37 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
     [SerializeField] TextMeshProUGUI nickName;
     [SerializeField] TextMeshProUGUI rank;
     [SerializeField] GameManager game;
+    [SerializeField] ScoreManager scoreManager;
     public PlayFabLoginManager login;
     void Awake()
     {
         login.onLogined.AddListener(UpdateProfile);
         game.OnGameOver.AddListener((value) => UpdateProfile());
+
+        // 랭킹 갱신 이벤트 구독 - 새로고침 버튼/게임오버 후 Top50 갱신 시 탑바 순위도 같이 갱신
+        if (scoreManager != null)
+        {
+            scoreManager.OnTop50Updated += UpdateRank;
+            scoreManager.OnOverallTop50Updated += UpdateRank;
+            // 내 순위가 계산되면 즉시 반영 (PlayFab Position 갱신 지연 우회)
+            scoreManager.OnMyRankUpdated += HandleMyRankUpdated;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (scoreManager != null)
+        {
+            scoreManager.OnTop50Updated -= UpdateRank;
+            scoreManager.OnOverallTop50Updated -= UpdateRank;
+            scoreManager.OnMyRankUpdated -= HandleMyRankUpdated;
+        }
+    }
+
+    private void HandleMyRankUpdated(int newRank)
+    {
+        // ScoreManager가 계산한 최신 순위를 즉시 표시 (API 지연 우회)
+        rank.text = "#" + newRank.ToString();
     }
     public void OnPointerClick(PointerEventData data)
     {
@@ -50,6 +76,13 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
     }
     public void UpdateRank()
     {
+        // ScoreManager에 최신 캐시 순위가 있으면 우선 사용 (PlayFab Position 갱신 지연 우회)
+        if (scoreManager != null && scoreManager.CachedRank > 0)
+        {
+            rank.text = "#" + scoreManager.CachedRank.ToString();
+            return;
+        }
+
         PlayFabClientAPI.GetLeaderboardAroundPlayer(
             new GetLeaderboardAroundPlayerRequest
             {
