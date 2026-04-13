@@ -2043,8 +2043,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uB2C9\uB124\uC784\uC744 \uC785\uB825\uD558\uC138\uC694..."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e1d14e938982c0940aeab37dbb1d0914, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: a299eaa63a5ffda4797ca8aebe912536, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6e435a1fc15f43f408b2c364a50872a3, type: 2}
+  m_sharedMaterial: {fileID: -1899901088732343031, guid: 6e435a1fc15f43f408b2c364a50872a3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2074,11 +2074,11 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: -13.36
+  m_characterSpacing: -12.7
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -2882,8 +2882,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e1d14e938982c0940aeab37dbb1d0914, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: a299eaa63a5ffda4797ca8aebe912536, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6e435a1fc15f43f408b2c364a50872a3, type: 2}
+  m_sharedMaterial: {fileID: -1899901088732343031, guid: 6e435a1fc15f43f408b2c364a50872a3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2913,11 +2913,11 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: -13.36
+  m_characterSpacing: -12.7
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -6079,10 +6079,6 @@ PrefabInstance:
       propertyPath: panel
       value: 
       objectReference: {fileID: 888498575}
-    - target: {fileID: 5859751442626433863, guid: ebc9ab647be1bb74baa1ab6262799cde, type: 3}
-      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
-      value: 1801810542
-      objectReference: {fileID: 0}
     - target: {fileID: 6972984061144276685, guid: ebc9ab647be1bb74baa1ab6262799cde, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -6111,13 +6107,17 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7580150059696282788, guid: ebc9ab647be1bb74baa1ab6262799cde, type: 3}
-      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
-      value: 1801810542
-      objectReference: {fileID: 0}
     - target: {fileID: 8772081739264870310, guid: ebc9ab647be1bb74baa1ab6262799cde, type: 3}
-      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
-      value: 1801810542
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 6e435a1fc15f43f408b2c364a50872a3, type: 2}
+    - target: {fileID: 8772081739264870310, guid: ebc9ab647be1bb74baa1ab6262799cde, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -1899901088732343031, guid: 6e435a1fc15f43f408b2c364a50872a3, type: 2}
+    - target: {fileID: 8772081739264870310, guid: ebc9ab647be1bb74baa1ab6262799cde, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11853,6 +11853,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5116352453331439452, guid: eb2811e5a3f8eed4a8ab720adf0045f7, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5550240071193933545, guid: eb2811e5a3f8eed4a8ab720adf0045f7, type: 3}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6594351297983930212, guid: eb2811e5a3f8eed4a8ab720adf0045f7, type: 3}
