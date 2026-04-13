@@ -39,6 +39,14 @@ public class AdMobManager : MonoBehaviour
         // SDK 초기화
         MobileAds.Initialize((InitializationStatus status) =>
         {
+            // 앱 실행 시 쿨타임 리셋 로직:
+            // - 키가 없거나(최초 실행) 쿨타임이 이미 끝난 경우 → 현재 시각으로 리셋 (5분 유예 시작)
+            // - 쿨타임이 아직 유효한 경우 → 리셋 안 함 (강종 후 재실행 꼼수 방어)
+            if (!PlayerPrefs.HasKey(LastAdTimeKey) || IsCooldownOver())
+            {
+                SaveLastAdTime();
+            }
+
             LoadInterstitialAd();
         });
     }
@@ -64,12 +72,6 @@ public class AdMobManager : MonoBehaviour
 
             _interstitialAd = ad;
             RegisterEventHandlers(_interstitialAd);
-
-            // 🔥 처음 로드된 경우에만 쿨타임 시작
-            if (!PlayerPrefs.HasKey(LastAdTimeKey))
-            {
-                SaveLastAdTime();
-            }
         });
     }
     // 1. 광고 로드하기
