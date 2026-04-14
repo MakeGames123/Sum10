@@ -22,7 +22,7 @@ public class QuestUnit : MonoBehaviour
         gage.value = (float)state.progress / state.data.ConditionValue;
         amount.text = state.data.RewardDiamond.ToString();
 
-        claimDisableImage.enabled = !(state.isClear && !state.isClaimed);
+        claimDisableImage.enabled = !state.isClear;
         rerollButton.gameObject.SetActive(!state.isRerolled && !state.isClear);
         claimButton.enabled = state.isClear && !state.isClaimed;
         done.SetActive(state.isClaimed);

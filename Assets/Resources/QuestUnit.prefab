@@ -273,7 +273,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1867,8 +1867,7 @@ GameObject:
   - component: {fileID: 3282616815432471566}
   - component: {fileID: 7309479060744577299}
   m_Layer: 5
-  m_Name: "ClaimDisableImage(\uD018\uC2A4\uD2B8 \uC644\uB8CC \uC2DC \uBE44\uD65C\uC131\uD654
-    \uD574\uC8FC\uC138\uC694)"
+  m_Name: ClaimDisableImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

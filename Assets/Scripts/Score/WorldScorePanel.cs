@@ -21,6 +21,8 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
     public Image resetTimeIcon;
     public TextMeshProUGUI coolTimeText;
     public Button refreshButton;
+    public Image weekButtonPressed;
+    public Image allButtonPressed;
     private Coroutine coolTimeCoroutine;
     private const float CoolTimeDuration = 60f;
     bool isWeekly = true;
@@ -34,6 +36,8 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
     {
         if (scoreManager != null)
             scoreManager.OnTop50Updated += RefreshFromCache;
+
+        ChangeToWeek();
     }
     private void OnDestroy()
     {
@@ -47,6 +51,8 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
             isWeekly = true;
             resetTimeText.enabled = true;
             resetTimeIcon.enabled = true;
+            weekButtonPressed.enabled = true;
+            allButtonPressed.enabled = false;
             RefreshFromCache();
         }
     }
@@ -57,6 +63,8 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
             isWeekly = false;
             resetTimeText.enabled = false;
             resetTimeIcon.enabled = false;
+            allButtonPressed.enabled = true;
+            weekButtonPressed.enabled = false;
             RefreshFromCache();
         }
     }

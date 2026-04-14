@@ -14,6 +14,7 @@ public class ProfilePanel : MonoBehaviour
     public RectTransform diaShop;
     [SerializeField] BoardManager skinBoard;
     int currentIndex = 0;
+    int profilePrice = 100;
     private const string PROFILE_INDEX_KEY = "ProfileIndex";
     void Awake()
     {
@@ -97,7 +98,7 @@ public class ProfilePanel : MonoBehaviour
     }
     public void RequestUnlockProfile(int index)
     {
-        if (PlayerData.Instance.GetDiamond() < 20)
+        if (PlayerData.Instance.GetDiamond() < profilePrice)
         {
             diaShop.anchoredPosition = Vector2.zero;
             return;
