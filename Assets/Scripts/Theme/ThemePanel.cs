@@ -100,7 +100,7 @@ public class ThemePanel : MonoBehaviour, IMainPanel
 
     public void RequestUnlockTheme()
     {
-        if (PlayerData.Instance.GetDiamond() < 20)
+        if (PlayerData.Instance.GetDiamond() < 450)
         {
             diaShop.anchoredPosition = Vector2.zero;
             return;

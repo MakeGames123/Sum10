@@ -428,7 +428,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 20
+  m_text: 450
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e1d14e938982c0940aeab37dbb1d0914, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 622461722bb945140a2c80f983f87478, type: 2}
@@ -1476,7 +1476,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 453.225, y: -50}
+  m_AnchoredPosition: {x: 820, y: -50}
   m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3302479170836250494
@@ -1820,6 +1820,7 @@ MonoBehaviour:
   rightButton: {fileID: 832869181665126779}
   leftButton: {fileID: 2174386983869854406}
   applyButton: {fileID: 7034490758031300040}
+  buyButton: {fileID: 0}
   themeDatas:
   - {fileID: 11400000, guid: b245025fa5e9bb847b1d4d1ec5f71862, type: 2}
   - {fileID: 11400000, guid: 4811af7394773074f8b98ac653b85418, type: 2}
@@ -1827,6 +1828,7 @@ MonoBehaviour:
   boardLowSpecial: {fileID: 2958886305155146269}
   setting: {fileID: 1601639439455187342}
   board: {fileID: 1619283865348903255}
+  diaShop: {fileID: 0}
 --- !u!114 &3836566374617076362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1877,7 +1879,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -64.3, y: -19.4}
+  m_AnchoredPosition: {x: -98.2, y: -15.9}
   m_SizeDelta: {x: 85, y: 85}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7790722353940548928

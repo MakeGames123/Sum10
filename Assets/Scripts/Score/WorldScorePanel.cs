@@ -23,6 +23,10 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
     public Button refreshButton;
     public Image weekButtonPressed;
     public Image allButtonPressed;
+    public TextMeshProUGUI weekTextPressed;
+    public TextMeshProUGUI allTextPressed;
+    public TextMeshProUGUI weekText;
+    public TextMeshProUGUI allText;
     private Coroutine coolTimeCoroutine;
     private const float CoolTimeDuration = 60f;
     bool isWeekly = true;
@@ -51,8 +55,14 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
             isWeekly = true;
             resetTimeText.enabled = true;
             resetTimeIcon.enabled = true;
+
             weekButtonPressed.enabled = true;
             allButtonPressed.enabled = false;
+
+            weekTextPressed.enabled = true;
+            weekText.enabled = false;
+            allTextPressed.enabled = false;
+            allText.enabled = true;
             RefreshFromCache();
         }
     }
@@ -63,8 +73,14 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
             isWeekly = false;
             resetTimeText.enabled = false;
             resetTimeIcon.enabled = false;
+
             allButtonPressed.enabled = true;
             weekButtonPressed.enabled = false;
+
+            weekTextPressed.enabled = false;
+            weekText.enabled = true;
+            allTextPressed.enabled = true;
+            allText.enabled = false;
             RefreshFromCache();
         }
     }

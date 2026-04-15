@@ -119,6 +119,10 @@ MonoBehaviour:
   refreshButton: {fileID: 4722579411517504671}
   weekButtonPressed: {fileID: 8699338875627386932}
   allButtonPressed: {fileID: 365388579927759467}
+  weekTextPressed: {fileID: 4135460121053351310}
+  allTextPressed: {fileID: 1217291159981723239}
+  weekText: {fileID: 2492188030152121158}
+  allText: {fileID: 9189066507742122749}
 --- !u!114 &4688482218703832788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,8 +301,7 @@ GameObject:
   - component: {fileID: 1812316777850983036}
   - component: {fileID: 4135460121053351310}
   m_Layer: 5
-  m_Name: "Text (TMP)_pressed_\uBC84\uD2BC \uB20C\uB838\uC744 \uB54C \uD65C\uC131\uD654
-    \uBD80\uD0C1\uB4DC\uB9BD\uB2C8\uB2E4"
+  m_Name: Text (TMP)_pressed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2047,7 +2050,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4084023647585053904}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -3552,8 +3555,7 @@ GameObject:
   - component: {fileID: 436528789422248275}
   - component: {fileID: 1217291159981723239}
   m_Layer: 5
-  m_Name: "Text (TMP)_pressed_\uBC84\uD2BC \uB20C\uB838\uC744 \uB54C \uD65C\uC131\uD654
-    \uBD80\uD0C1\uB4DC\uB9BD\uB2C8\uB2E4"
+  m_Name: Text (TMP)_pressed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3593,7 +3595,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6891419059086573669}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 

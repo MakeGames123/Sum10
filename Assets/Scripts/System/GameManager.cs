@@ -292,6 +292,7 @@ public class GameManager : MonoBehaviour
         QuestManager.Instance.AddProgress("single_game_score", score);
         QuestManager.Instance.AddProgress("single_game_cell_clear", cellRemovedCount);
         QuestManager.Instance.AddProgress("play_count", 1);
+        Debug.Log(timeProgress);
         QuestManager.Instance.AddProgress("daily_play_time", (int)timeProgress);
     }
 
