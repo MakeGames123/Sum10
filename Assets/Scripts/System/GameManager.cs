@@ -29,7 +29,8 @@ public class GameManager : MonoBehaviour
             remainingTime = Mathf.Min(30, value);  // 최대 30초 제한
         }
     }
-    private float timeProgress = 0;
+    private float timeProgress = 0;//전체 시간 흐름(오프라인 포함)
+    private float playTime = 30f;//누적 시간 체크용
     public bool isRunning = false;
 
     private int currentBoardSize = 3;   // 3x3 시작
@@ -249,6 +250,7 @@ public class GameManager : MonoBehaviour
         maxCombo = 0;
         cellRemovedCount = 0;
         timeProgress = 0;
+        playTime = 30;
         OnScoreChanged?.Invoke(score);
         OnComboChanged?.Invoke(score);
 
@@ -292,8 +294,7 @@ public class GameManager : MonoBehaviour
         QuestManager.Instance.AddProgress("single_game_score", score);
         QuestManager.Instance.AddProgress("single_game_cell_clear", cellRemovedCount);
         QuestManager.Instance.AddProgress("play_count", 1);
-        Debug.Log(timeProgress);
-        QuestManager.Instance.AddProgress("daily_play_time", (int)timeProgress);
+        QuestManager.Instance.AddProgress("daily_play_time", (int)playTime);
     }
 
     public void ResetIdleTimer()
@@ -338,6 +339,7 @@ public class GameManager : MonoBehaviour
         else timeBonus = 0.5f;
 
         RemainingTime += timeBonus;
+        playTime += timeBonus;
         GameObject timetext = Instantiate(floatingText, textGroup.transform);
         timetext.GetComponent<RectTransform>().anchoredPosition = timeTextPosition;
         timetext.GetComponent<TextFloating>().SetCondition("+" + timeBonus.ToString("0.#") + "s", true);
