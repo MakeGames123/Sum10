@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -60,8 +61,12 @@ public class GameManager : MonoBehaviour
 
     // 게임 시작 시 로드되는 이전 기록 조회 Task
     // GameOverPanel이 점수 비교 전 await하여 로드 완료 보장
-    public System.Threading.Tasks.Task PreviousWeeklyRankLoadTask { get; private set; }
-    public System.Threading.Tasks.Task PreviousHighScoreLoadTask { get; private set; }
+    public Task PreviousWeeklyRankLoadTask { get; private set; }
+    public Task PreviousHighScoreLoadTask { get; private set; }
+
+    // 광고 시청 완료 신호 (GameOverPanel이 점수 제출 전 await)
+    // 강종 시 완료 안 됨 → 점수 미제출 (의도된 동작)
+    public TaskCompletionSource<bool> AdCompletionSource { get; private set; }
     private void Awake()
     {
         if (boardManager == null)
@@ -174,9 +179,8 @@ public class GameManager : MonoBehaviour
         if (seconds <= 0f || !TutorialStatusManager.Instance.isTutorialCompleted)
             return;
 
-        // 게임 타이머 감소
+        // 게임 타이머 감소 (오프라인 시간은 플레이타임에 포함하지 않음)
         RemainingTime -= seconds;
-        timeProgress += seconds;
 
         // 힌트 idle 타이머도 같이 진행
         idleTimer += seconds;
@@ -284,16 +288,29 @@ public class GameManager : MonoBehaviour
         if (progress != null) StopCoroutine(progress);
         progress = null;
 
+        // 광고 완료 신호 준비 (GameOverPanel이 점수 제출 전 await)
+        AdCompletionSource = new TaskCompletionSource<bool>();
+
         OnGameOver?.Invoke(score);
 
-        AdMobManager.Instance.ShowInterstitialAd();
+        // 종료 시점 값 캡처 (콜백에서 사용)
+        int endScore = score;
+        int endMaxCombo = maxCombo;
+        int endCellRemoved = cellRemovedCount;
+        int endTimeProgress = (int)timeProgress;
 
-        QuestManager.Instance.AddProgress("single_game_combo", maxCombo);
-        QuestManager.Instance.AddProgress("single_game_score", score);
-        QuestManager.Instance.AddProgress("single_game_cell_clear", cellRemovedCount);
-        QuestManager.Instance.AddProgress("play_count", 1);
-        Debug.Log(timeProgress);
-        QuestManager.Instance.AddProgress("daily_play_time", (int)timeProgress);
+        // 광고 시청 완료 후 퀘스트 기록
+        // 강종 시 콜백 미호출 → 기록 안 됨 (의도된 동작)
+        AdMobManager.Instance.ShowInterstitialAd(() =>
+        {
+            QuestManager.Instance.AddProgress("single_game_combo", endMaxCombo);
+            QuestManager.Instance.AddProgress("single_game_score", endScore);
+            QuestManager.Instance.AddProgress("single_game_cell_clear", endCellRemoved);
+            QuestManager.Instance.AddProgress("play_count", 1);
+            QuestManager.Instance.AddProgress("daily_play_time", endTimeProgress);
+
+            AdCompletionSource?.TrySetResult(true);
+        });
     }
 
     public void ResetIdleTimer()

@@ -38,6 +38,33 @@ public class QuestDataLoader : MonoBehaviour
         ParseCSV(req.downloadHandler.text);
     }
 
+    List<string> ParseCSVLine(string line)
+    {
+        List<string> result = new();
+        bool inQuotes = false;
+        string field = "";
+
+        for (int i = 0; i < line.Length; i++)
+        {
+            char c = line[i];
+            if (c == '"')
+            {
+                inQuotes = !inQuotes;
+            }
+            else if (c == ',' && !inQuotes)
+            {
+                result.Add(field.Trim().Trim('"'));
+                field = "";
+            }
+            else
+            {
+                field += c;
+            }
+        }
+        result.Add(field.Trim().Trim('"'));
+        return result;
+    }
+
     void ParseCSV(string csv)
     {
         var lines = csv.Split('\n');
@@ -46,7 +73,7 @@ public class QuestDataLoader : MonoBehaviour
         {
             if (string.IsNullOrWhiteSpace(lines[i])) continue;
 
-            var cols = lines[i].Split(',');
+            var cols = ParseCSVLine(lines[i]).ToArray();
 
             QuestData data = new QuestData
             {

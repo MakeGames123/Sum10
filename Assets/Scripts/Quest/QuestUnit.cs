@@ -19,7 +19,9 @@ public class QuestUnit : MonoBehaviour
         condition.text = state.data.DescriptionKr;
         title.text = state.data.TitleKr;
         gageText.text = state.progress.ToString() + "/" + state.data.ConditionValue.ToString();
-        gage.value = (float)state.progress / state.data.ConditionValue;
+        gage.value = state.data.ConditionValue > 0
+            ? (float)state.progress / state.data.ConditionValue
+            : 0f;
         amount.text = state.data.RewardDiamond.ToString();
 
         claimDisableImage.enabled = !state.isClear;
