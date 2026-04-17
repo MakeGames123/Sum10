@@ -279,13 +279,6 @@ public class GameManager : MonoBehaviour
 
         if (progress != null) StopCoroutine(progress);
         progress = null;
-
-        // 설정→홈 경로: 광고 없이 즉시 퀘스트 기록 (플레이한 만큼은 반영)
-        QuestManager.Instance.AddProgress("single_game_combo", maxCombo);
-        QuestManager.Instance.AddProgress("single_game_score", score);
-        QuestManager.Instance.AddProgress("single_game_cell_clear", cellRemovedCount);
-        QuestManager.Instance.AddProgress("play_count", 1);
-        QuestManager.Instance.AddProgress("daily_play_time", (int)timeProgress);
     }
     private void EndRun()
     {
@@ -310,14 +303,14 @@ public class GameManager : MonoBehaviour
 
         AdMobManager.Instance.ShowInterstitialAd(() =>
         {
-        });
-            AdCompletionSource?.TrySetResult(true);
             QuestManager.Instance.AddProgress("daily_play_time", endTimeProgress);
-
             QuestManager.Instance.AddProgress("play_count", 1);
             QuestManager.Instance.AddProgress("single_game_cell_clear", endCellRemoved);
             QuestManager.Instance.AddProgress("single_game_score", endScore);
             QuestManager.Instance.AddProgress("single_game_combo", endMaxCombo);
+
+            AdCompletionSource?.TrySetResult(true);
+        });
     }
 
     public void ResetIdleTimer()
