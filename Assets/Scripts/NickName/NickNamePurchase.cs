@@ -147,7 +147,7 @@ public class NickNamePurchase : MonoBehaviour
                 break;
 
             case "INSUFFICIENT_DIAMOND":
-                SetStatus("다이아가 모자랍니다.");
+                SetStatus("다이아가 부족합니다.");
                 break;
 
             case "INVALID_LENGTH":

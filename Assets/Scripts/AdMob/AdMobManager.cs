@@ -48,6 +48,7 @@ public class AdMobManager : MonoBehaviour
             }
 
             LoadInterstitialAd();
+            LoadRewardedAd();
         });
     }
 
@@ -84,7 +85,7 @@ public class AdMobManager : MonoBehaviour
         }
 
         var adRequest = new AdRequest();
-        RewardedAd.Load(_adUnitId, adRequest, (RewardedAd ad, LoadAdError error) =>
+        RewardedAd.Load(_adRewradId, adRequest, (RewardedAd ad, LoadAdError error) =>
         {
             if (error != null || ad == null)
             {
@@ -95,18 +96,27 @@ public class AdMobManager : MonoBehaviour
             RegisterEventHandlers(_rewardedAd); // 이벤트 연결
         });
     }
+    // 광고 닫힘 후 실행할 콜백 (퀘스트/점수 기록 용도)
+    private System.Action _pendingAdCallback;
+
     // 3. 광고 이벤트 핸들러 (광고가 닫혔을 때 다시 로드하는 등)
     private void RegisterEventHandlers(InterstitialAd ad)
     {
         ad.OnAdFullScreenContentClosed += () =>
         {
-            Debug.Log("광고 닫힘 → 다시 로드");
+            Debug.Log("광고 닫힘 → 쿨타임 시작 → 콜백 실행 → 다시 로드");
+            SaveLastAdTime(); // 광고 끝까지 봐야 쿨타임 시작
+            _pendingAdCallback?.Invoke();
+            _pendingAdCallback = null;
             LoadInterstitialAd();
         };
 
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
             Debug.LogError("광고 표시 실패: " + error);
+            SaveLastAdTime(); // 실패도 쿨타임 시작 (무한 재시도 방지)
+            _pendingAdCallback?.Invoke();
+            _pendingAdCallback = null;
             LoadInterstitialAd();
         };
     }
@@ -127,26 +137,37 @@ public class AdMobManager : MonoBehaviour
     private const float AdCooldownSeconds = 300f;
     private const string LastAdTimeKey = "LastRewardedAdTime";
 
-    public void ShowInterstitialAd()
+    /// <summary>
+    /// 삽입형 광고 표시. onComplete는 광고 시청 완료(또는 광고 미표시) 후 호출됨.
+    /// 유저가 광고 중 강종하면 onComplete 미호출 → 퀘스트/점수 미기록 (의도된 동작)
+    /// </summary>
+    public void ShowInterstitialAd(System.Action onComplete = null)
     {
-        if (PlayerData.Instance.GetAdStatus()) return;
+        if (PlayerData.Instance.GetAdStatus())
+        {
+            onComplete?.Invoke(); // 광고 제거 유저 → 즉시 콜백
+            return;
+        }
 
         if (!IsCooldownOver())
         {
             float remaining = GetRemainingCooldown();
             Debug.LogError($"쿨타임: {remaining:F0}초 남음");
+            onComplete?.Invoke(); // 쿨타임 중 → 즉시 콜백
             return;
         }
 
         if (_interstitialAd != null && _interstitialAd.CanShowAd())
         {
+            _pendingAdCallback = onComplete; // 광고 닫힘 시 호출
             _interstitialAd.Show();
-
-            SaveLastAdTime(); // 보상 대신 그냥 여기서 쿨타임 시작
+            // SaveLastAdTime은 광고 닫힘 콜백(RegisterEventHandlers)에서 호출
+            // → 강종 시 쿨타임 미시작 → 다음 게임에서 다시 광고 표시
         }
         else
         {
             Debug.Log("광고 준비 안됨");
+            onComplete?.Invoke(); // 광고 미준비 → 즉시 콜백
             LoadInterstitialAd();
         }
     }

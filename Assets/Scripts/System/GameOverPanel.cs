@@ -73,7 +73,11 @@ public class GameOverPanel : MonoBehaviour
 
         int currentRank = prevRank;
 
-        // 4. 주간 최고 갱신 시
+        // 4. 광고 시청 완료 대기 (강종 시 미완료 → 점수 미제출)
+        if (gameManager.AdCompletionSource != null)
+            await gameManager.AdCompletionSource.Task;
+
+        // 5. 주간 최고 갱신 시
         if (finalScore > weeklyBest)
         {
             currentRank = await scoreManager.CalculateRankForScoreAsync(finalScore);
@@ -82,7 +86,7 @@ public class GameOverPanel : MonoBehaviour
             Invoke(nameof(delayWeek), 1f);
         }
 
-        // 5. 역대 최고 갱신 시 저장 (로컬 + 서버 백업)
+        // 6. 역대 최고 갱신 시 저장 (로컬 + 서버 백업)
         if (finalScore > previousBestScore)
         {
             await scoreManager.SubmitHighScore(finalScore);
