@@ -9,7 +9,6 @@ using GooglePlayGames.BasicApi;
 public class PlayFabLoginManager : MonoBehaviour
 {
     public UnityEvent onLogined = new();
-    private const string GOOGLE_LINK_KEY = "IsGoogleLinked";
     public GameObject reconnectPanel;
     public GameObject linkButton;
     public bool isLinked = false;
@@ -23,8 +22,6 @@ public class PlayFabLoginManager : MonoBehaviour
     {
         LoginWithGoogle();
     }
-
-    // [구글 로그인] - 기존 연동 유저용
     public void LoginWithGoogle()
     {
         PlayGamesPlatform.Instance.Authenticate((status) =>
@@ -61,6 +58,7 @@ public class PlayFabLoginManager : MonoBehaviour
         // 1. Google Play Games 인증 시작
         PlayGamesPlatform.Instance.Authenticate((status) =>
         {
+            Debug.LogError("구글 연동 시작");
             if (status == SignInStatus.Success)
             {
                 // 2. 서버 인증 코드 요청
@@ -83,9 +81,6 @@ public class PlayFabLoginManager : MonoBehaviour
                     PlayFabClientAPI.LinkGooglePlayGamesServicesAccount(request,
                         result =>
                         {
-                            PlayerPrefs.SetInt(GOOGLE_LINK_KEY, 1);
-                            PlayerPrefs.Save();
-
                             Debug.LogError("구글 연동 성공!");
                             isLinked = true;
                             linkButton.SetActive(false);
@@ -142,12 +137,6 @@ public class PlayFabLoginManager : MonoBehaviour
     {
         Debug.LogError("플레이팹(구글연동) 로그인 성공!");
         Debug.LogError($"사용자 ID: {result.PlayFabId}");
-        
-        isLinked = PlayerPrefs.GetInt(GOOGLE_LINK_KEY, 0) == 1;
-        linkButton.SetActive(!isLinked);
-
-        if (reconnectPanel != null) reconnectPanel.SetActive(false);
-        onLogined.Invoke();
 
         if (result.NewlyCreated)
         {
@@ -155,6 +144,15 @@ public class PlayFabLoginManager : MonoBehaviour
             // 신규 계정일 경우 초기 리더보드 등록 등을 여기서 수행할 수 있습니다.
             InitializeNewPlayer();
         }
+        
+        ClickLinkButton(ManageLogin);
+    }
+    private void ManageLogin(bool success)
+    {
+        linkButton.SetActive(!isLinked);
+
+        if (reconnectPanel != null) reconnectPanel.SetActive(false);
+        onLogined.Invoke();
     }
 
     // 로그인 실패 시 호출 (기존 코드 유지)
