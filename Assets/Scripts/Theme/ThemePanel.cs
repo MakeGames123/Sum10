@@ -14,10 +14,14 @@ public class ThemePanel : MonoBehaviour, IMainPanel
     public Button buyButton;
     public List<ThemeData> themeDatas = new();
     public Image boardBackground;
+    public Image boardInnerPanelPreview;
     public Image boardLowSpecial;
+    public Image boardDecor1Preview;
+    public Image boardDecor2Preview;
     public BoardSettingManager setting;
     public BoardManager board;
     private int index = 0;
+    private int appliedIndex = 0;
     private ThemeData appliedTheme;
     public RectTransform diaShop;
 
@@ -36,6 +40,7 @@ public class ThemePanel : MonoBehaviour, IMainPanel
         // 현재 적용된 테마의 index 찾기
         int found = themeDatas.IndexOf(appliedTheme);
         if (found >= 0) index = found;
+        appliedIndex = index;
 
         UpdateUI();
     }
@@ -43,9 +48,9 @@ public class ThemePanel : MonoBehaviour, IMainPanel
     {
         board.gameObject.SetActive(false);
 
-        // Apply 안 하고 닫았으면 원래 테마로 복원
+        // Apply 안 하고 닫았으면 원래 테마로 복원 (원래 index로)
         if (appliedTheme != null)
-            ThemeManager.Instance.ChangeTheme(appliedTheme, index);
+            ThemeManager.Instance.ChangeTheme(appliedTheme, appliedIndex);
     }
     private void MoveToRight()
     {
@@ -67,7 +72,22 @@ public class ThemePanel : MonoBehaviour, IMainPanel
         ThemeManager.Instance.selectedTheme = themeDatas[index];
 
         boardBackground.sprite = themeDatas[index].boardSkin;
+        if (boardInnerPanelPreview != null)
+        {
+            boardInnerPanelPreview.sprite = themeDatas[index].boardInnerPanel;
+            boardInnerPanelPreview.enabled = themeDatas[index].boardInnerPanel != null;
+        }
         boardLowSpecial.sprite = themeDatas[index].boardLowSkin;
+        if (boardDecor1Preview != null)
+        {
+            boardDecor1Preview.sprite = themeDatas[index].boardDecor1;
+            boardDecor1Preview.enabled = themeDatas[index].boardDecor1 != null;
+        }
+        if (boardDecor2Preview != null)
+        {
+            boardDecor2Preview.sprite = themeDatas[index].boardDecor2;
+            boardDecor2Preview.enabled = themeDatas[index].boardDecor2 != null;
+        }
 
         var bg = ThemeManager.Instance.background;
         if (bg != null && themeDatas[index].background != null)
@@ -96,6 +116,7 @@ public class ThemePanel : MonoBehaviour, IMainPanel
     {
         ThemeManager.Instance.ChangeTheme(themeDatas[index], index);
         appliedTheme = themeDatas[index]; // 적용 완료 → 닫을 때 복원 안 함
+        appliedIndex = index;
     }
 
     public void RequestUnlockTheme()

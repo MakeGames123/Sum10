@@ -15,8 +15,13 @@ public class ThemeManager : MonoBehaviour
     public ThemeData selectedTheme;
     public int selectedIndex = 0;
     public Image board;
+    public Image boardInnerPanel;
     public Image boardLowSkin;
+    public Image boardDecor1;
+    public Image boardDecor2;
     public Image background;
+    public RectTransform scoreSection;
+    public RectTransform timerSection;
     public PlayFabLoginManager login;
     private void Awake()
     {
@@ -38,9 +43,29 @@ public class ThemeManager : MonoBehaviour
         selectedIndex = index;
         selectedTheme = newTheme;
         board.sprite = selectedTheme.boardSkin;
+        if (boardInnerPanel != null)
+        {
+            boardInnerPanel.sprite = selectedTheme.boardInnerPanel;
+            boardInnerPanel.enabled = selectedTheme.boardInnerPanel != null;
+        }
         boardLowSkin.sprite = selectedTheme.boardLowSkin;
+        if (boardDecor1 != null)
+        {
+            boardDecor1.sprite = selectedTheme.boardDecor1;
+            boardDecor1.enabled = selectedTheme.boardDecor1 != null;
+        }
+        if (boardDecor2 != null)
+        {
+            boardDecor2.sprite = selectedTheme.boardDecor2;
+            boardDecor2.enabled = selectedTheme.boardDecor2 != null;
+        }
         if (background != null && selectedTheme.background != null)
             background.sprite = selectedTheme.background;
+
+        if (scoreSection != null)
+            scoreSection.anchoredPosition = selectedTheme.scoreSectionPos;
+        if (timerSection != null)
+            timerSection.anchoredPosition = selectedTheme.timerSectionPos;
 
         PlayerPrefs.SetInt(ThemeIndexKey, selectedIndex);
         PlayerPrefs.Save();
@@ -65,12 +90,16 @@ public class ThemeManager : MonoBehaviour
                         else
                             themeStatus.Add(0);
                     }
+
+                    // 신규 테마 추가 시 기존 유저 데이터 확장 (미소유로 패딩)
+                    while (themeStatus.Count < themeDatas.Count)
+                        themeStatus.Add(0);
                 }
                 else
                 {
-
-                    // 기본값 필요하면 여기서 초기화
-                    themeStatus = new List<int> { 1, 0, 0 }; // 기본 프로필 0번 해금
+                    themeStatus = new List<int>();
+                    for (int i = 0; i < themeDatas.Count; i++)
+                        themeStatus.Add(i == 0 ? 1 : 0); // 0번만 해금
                     SaveProfileStatusToServer();
                 }
             },

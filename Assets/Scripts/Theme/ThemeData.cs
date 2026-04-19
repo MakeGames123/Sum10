@@ -14,7 +14,14 @@ public class ThemeData : ScriptableObject
     public float cellScale;
     public float backgroundScale;
     public Sprite boardLowSkin;//판떼기
-    public Sprite boardSkin;//판떼기
+    public Sprite boardDecor1;//보드 꾸밈 1
+    public Vector2 boardDecor1Offset;//보드 꾸밈 1 위치 오프셋
+    public Sprite boardDecor2;//보드 꾸밈 2
+    public Vector2 boardDecor2Offset;//보드 꾸밈 2 위치 오프셋
+    public Sprite boardInnerPanel;//보드 안쪽 판
+    public Sprite boardSkin;//보드 프레임
+    public Vector2 scoreSectionPos = new Vector2(0f, 0f);
+    public Vector2 timerSectionPos = new Vector2(64f, 2.5f);
     public Sprite background;//판떼기
     public float boardWidth;
     public float boardHeight;

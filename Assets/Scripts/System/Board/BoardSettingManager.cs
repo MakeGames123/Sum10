@@ -13,7 +13,10 @@ public class BoardSettingManager : MonoBehaviour
     private GridLayoutGroup gridLayout;
     public RectTransform boardRoot;
     public RectTransform boardSkin;
+    public RectTransform boardInnerPanel;
     public RectTransform boardLowSkin;
+    public RectTransform boardDecor1;
+    public RectTransform boardDecor2;
     public BoardManager board;
     void Awake()
     {
@@ -43,12 +46,32 @@ public class BoardSettingManager : MonoBehaviour
             gridLayout.constraintCount = n;
         }
 
-        boardSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardHeight);
-        boardLowSkin.sizeDelta = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardHeight);
+        Vector2 size = new Vector2(ThemeManager.Instance.selectedTheme.boardWidth, ThemeManager.Instance.selectedTheme.boardHeight);
         float offsetX = ThemeManager.Instance.selectedTheme.boardOffsetX;
         float offsetY = ThemeManager.Instance.selectedTheme.boardOffset;
-        boardSkin.anchoredPosition = new Vector2(offsetX, offsetY);
-        boardLowSkin.anchoredPosition = new Vector2(offsetX, offsetY);
+        Vector2 pos = new Vector2(offsetX, offsetY);
+
+        boardSkin.sizeDelta = size;
+        boardLowSkin.sizeDelta = size;
+        boardSkin.anchoredPosition = pos;
+        boardLowSkin.anchoredPosition = pos;
+
+        if (boardInnerPanel != null)
+        {
+            boardInnerPanel.sizeDelta = size;
+            boardInnerPanel.anchoredPosition = pos;
+        }
+
+        if (boardDecor1 != null)
+        {
+            boardDecor1.sizeDelta = size;
+            boardDecor1.anchoredPosition = pos + ThemeManager.Instance.selectedTheme.boardDecor1Offset;
+        }
+        if (boardDecor2 != null)
+        {
+            boardDecor2.sizeDelta = size;
+            boardDecor2.anchoredPosition = pos + ThemeManager.Instance.selectedTheme.boardDecor2Offset;
+        }
 
 
         boardRoot.localScale = Vector3.one * ThemeManager.Instance.selectedTheme.scale[n - 3];

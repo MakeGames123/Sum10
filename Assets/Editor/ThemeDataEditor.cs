@@ -14,8 +14,15 @@ public class ThemeDataEditor : Editor
     SerializedProperty backgroundScale;
 
     SerializedProperty boardSkin;
+    SerializedProperty boardInnerPanel;
     SerializedProperty boardLowSkin;
+    SerializedProperty boardDecor1;
+    SerializedProperty boardDecor1Offset;
+    SerializedProperty boardDecor2;
+    SerializedProperty boardDecor2Offset;
     SerializedProperty background;
+    SerializedProperty scoreSectionPos;
+    SerializedProperty timerSectionPos;
     SerializedProperty boardWidth;
     SerializedProperty boardHeight;
     SerializedProperty boardOffset;
@@ -40,8 +47,15 @@ public class ThemeDataEditor : Editor
         backgroundScale = serializedObject.FindProperty("backgroundScale");
 
         boardSkin = serializedObject.FindProperty("boardSkin");
+        boardInnerPanel = serializedObject.FindProperty("boardInnerPanel");
         boardLowSkin = serializedObject.FindProperty("boardLowSkin");
+        boardDecor1 = serializedObject.FindProperty("boardDecor1");
+        boardDecor1Offset = serializedObject.FindProperty("boardDecor1Offset");
+        boardDecor2 = serializedObject.FindProperty("boardDecor2");
+        boardDecor2Offset = serializedObject.FindProperty("boardDecor2Offset");
         background = serializedObject.FindProperty("background");
+        scoreSectionPos = serializedObject.FindProperty("scoreSectionPos");
+        timerSectionPos = serializedObject.FindProperty("timerSectionPos");
         boardWidth = serializedObject.FindProperty("boardWidth");
         boardHeight = serializedObject.FindProperty("boardHeight");
         boardOffset = serializedObject.FindProperty("boardOffset");
@@ -72,12 +86,21 @@ public class ThemeDataEditor : Editor
 
         DrawHeader("Board");
         EditorGUILayout.PropertyField(background, new GUIContent("배경"));
-        EditorGUILayout.PropertyField(boardSkin, new GUIContent("보드 스킨"));
+        EditorGUILayout.PropertyField(boardInnerPanel, new GUIContent("보드 안쪽 판"));
+        EditorGUILayout.PropertyField(boardSkin, new GUIContent("보드 프레임"));
         EditorGUILayout.PropertyField(boardLowSkin, new GUIContent("보드 하단 스킨"));
+        EditorGUILayout.PropertyField(boardDecor1, new GUIContent("보드 꾸밈 1"));
+        EditorGUILayout.PropertyField(boardDecor1Offset, new GUIContent("보드 꾸밈 1 위치 오프셋"));
+        EditorGUILayout.PropertyField(boardDecor2, new GUIContent("보드 꾸밈 2"));
+        EditorGUILayout.PropertyField(boardDecor2Offset, new GUIContent("보드 꾸밈 2 위치 오프셋"));
         EditorGUILayout.PropertyField(boardWidth, new GUIContent("보드 길이"));
         EditorGUILayout.PropertyField(boardHeight, new GUIContent("보드 세로 길이"));
         EditorGUILayout.PropertyField(boardOffset, new GUIContent("보드 세로축 보정"));
         EditorGUILayout.PropertyField(boardOffsetX, new GUIContent("보드 가로축 보정"));
+
+        DrawHeader("HUD Positions");
+        EditorGUILayout.PropertyField(scoreSectionPos, new GUIContent("ScoreSection 위치"));
+        EditorGUILayout.PropertyField(timerSectionPos, new GUIContent("TimerSection 위치"));
 
         DrawHeader("Cell");
         EditorGUILayout.PropertyField(themeThumbnail, new GUIContent("대표 이미지"));

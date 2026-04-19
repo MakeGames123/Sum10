@@ -264,7 +264,7 @@ public class BoardManager : MonoBehaviour
             currentHintCells.Clear();
         }
 
-        gameManager?.ResetIdleTimer();
+        gameManager?.ResetHint();
     }
 
     private IEnumerator HintSoundLoop(float interval)

@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ff26c4546c9f20498ddea60a84094fa, type: 3}
+  m_Name: Wool
+  m_EditorClassIdentifier: 
+  themeName: Wool
+  textOffset: 5
+  themeThumbnail: {fileID: 21300000, guid: e5fa28cc7335ea94db5f3340699485b2, type: 3}
+  normalSpriteSets:
+  - normalSprite: {fileID: 21300000, guid: e5fa28cc7335ea94db5f3340699485b2, type: 3}
+    hintSprite: {fileID: 21300000, guid: df848fb703050d3469da13e5f859d8da, type: 3}
+    selectedSprite: {fileID: 21300000, guid: bb45274e8b95a19498b7e473fd35d919, type: 3}
+  blankSpriteSets:
+  - normalSprite: {fileID: 21300000, guid: 76c9ec91565bcce47b37bc0402c91910, type: 3}
+    hintSprite: {fileID: 21300000, guid: ea52fd9668b3cbf419c21e2cb65f25bd, type: 3}
+    selectedSprite: {fileID: 21300000, guid: 0a9f003af0088ca4ba6ac21118c98603, type: 3}
+  cellScale: 1.1
+  backgroundScale: 1.1
+  boardLowSkin: {fileID: 21300000, guid: 6fbc22a1df82fcb419c0d2a8a2e56ecd, type: 3}
+  boardDecor1: {fileID: 21300000, guid: d003d65ed88cbd341aa1dab3a066231a, type: 3}
+  boardDecor1Offset: {x: 0, y: 0}
+  boardDecor2: {fileID: 0}
+  boardDecor2Offset: {x: 0, y: 0}
+  boardInnerPanel: {fileID: 21300000, guid: d003d65ed88cbd341aa1dab3a066231a, type: 3}
+  boardSkin: {fileID: 21300000, guid: db9fcdd288828d340be07639b9eb1460, type: 3}
+  scoreSectionPos: {x: 0, y: 0}
+  timerSectionPos: {x: 64, y: 2.5}
+  background: {fileID: 21300000, guid: 1437f5f38bdf88e4c8a79ea34ab389f4, type: 3}
+  boardWidth: 1130
+  boardHeight: 1520
+  boardOffset: -99
+  boardOffsetX: 7
+  cellBackground: {fileID: 21300000, guid: 85fb0dd2b464e294c902cdd556510f67, type: 3}
+  scale:
+  - 3.53
+  - 2.65
+  - 2.13
+  - 1.77
+  normalFontColor: {r: 0.3584906, g: 0.25533998, b: 0.25533998, a: 1}
+  selectedFontColor: {r: 0.8773585, g: 0.40970984, b: 0.48765144, a: 1}
