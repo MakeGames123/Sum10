@@ -74,6 +74,7 @@ public class UIController : MonoBehaviour
     public void TransitionToLobby()
     {
         CurrentState = UIState.Lobby;
+        gameOverPanel.Hide();
         TopBanner.Instance.RemoveBanner();
         // 로비 UI 표시
         lobbyUIRoot.anchoredPosition = Vector2.zero;
