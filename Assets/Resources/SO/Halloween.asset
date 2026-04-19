@@ -34,7 +34,7 @@ MonoBehaviour:
   boardSkin: {fileID: 21300000, guid: 9922b538772894446be2c52798609194, type: 3}
   scoreSectionPos: {x: 0, y: 20}
   timerSectionPos: {x: 64, y: 55}
-  background: {fileID: 21300000, guid: a322966e97c15b64c92cf6cf4c35efc0, type: 3}
+  background: {fileID: 21300000, guid: b89a0ecafbc6763459d166134b1f2bbf, type: 3}
   boardWidth: 1117
   boardHeight: 1520
   boardOffset: -95
