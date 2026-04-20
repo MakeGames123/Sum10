@@ -83,11 +83,15 @@ public class ThemePanel : MonoBehaviour, IMainPanel
         {
             boardDecor1Preview.sprite = themeDatas[index].boardDecor1;
             boardDecor1Preview.enabled = themeDatas[index].boardDecor1 != null;
+            var mover1 = boardDecor1Preview.GetComponent<BoardDecorMoving>();
+            if (mover1 != null) mover1.enabled = themeDatas[index].boardDecor1Moving;
         }
         if (boardDecor2Preview != null)
         {
             boardDecor2Preview.sprite = themeDatas[index].boardDecor2;
             boardDecor2Preview.enabled = themeDatas[index].boardDecor2 != null;
+            var mover2 = boardDecor2Preview.GetComponent<BoardDecorMoving>();
+            if (mover2 != null) mover2.enabled = themeDatas[index].boardDecor2Moving;
         }
 
         var bg = ThemeManager.Instance.background;

@@ -1623,6 +1623,7 @@ GameObject:
   - component: {fileID: 1106721316072063464}
   - component: {fileID: 1937765804033574868}
   - component: {fileID: 3940936302007392464}
+  - component: {fileID: 2951183123750115204}
   m_Layer: 5
   m_Name: Board Decor 1
   m_TagString: Untagged
@@ -1687,6 +1688,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2951183123750115204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7729749570005693503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00ae1300ac43a0f408edcc3a2befdb8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 50
+  height: 30
+  speed: 1
 --- !u!1 &8493070335393739859
 GameObject:
   m_ObjectHideFlags: 0

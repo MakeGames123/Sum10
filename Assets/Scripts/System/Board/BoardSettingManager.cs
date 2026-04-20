@@ -65,12 +65,18 @@ public class BoardSettingManager : MonoBehaviour
         if (boardDecor1 != null)
         {
             boardDecor1.sizeDelta = size;
-            boardDecor1.anchoredPosition = pos + ThemeManager.Instance.selectedTheme.boardDecor1Offset;
+            Vector2 decor1Pos = pos + ThemeManager.Instance.selectedTheme.boardDecor1Offset;
+            var mover1 = boardDecor1.GetComponent<BoardDecorMoving>();
+            if (mover1 != null) mover1.SetCenter(decor1Pos);
+            else boardDecor1.anchoredPosition = decor1Pos;
         }
         if (boardDecor2 != null)
         {
             boardDecor2.sizeDelta = size;
-            boardDecor2.anchoredPosition = pos + ThemeManager.Instance.selectedTheme.boardDecor2Offset;
+            Vector2 decor2Pos = pos + ThemeManager.Instance.selectedTheme.boardDecor2Offset;
+            var mover2 = boardDecor2.GetComponent<BoardDecorMoving>();
+            if (mover2 != null) mover2.SetCenter(decor2Pos);
+            else boardDecor2.anchoredPosition = decor2Pos;
         }
 
 

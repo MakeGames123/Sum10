@@ -18,8 +18,10 @@ public class ThemeDataEditor : Editor
     SerializedProperty boardLowSkin;
     SerializedProperty boardDecor1;
     SerializedProperty boardDecor1Offset;
+    SerializedProperty boardDecor1Moving;
     SerializedProperty boardDecor2;
     SerializedProperty boardDecor2Offset;
+    SerializedProperty boardDecor2Moving;
     SerializedProperty background;
     SerializedProperty scoreSectionPos;
     SerializedProperty timerSectionPos;
@@ -51,8 +53,10 @@ public class ThemeDataEditor : Editor
         boardLowSkin = serializedObject.FindProperty("boardLowSkin");
         boardDecor1 = serializedObject.FindProperty("boardDecor1");
         boardDecor1Offset = serializedObject.FindProperty("boardDecor1Offset");
+        boardDecor1Moving = serializedObject.FindProperty("boardDecor1Moving");
         boardDecor2 = serializedObject.FindProperty("boardDecor2");
         boardDecor2Offset = serializedObject.FindProperty("boardDecor2Offset");
+        boardDecor2Moving = serializedObject.FindProperty("boardDecor2Moving");
         background = serializedObject.FindProperty("background");
         scoreSectionPos = serializedObject.FindProperty("scoreSectionPos");
         timerSectionPos = serializedObject.FindProperty("timerSectionPos");
@@ -91,8 +95,10 @@ public class ThemeDataEditor : Editor
         EditorGUILayout.PropertyField(boardLowSkin, new GUIContent("보드 하단 스킨"));
         EditorGUILayout.PropertyField(boardDecor1, new GUIContent("보드 꾸밈 1"));
         EditorGUILayout.PropertyField(boardDecor1Offset, new GUIContent("보드 꾸밈 1 위치 오프셋"));
+        EditorGUILayout.PropertyField(boardDecor1Moving, new GUIContent("보드 꾸밈 1 움직임"));
         EditorGUILayout.PropertyField(boardDecor2, new GUIContent("보드 꾸밈 2"));
         EditorGUILayout.PropertyField(boardDecor2Offset, new GUIContent("보드 꾸밈 2 위치 오프셋"));
+        EditorGUILayout.PropertyField(boardDecor2Moving, new GUIContent("보드 꾸밈 2 움직임"));
         EditorGUILayout.PropertyField(boardWidth, new GUIContent("보드 길이"));
         EditorGUILayout.PropertyField(boardHeight, new GUIContent("보드 세로 길이"));
         EditorGUILayout.PropertyField(boardOffset, new GUIContent("보드 세로축 보정"));

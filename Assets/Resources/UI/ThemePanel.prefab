@@ -648,6 +648,7 @@ GameObject:
   - component: {fileID: 8912621345952392566}
   - component: {fileID: 5477581359010814003}
   - component: {fileID: 8674085227299697953}
+  - component: {fileID: 6851990658872378535}
   m_Layer: 5
   m_Name: Board Decor 1
   m_TagString: Untagged
@@ -712,6 +713,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6851990658872378535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944586342042838732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00ae1300ac43a0f408edcc3a2befdb8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 50
+  height: 30
+  speed: 1
 --- !u!1 &1018436062203521283
 GameObject:
   m_ObjectHideFlags: 0
@@ -1834,6 +1850,7 @@ GameObject:
   - component: {fileID: 6203649306020611213}
   - component: {fileID: 6330447613004590001}
   - component: {fileID: 3671925170792064963}
+  - component: {fileID: 8993528365349010981}
   m_Layer: 5
   m_Name: Board Decor 2
   m_TagString: Untagged
@@ -1898,6 +1915,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8993528365349010981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8059923644748526003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00ae1300ac43a0f408edcc3a2befdb8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 200
+  height: 100
+  speed: 2
 --- !u!1 &8280755950449493615
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,9 +27,11 @@ MonoBehaviour:
   backgroundScale: 1.1
   boardLowSkin: {fileID: 21300000, guid: d9b0a8a6644dd944da9fc4451286e290, type: 3}
   boardDecor1: {fileID: 21300000, guid: abc2e0920eedf504a899fbc9c2e9c2d9, type: 3}
-  boardDecor1Offset: {x: 15, y: -35}
+  boardDecor1Offset: {x: -30, y: -60}
+  boardDecor1Moving: 1
   boardDecor2: {fileID: 0}
   boardDecor2Offset: {x: 0, y: 0}
+  boardDecor2Moving: 0
   boardInnerPanel: {fileID: 21300000, guid: 0aa4f12ac3d27d14f9f660b2ae3470ae, type: 3}
   boardSkin: {fileID: 21300000, guid: 9922b538772894446be2c52798609194, type: 3}
   scoreSectionPos: {x: 0, y: 20}

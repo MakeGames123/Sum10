@@ -53,11 +53,15 @@ public class ThemeManager : MonoBehaviour
         {
             boardDecor1.sprite = selectedTheme.boardDecor1;
             boardDecor1.enabled = selectedTheme.boardDecor1 != null;
+            var mover1 = boardDecor1.GetComponent<BoardDecorMoving>();
+            if (mover1 != null) mover1.enabled = selectedTheme.boardDecor1Moving;
         }
         if (boardDecor2 != null)
         {
             boardDecor2.sprite = selectedTheme.boardDecor2;
             boardDecor2.enabled = selectedTheme.boardDecor2 != null;
+            var mover2 = boardDecor2.GetComponent<BoardDecorMoving>();
+            if (mover2 != null) mover2.enabled = selectedTheme.boardDecor2Moving;
         }
         if (background != null && selectedTheme.background != null)
             background.sprite = selectedTheme.background;

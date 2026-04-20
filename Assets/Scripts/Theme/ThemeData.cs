@@ -16,8 +16,10 @@ public class ThemeData : ScriptableObject
     public Sprite boardLowSkin;//판떼기
     public Sprite boardDecor1;//보드 꾸밈 1
     public Vector2 boardDecor1Offset;//보드 꾸밈 1 위치 오프셋
+    public bool boardDecor1Moving;//보드 꾸밈 1 움직임 여부
     public Sprite boardDecor2;//보드 꾸밈 2
     public Vector2 boardDecor2Offset;//보드 꾸밈 2 위치 오프셋
+    public bool boardDecor2Moving;//보드 꾸밈 2 움직임 여부
     public Sprite boardInnerPanel;//보드 안쪽 판
     public Sprite boardSkin;//보드 프레임
     public Vector2 scoreSectionPos = new Vector2(0f, 0f);

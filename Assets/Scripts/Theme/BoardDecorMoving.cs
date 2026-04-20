@@ -9,10 +9,17 @@ public class BoardDecorMoving : MonoBehaviour
     private RectTransform rect;
     private Vector2 center;
 
-    void Start()
+    void Awake()
     {
         rect = GetComponent<RectTransform>();
         center = rect.anchoredPosition;
+    }
+
+    public void SetCenter(Vector2 newCenter)
+    {
+        center = newCenter;
+        if (rect == null) rect = GetComponent<RectTransform>();
+        rect.anchoredPosition = newCenter;
     }
 
     void Update()
