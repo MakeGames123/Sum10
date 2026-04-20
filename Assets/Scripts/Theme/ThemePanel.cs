@@ -11,6 +11,7 @@ public class ThemePanel : MonoBehaviour, IMainPanel
     public Button rightButton;
     public Button leftButton;
     public Button applyButton;
+    public GameObject equippedButton;
     public Button buyButton;
     public List<ThemeData> themeDatas = new();
     public Image boardBackground;
@@ -93,14 +94,22 @@ public class ThemePanel : MonoBehaviour, IMainPanel
         if (bg != null && themeDatas[index].background != null)
             bg.sprite = themeDatas[index].background;
 
-        if (ThemeManager.Instance.themeStatus[index] == 1)
+        if (ThemeManager.Instance.themeStatus[index] == 1 && appliedIndex != index)
         {
             applyButton.gameObject.SetActive(true);
+            equippedButton.gameObject.SetActive(false);
+            buyButton.gameObject.SetActive(false);
+        }
+        else if (ThemeManager.Instance.themeStatus[index] == 1 && appliedIndex == index)
+        {
+            applyButton.gameObject.SetActive(false);
+            equippedButton.gameObject.SetActive(true);
             buyButton.gameObject.SetActive(false);
         }
         else
         {
             applyButton.gameObject.SetActive(false);
+            equippedButton.gameObject.SetActive(false);
             buyButton.gameObject.SetActive(true);
         }
 
@@ -117,6 +126,8 @@ public class ThemePanel : MonoBehaviour, IMainPanel
         ThemeManager.Instance.ChangeTheme(themeDatas[index], index);
         appliedTheme = themeDatas[index]; // 적용 완료 → 닫을 때 복원 안 함
         appliedIndex = index;
+        applyButton.gameObject.SetActive(false);
+        equippedButton.gameObject.SetActive(true);
     }
 
     public void RequestUnlockTheme()

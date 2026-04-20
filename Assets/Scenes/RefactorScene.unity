@@ -376,6 +376,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 92184762}
   m_CullTransparentMesh: 1
+--- !u!1 &97943010 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9034621994427146261, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+  m_PrefabInstance: {fileID: 6593046279449537706}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &118912058 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2858373875286092805, guid: ceae5585a79919340a3c9de1c9d46b85, type: 3}
@@ -12271,6 +12276,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 725502408}
     - target: {fileID: 273688842149201134, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: appliedButton
+      value: 
+      objectReference: {fileID: 97943010}
+    - target: {fileID: 273688842149201134, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
       propertyPath: boardDecor1Preview
       value: 
       objectReference: {fileID: 6593046279449537708}
@@ -12653,6 +12662,10 @@ PrefabInstance:
     - target: {fileID: 8766874091985382701, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9034621994427146261, guid: efd68176bca1d2e4996402741b6d2e17, type: 3}
+      propertyPath: m_Name
+      value: EquipedButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
