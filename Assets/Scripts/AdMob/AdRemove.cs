@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 public class AdRemove : MonoBehaviour
 {
-    [SerializeField] Button diamondRemoveButton;
     [SerializeField] Button cashRemoveButton;
     [SerializeField] AdRemoveButton adRemoveButton;
     [SerializeField] private PlayFabLoginManager login;
@@ -13,28 +12,12 @@ public class AdRemove : MonoBehaviour
     public const string Product_NoAds = "ad_removal_1";
     void Awake()
     {
-        diamondRemoveButton.onClick.AddListener(BuyRemoveAdsWithDia);
         cashRemoveButton.onClick.AddListener(BuyRemoveAdsWithCash);
     }
     private void Start()
     {
         if (adRemoveButton == null)
             adRemoveButton = FindObjectOfType<AdRemoveButton>();
-    }
-    public void BuyRemoveAdsWithDia()
-    {
-        if (!login.isLinked) linkPupUp.SetActive(true);
-        else
-        {
-            PlayFabClientAPI.ExecuteCloudScript(
-            new ExecuteCloudScriptRequest
-            {
-                FunctionName = "BuyRemoveAdsWithDiamond"
-            },
-                OnSuccess,
-                OnError
-            );
-        }
     }
     public void BuyRemoveAdsWithCash()
     {

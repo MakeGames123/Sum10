@@ -8,7 +8,7 @@ public class TopBanner : MonoBehaviour
     private bool isInitialized = false;
 
 #if UNITY_ANDROID
-    private string _adUnitId = "ca-app-pub-3940256099942544/6300978111"; // 테스트 ID
+    private string _adUnitId = "ca-app-pub-1896612926436691/2983072004"; // 테스트 ID
 #elif UNITY_IPHONE
     private string _adUnitId = "ca-app-pub-3940256099942544/2934735716"; // 테스트 ID
 #endif

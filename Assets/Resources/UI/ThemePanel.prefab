@@ -2223,11 +2223,12 @@ MonoBehaviour:
   applyButton: {fileID: 7034490758031300040}
   equippedButton: {fileID: 9034621994427146261}
   buyButton: {fileID: 1652340701094592368}
+  price: {fileID: 8019726081934991963}
   themeDatas:
   - {fileID: 11400000, guid: b245025fa5e9bb847b1d4d1ec5f71862, type: 2}
   - {fileID: 11400000, guid: 4811af7394773074f8b98ac653b85418, type: 2}
-  - {fileID: 11400000, guid: d564b38e8d5405846aa83bdc4de4e3af, type: 2}
   - {fileID: 11400000, guid: fe344e8eb0265f24a8cbad37d4def765, type: 2}
+  - {fileID: 11400000, guid: d564b38e8d5405846aa83bdc4de4e3af, type: 2}
   - {fileID: 11400000, guid: 11bc6ecbfca19e846960d6042ce16f60, type: 2}
   boardBackground: {fileID: 3453066692918143742}
   boardInnerPanelPreview: {fileID: 4889333177064109796}

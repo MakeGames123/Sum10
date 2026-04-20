@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using PlayFab;
 using PlayFab.ClientModels;
+using TMPro;
 
 public class ThemePanel : MonoBehaviour, IMainPanel
 {
@@ -13,6 +14,7 @@ public class ThemePanel : MonoBehaviour, IMainPanel
     public Button applyButton;
     public GameObject equippedButton;
     public Button buyButton;
+    public TextMeshProUGUI price;
     public List<ThemeData> themeDatas = new();
     public Image boardBackground;
     public Image boardInnerPanelPreview;
@@ -117,6 +119,8 @@ public class ThemePanel : MonoBehaviour, IMainPanel
             buyButton.gameObject.SetActive(true);
         }
 
+        price.text = ThemeDataLoader.Instance.dataList[index].diaPrice.ToString();
+
         SetUp();
     }
     public void SetUp()
@@ -136,7 +140,7 @@ public class ThemePanel : MonoBehaviour, IMainPanel
 
     public void RequestUnlockTheme()
     {
-        if (PlayerData.Instance.GetDiamond() < 450)
+        if (PlayerData.Instance.GetDiamond() < ThemeDataLoader.Instance.dataList[index].diaPrice)
         {
             diaShop.anchoredPosition = Vector2.zero;
             return;
