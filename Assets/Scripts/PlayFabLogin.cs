@@ -21,6 +21,10 @@ public class PlayFabLoginManager : MonoBehaviour
 
     void Start()
     {
+        TryLogin();
+    }
+    public void TryLogin()
+    {
         PlayGamesPlatform.Instance.Authenticate((status) =>
         {
             Debug.LogError("GPGS 로그인 상태: " + status);

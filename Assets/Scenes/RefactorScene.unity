@@ -5969,8 +5969,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e541d8259b3f7147bc909f7b7511206, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   dataList: []
 --- !u!224 &1524039534 stripped
 RectTransform:
@@ -11332,6 +11332,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1800247904}
+    - target: {fileID: 4346768257592853018, guid: e7eb907ce86eec742803acfd4ea60ecd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TryLogin
+      objectReference: {fileID: 0}
     - target: {fileID: 8459119164250982362, guid: e7eb907ce86eec742803acfd4ea60ecd, type: 3}
       propertyPath: m_IsActive
       value: 0
