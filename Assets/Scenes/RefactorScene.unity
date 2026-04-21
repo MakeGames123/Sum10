@@ -456,7 +456,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa25f02cd84d31642bc4785ab3900049, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  diamondRemoveButton: {fileID: 0}
   cashRemoveButton: {fileID: 1646105919}
   adRemoveButton: {fileID: 0}
   login: {fileID: 1800247904}
@@ -5907,6 +5906,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1508906012}
   - component: {fileID: 1508906011}
+  - component: {fileID: 1508906013}
   m_Layer: 0
   m_Name: ThemeManager
   m_TagString: Untagged
@@ -5929,8 +5929,8 @@ MonoBehaviour:
   themeDatas:
   - {fileID: 11400000, guid: b245025fa5e9bb847b1d4d1ec5f71862, type: 2}
   - {fileID: 11400000, guid: 4811af7394773074f8b98ac653b85418, type: 2}
-  - {fileID: 11400000, guid: d564b38e8d5405846aa83bdc4de4e3af, type: 2}
   - {fileID: 11400000, guid: fe344e8eb0265f24a8cbad37d4def765, type: 2}
+  - {fileID: 11400000, guid: d564b38e8d5405846aa83bdc4de4e3af, type: 2}
   - {fileID: 11400000, guid: 11bc6ecbfca19e846960d6042ce16f60, type: 2}
   themeStatus: 
   selectedTheme: {fileID: 11400000, guid: b245025fa5e9bb847b1d4d1ec5f71862, type: 2}
@@ -5959,6 +5959,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1508906013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508906010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e541d8259b3f7147bc909f7b7511206, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  dataList: []
 --- !u!224 &1524039534 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2292664335256255597, guid: f4805bbc2748ce3408797ba96c5847c4, type: 3}

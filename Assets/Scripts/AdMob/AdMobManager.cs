@@ -178,9 +178,7 @@ public class AdMobManager : MonoBehaviour
                 // 광고 시청 완료 (보상 지급 가능)
                 onComplete?.Invoke(true);
             });
-
-            // 광고가 닫히면 다음을 위해 미리 로드
-            _rewardedAd.OnAdFullScreenContentClosed += () => { LoadRewardedAd(); };
+            // 광고 닫힘 시 다음 광고 로드는 RegisterEventHandlers에서 이미 등록됨
         }
         else
         {
