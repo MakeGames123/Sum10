@@ -119,7 +119,15 @@ public class ThemePanel : MonoBehaviour, IMainPanel
             buyButton.gameObject.SetActive(true);
         }
 
-        price.text = ThemeDataLoader.Instance.dataList[index].diaPrice.ToString();
+        if (price != null)
+        {
+            if (ThemeDataLoader.Instance != null
+                && index >= 0
+                && index < ThemeDataLoader.Instance.dataList.Count)
+                price.text = ThemeDataLoader.Instance.dataList[index].diaPrice.ToString();
+            else
+                price.text = "-";
+        }
 
         SetUp();
     }
@@ -140,6 +148,12 @@ public class ThemePanel : MonoBehaviour, IMainPanel
 
     public void RequestUnlockTheme()
     {
+        // 가격 데이터 로드 전엔 구매 차단
+        if (ThemeDataLoader.Instance == null
+            || index < 0
+            || index >= ThemeDataLoader.Instance.dataList.Count)
+            return;
+
         if (PlayerData.Instance.GetDiamond() < ThemeDataLoader.Instance.dataList[index].diaPrice)
         {
             diaShop.anchoredPosition = Vector2.zero;
