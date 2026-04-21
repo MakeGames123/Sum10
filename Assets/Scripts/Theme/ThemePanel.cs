@@ -100,13 +100,17 @@ public class ThemePanel : MonoBehaviour, IMainPanel
         if (bg != null && themeDatas[index].background != null)
             bg.sprite = themeDatas[index].background;
 
-        if (ThemeManager.Instance.themeStatus[index] == 1 && appliedIndex != index)
+        int status = (index >= 0 && index < ThemeManager.Instance.themeStatus.Count)
+            ? ThemeManager.Instance.themeStatus[index]
+            : 0;
+
+        if (status == 1 && appliedIndex != index)
         {
             applyButton.gameObject.SetActive(true);
             equippedButton.gameObject.SetActive(false);
             buyButton.gameObject.SetActive(false);
         }
-        else if (ThemeManager.Instance.themeStatus[index] == 1 && appliedIndex == index)
+        else if (status == 1 && appliedIndex == index)
         {
             applyButton.gameObject.SetActive(false);
             equippedButton.gameObject.SetActive(true);

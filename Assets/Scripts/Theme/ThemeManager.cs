@@ -33,7 +33,14 @@ public class ThemeManager : MonoBehaviour
         else { Destroy(gameObject); }
 
         int selectedIndex = PlayerPrefs.GetInt(ThemeIndexKey, 0);
-        ChangeTheme(themeDatas[selectedIndex], selectedIndex);
+        if (selectedIndex < 0 || selectedIndex >= themeDatas.Count)
+            selectedIndex = 0;
+        if (themeDatas.Count > 0)
+            ChangeTheme(themeDatas[selectedIndex], selectedIndex);
+
+        // 서버 로드 전 기본값 (0번만 해금) - themeStatus가 비어있을 때 크래시 방지
+        for (int i = 0; i < themeDatas.Count; i++)
+            themeStatus.Add(i == 0 ? 1 : 0);
 
         login.onLogined.AddListener(LoadProfileStatusFromServer);
     }
