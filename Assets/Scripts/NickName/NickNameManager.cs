@@ -181,8 +181,23 @@ public class NicknameManager : MonoBehaviour
                     gameObject.SetActive(false);
                     return;
                 }
-
                 SetStatus("이미 사용중인 닉네임입니다.");
+
+                // ⭐ 환불 요청
+                PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest
+                {
+                    FunctionName = "RefundNicknameIfFailed",
+                    FunctionParameter = new { token = pendingToken },
+                    GeneratePlayStreamEvent = true
+                },
+                result =>
+                {
+                    Debug.Log("환불 처리 완료");
+                },
+                error =>
+                {
+                    Debug.LogError("환불 실패: " + error.GenerateErrorReport());
+                });
             }
         );
     }
