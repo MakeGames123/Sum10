@@ -111,7 +111,7 @@ public class IAPManager : MonoBehaviour, IStoreListener
             onPurchaseComplete = null; // 사용 후 초기화
         }, error =>
         {
-            Debug.LogError($"❌ PlayFab 검증 실패: {error.GenerateErrorReport()}");
+            //Debug.LogError($"❌ PlayFab 검증 실패: {error.GenerateErrorReport()}");
             onPurchaseComplete = null;
         });
 
