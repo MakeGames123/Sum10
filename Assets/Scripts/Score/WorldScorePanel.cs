@@ -39,14 +39,20 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
     private void Start()
     {
         if (scoreManager != null)
+        {
             scoreManager.OnTop50Updated += RefreshFromCache;
+            scoreManager.OnOverallTop50Updated += RefreshFromCache;
+        }
 
         ChangeToWeek();
     }
     private void OnDestroy()
     {
         if (scoreManager != null)
+        {
             scoreManager.OnTop50Updated -= RefreshFromCache;
+            scoreManager.OnOverallTop50Updated -= RefreshFromCache;
+        }
     }
     public void ChangeToWeek()
     {
@@ -101,6 +107,7 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
         coolTimeCoroutine = StartCoroutine(UpdateCoolTime());
 
         _ = scoreManager.FetchWeeklyTop50WithProfilesAsync();
+        _ = scoreManager.FetchTop50WithProfilesAsync();
     }
     private IEnumerator UpdateCoolTime()
     {
