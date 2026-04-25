@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "220455018964",
+    "project_id": "duhanyan-e44ae",
+    "storage_bucket": "duhanyan-e44ae.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:220455018964:android:39ebb039cab794db41b641",
+        "android_client_info": {
+          "package_name": "com.mystudio.DuHaNyan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFokOqs07__5bVG5rw7cvgF5Qys9DubEM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
