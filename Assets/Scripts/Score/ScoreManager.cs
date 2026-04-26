@@ -403,6 +403,12 @@ public class ScoreManager : MonoBehaviour
 
         await tcs.Task;
         await RefreshMyWeeklyRecordAsync();
+
+        // CalculateRank 결과(cachedRank)는 ±오차 가능 → PlayFab 확정 순위(MyWeeklyRank)로 동기화 후 무효화
+        // 게임오버 직후 OnMyRankUpdated로 즉시 표시된 cachedRank를 1초 후 정확한 값으로 교체하기 위함
+        cachedRank = -1;
+        cachedRankScore = -1;
+
         OnTop50Updated?.Invoke();
     }
 
