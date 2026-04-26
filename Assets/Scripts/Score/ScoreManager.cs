@@ -30,6 +30,16 @@ public class ScoreManager : MonoBehaviour
     private List<PlayerLeaderboardEntry> cachedTop50;
     public List<PlayerLeaderboardEntry> CachedTop50 => cachedTop50;
 
+    // ===== 내 기록 단독 캐시 (Top50 밖에서도 표시 가능) =====
+    private int myWeeklyRank = -1;
+    private int myWeeklyScore = -1;
+    private int myOverallRank = -1;
+    private int myOverallScore = -1;
+    public int MyWeeklyRank => myWeeklyRank;
+    public int MyWeeklyScore => myWeeklyScore;
+    public int MyOverallRank => myOverallRank;
+    public int MyOverallScore => myOverallScore;
+
     // 주간 Top50 갱신 이벤트
     public System.Action OnTop50Updated;
     // 전체 Top50 갱신 이벤트
@@ -360,6 +370,7 @@ public class ScoreManager : MonoBehaviour
 
     /// <summary>
     /// Top 50 리더보드 + 프로필 인덱스를 조회하여 캐시에 저장
+    /// 내 기록도 같이 갱신하여 Top50 밖에서도 정확한 순위/점수 표시 가능
     /// </summary>
     public async Task FetchWeeklyTop50WithProfilesAsync()
     {
@@ -380,9 +391,8 @@ public class ScoreManager : MonoBehaviour
         PlayFabClientAPI.GetLeaderboard(request,
             result =>
             {
-                tcs.TrySetResult(result.Leaderboard);
                 cachedWeeklyTop50 = result.Leaderboard;
-                OnTop50Updated?.Invoke();
+                tcs.TrySetResult(result.Leaderboard);
             },
             error =>
             {
@@ -390,6 +400,10 @@ public class ScoreManager : MonoBehaviour
                 tcs.TrySetResult(null);
             }
         );
+
+        await tcs.Task;
+        await RefreshMyWeeklyRecordAsync();
+        OnTop50Updated?.Invoke();
     }
 
     public async Task FetchTop50WithProfilesAsync()
@@ -411,9 +425,8 @@ public class ScoreManager : MonoBehaviour
         PlayFabClientAPI.GetLeaderboard(request,
             result =>
             {
-                tcs.TrySetResult(result.Leaderboard);
                 cachedTop50 = result.Leaderboard;
-                OnOverallTop50Updated?.Invoke();
+                tcs.TrySetResult(result.Leaderboard);
             },
             error =>
             {
@@ -421,5 +434,81 @@ public class ScoreManager : MonoBehaviour
                 tcs.TrySetResult(null);
             }
         );
+
+        await tcs.Task;
+        await RefreshMyOverallRecordAsync();
+        OnOverallTop50Updated?.Invoke();
+    }
+
+    /// <summary>
+    /// 내 주간 기록(순위 + 점수)을 갱신하여 캐시
+    /// Top50 안에 있으면 그 위치 사용 (정확함), 밖이면 GetLeaderboardAroundPlayer로 조회
+    /// </summary>
+    public Task RefreshMyWeeklyRecordAsync()
+    {
+        return RefreshMyRecordAsync(STAT_WEEKLY_HIGH_SCORE, cachedWeeklyTop50,
+            (rank, score) => { myWeeklyRank = rank; myWeeklyScore = score; });
+    }
+
+    /// <summary>
+    /// 내 전체 기록(순위 + 점수)을 갱신하여 캐시
+    /// </summary>
+    public Task RefreshMyOverallRecordAsync()
+    {
+        return RefreshMyRecordAsync(STAT_HIGH_SCORE, cachedTop50,
+            (rank, score) => { myOverallRank = rank; myOverallScore = score; });
+    }
+
+    private Task RefreshMyRecordAsync(string statName, List<PlayerLeaderboardEntry> top50Cache,
+        System.Action<int, int> assign)
+    {
+        string myId = PlayFabSettings.staticPlayer.PlayFabId;
+
+        // Top50 안에 있으면 그 데이터를 신뢰 (Position 갱신 지연 영향 적음)
+        if (top50Cache != null)
+        {
+            foreach (var entry in top50Cache)
+            {
+                if (entry.PlayFabId == myId)
+                {
+                    assign(entry.Position + 1, entry.StatValue);
+                    return Task.CompletedTask;
+                }
+            }
+        }
+
+        // Top50 밖이면 GetLeaderboardAroundPlayer로 조회
+        var tcs = new TaskCompletionSource<bool>();
+
+        PlayFabClientAPI.GetLeaderboardAroundPlayer(
+            new GetLeaderboardAroundPlayerRequest
+            {
+                StatisticName = statName,
+                MaxResultsCount = 1
+            },
+            result =>
+            {
+                int rank = -1;
+                int score = -1;
+                foreach (var entry in result.Leaderboard)
+                {
+                    if (entry.PlayFabId == myId)
+                    {
+                        rank = entry.Position + 1;
+                        score = entry.StatValue;
+                        break;
+                    }
+                }
+                assign(rank, score);
+                tcs.TrySetResult(true);
+            },
+            error =>
+            {
+                Debug.LogError("내 기록 조회 실패: " + error.GenerateErrorReport());
+                tcs.TrySetResult(false);
+            }
+        );
+
+        return tcs.Task;
     }
 }
