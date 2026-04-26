@@ -76,37 +76,27 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
     }
     public void UpdateRank()
     {
-        // ScoreManager에 최신 캐시 순위가 있으면 우선 사용 (PlayFab Position 갱신 지연 우회)
-        if (scoreManager != null && scoreManager.CachedRank > 0)
+        if (scoreManager == null)
+        {
+            rank.text = "#--";
+            return;
+        }
+
+        // 우선순위 1: 게임오버 직후 CalculateRank로 계산된 정확한 순위 (1회용)
+        if (scoreManager.CachedRank > 0)
         {
             rank.text = "#" + scoreManager.CachedRank.ToString();
             return;
         }
 
-        PlayFabClientAPI.GetLeaderboardAroundPlayer(
-            new GetLeaderboardAroundPlayerRequest
-            {
-                StatisticName = "HighScore",
-                MaxResultsCount = 1 // 내 순위만 필요
-            },
-            result =>
-            {
-                // 1. 리더보드 데이터가 있고, 2. 그 점수가 0보다 클 때만 순위 표시
-                if (result.Leaderboard.Count > 0 && result.Leaderboard[0].StatValue > 0)
-                {
-                    var entry = result.Leaderboard[0];
-                    rank.text = "#" + (entry.Position + 1).ToString(); // 0-based → 1-based
-                }
-                else
-                {
-                    // 데이터가 아예 없거나 점수가 0점인 경우
-                    rank.text = "#--";
-                }
-            },
-            error =>
-            {
-                Debug.LogError(error.GenerateErrorReport());
-            }
-        );
+        // 우선순위 2: FetchTop50과 함께 갱신된 내 주간 기록 캐시 (Top50 밖이어도 정확)
+        if (scoreManager.MyWeeklyRank > 0)
+        {
+            rank.text = "#" + scoreManager.MyWeeklyRank.ToString();
+            return;
+        }
+
+        // 캐시가 없으면 표시 보류 (다음 FetchTop50 완료 시 OnTop50Updated로 갱신됨)
+        rank.text = "#--";
     }
 }

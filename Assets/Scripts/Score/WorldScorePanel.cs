@@ -157,6 +157,25 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
             );
             myUnit.gameObject.SetActive(true);
         }
+        else
+        {
+            // Top50 밖: ScoreManager에 캐시된 내 기록 사용
+            int myRank = isWeekly ? scoreManager.MyWeeklyRank : scoreManager.MyOverallRank;
+            int myScore = isWeekly ? scoreManager.MyWeeklyScore : scoreManager.MyOverallScore;
+            if (myRank > 0 && myScore >= 0)
+            {
+                string myName = string.IsNullOrEmpty(PlayerData.Instance.nickName)
+                    ? myPlayFabId
+                    : PlayerData.Instance.nickName;
+                myUnit.SetCondition(
+                    myRank - 1, // SetCondition은 0-based로 받음
+                    myName,
+                    myScore,
+                    PlayerData.Instance.EquippedProfileImage
+                );
+                myUnit.gameObject.SetActive(true);
+            }
+        }
 
         // 월드 랭킹
         foreach (var entry in leaderboard)
