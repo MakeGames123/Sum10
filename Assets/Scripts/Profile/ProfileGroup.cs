@@ -17,6 +17,10 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
     public PlayFabLoginManager login;
     void Awake()
     {
+        // 인스펙터 미할당 안전장치: 씬에서 자동 탐색
+        if (scoreManager == null)
+            scoreManager = FindAnyObjectByType<ScoreManager>();
+
         login.onLogined.AddListener(UpdateProfile);
         game.OnGameOver.AddListener((value) => UpdateProfile());
 
@@ -27,6 +31,10 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
             scoreManager.OnOverallTop50Updated += UpdateRank;
             // 내 순위가 계산되면 즉시 반영 (PlayFab Position 갱신 지연 우회)
             scoreManager.OnMyRankUpdated += HandleMyRankUpdated;
+        }
+        else
+        {
+            Debug.LogWarning("[ProfileGroup] ScoreManager 참조를 찾지 못해 탑바 순위 갱신 이벤트 구독 실패");
         }
     }
 
@@ -76,11 +84,18 @@ public class ProfileGroup : MonoBehaviour, IPointerClickHandler
     }
     public void UpdateRank()
     {
+        // 안전장치: 늦게 활성화된 케이스 대응
+        if (scoreManager == null)
+            scoreManager = FindAnyObjectByType<ScoreManager>();
+
         if (scoreManager == null)
         {
+            Debug.LogWarning("[ProfileGroup.UpdateRank] scoreManager 못 찾음");
             rank.text = "#--";
             return;
         }
+
+        Debug.Log($"[ProfileGroup.UpdateRank] cached={scoreManager.CachedRank} weekly={scoreManager.MyWeeklyRank} weeklyScore={scoreManager.MyWeeklyScore}");
 
         // 우선순위 1: 게임오버 직후 CalculateRank로 계산된 정확한 순위 (1회용)
         if (scoreManager.CachedRank > 0)
