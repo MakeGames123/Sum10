@@ -80,10 +80,26 @@ public class GameOverPanel : MonoBehaviour
         // 5. 주간 최고 갱신 시
         if (finalScore > weeklyBest)
         {
-            currentRank = await scoreManager.CalculateRankForScoreAsync(finalScore);
+            // 점수 제출
             await scoreManager.SubmitWeeklyScoreAsync(finalScore);
+
+            // PlayFab 확정 순위 가져오기 (모든 UI의 single source of truth)
+            await scoreManager.FetchWeeklyTop50WithProfilesAsync();
+
+            // 동기화 늦으면 1초 후 1회 재시도
+            if (scoreManager.MyWeeklyScore < finalScore)
+            {
+                await System.Threading.Tasks.Task.Delay(1000);
+                await scoreManager.FetchWeeklyTop50WithProfilesAsync();
+            }
+
+            // 확정 순위 사용 (실패 시 CalculateRank fallback)
+            if (scoreManager.MyWeeklyRank > 0)
+                currentRank = scoreManager.MyWeeklyRank;
+            else
+                currentRank = await scoreManager.CalculateRankForScoreAsync(finalScore);
+
             scoreManager.CacheCalculatedRank(currentRank, finalScore);
-            Invoke(nameof(delayWeek), 1f);
         }
 
         // 6. 역대 최고 갱신 시 저장 (로컬 + 서버 백업)
@@ -96,14 +112,9 @@ public class GameOverPanel : MonoBehaviour
         // 7. 순위 애니메이션 시작
         ShowRankAnimation(prevRank, currentRank);
     }
-    private void delayWeek()
-    {
-        // 6. Top 50 캐시 갱신 (백그라운드)
-        _ = scoreManager.FetchWeeklyTop50WithProfilesAsync();
-    }
     private void delay()
     {
-        // 6. Top 50 캐시 갱신 (백그라운드)
+        // 전체 Top 50 캐시 갱신 (백그라운드)
         _ = scoreManager.FetchTop50WithProfilesAsync();
     }
 

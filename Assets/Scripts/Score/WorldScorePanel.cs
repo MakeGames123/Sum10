@@ -133,20 +133,46 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
 
         if (scoreManager == null) return;
 
-        DrawLeaderboard(isWeekly ? scoreManager.CachedWeeklyTop50 : scoreManager.CachedTop50);
+        var leaderboard = isWeekly ? scoreManager.CachedWeeklyTop50 : scoreManager.CachedTop50;
+
+        // 안전장치: 캐시 미준비 시 ClearUI 상태 유지 (다음 FetchTop50 완료 시 자동 갱신됨)
+        // 인트로 1초 터치 불가 외 추가 방어선 — 네트워크 느림/장애 케이스 NRE 차단
+        if (leaderboard == null) return;
+
+        DrawLeaderboard(leaderboard);
     }
 
     private void DrawLeaderboard(List<PlayerLeaderboardEntry> leaderboard)
     {
+        if (leaderboard == null) return;
+
         string myPlayFabId = PlayFabSettings.staticPlayer.PlayFabId;
         int uiIndex = 0;
 
         PlayerLeaderboardEntry myEntry =
             leaderboard.Find(e => e.PlayFabId == myPlayFabId);
 
-        // 내 점수
-        if (myEntry != null)
+        // 내 점수 - MyWeeklyRank/Score를 single source of truth로 사용
+        // (탑바, 게임오버 패널과 일관된 등수 표시 보장)
+        int myDisplayRank = isWeekly ? scoreManager.MyWeeklyRank : scoreManager.MyOverallRank;
+        int myDisplayScore = isWeekly ? scoreManager.MyWeeklyScore : scoreManager.MyOverallScore;
+
+        if (myDisplayRank > 0 && myDisplayScore >= 0)
         {
+            string myName = string.IsNullOrEmpty(PlayerData.Instance.nickName)
+                ? myPlayFabId
+                : PlayerData.Instance.nickName;
+            myUnit.SetCondition(
+                myDisplayRank - 1, // SetCondition은 0-based로 받음
+                myName,
+                myDisplayScore,
+                PlayerData.Instance.EquippedProfileImage
+            );
+            myUnit.gameObject.SetActive(true);
+        }
+        else if (myEntry != null)
+        {
+            // Fallback: MyWeeklyRank 미준비 상태에서 Top50 안에 내가 있으면 그 값으로
             myUnit.SetCondition(
                 myEntry.Position,
                 string.IsNullOrEmpty(myEntry.DisplayName)
@@ -156,25 +182,6 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
                 PlayerData.Instance.EquippedProfileImage
             );
             myUnit.gameObject.SetActive(true);
-        }
-        else
-        {
-            // Top50 밖: ScoreManager에 캐시된 내 기록 사용
-            int myRank = isWeekly ? scoreManager.MyWeeklyRank : scoreManager.MyOverallRank;
-            int myScore = isWeekly ? scoreManager.MyWeeklyScore : scoreManager.MyOverallScore;
-            if (myRank > 0 && myScore >= 0)
-            {
-                string myName = string.IsNullOrEmpty(PlayerData.Instance.nickName)
-                    ? myPlayFabId
-                    : PlayerData.Instance.nickName;
-                myUnit.SetCondition(
-                    myRank - 1, // SetCondition은 0-based로 받음
-                    myName,
-                    myScore,
-                    PlayerData.Instance.EquippedProfileImage
-                );
-                myUnit.gameObject.SetActive(true);
-            }
         }
 
         // 월드 랭킹
