@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 7485999504600054719}
   - component: {fileID: 1335029525796748430}
   m_Layer: 5
-  m_Name: "AppliedButton(\uAE30\uB2A5 \uC5F0\uACB0 \uBD80\uD0C1\uB4DC\uB9BD\uB2C8\uB2E4)"
+  m_Name: AppliedButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1193,6 +1193,7 @@ MonoBehaviour:
   - {fileID: 6276947464301577564}
   equipButton: {fileID: 6254177404474618305}
   buyButton: {fileID: 6170011439971145983}
+  appliedButton: {fileID: 7485999504600054719}
   diaShop: {fileID: 0}
   skinBoard: {fileID: 0}
 --- !u!114 &6291828647258174883

@@ -11,6 +11,7 @@ public class ProfilePanel : MonoBehaviour
     public List<ProfileSlot> slots = new();
     public Button equipButton;
     public Button buyButton;
+    public Button appliedButton;
     public RectTransform diaShop;
     [SerializeField] BoardManager skinBoard;
     int currentIndex = 0;
@@ -73,16 +74,19 @@ public class ProfilePanel : MonoBehaviour
         {
             buyButton.gameObject.SetActive(true);
             equipButton.gameObject.SetActive(false);
+            appliedButton.gameObject.SetActive(false);
         }
         else if (PlayerData.Instance.profileStatus[currentIndex] == 1 && PlayerData.Instance.EquippedProfileImage == currentIndex)
         {
             buyButton.gameObject.SetActive(false);
-            equipButton.gameObject.SetActive(true);
+            equipButton.gameObject.SetActive(false);
+            appliedButton.gameObject.SetActive(true);
         }
         else
         {
             buyButton.gameObject.SetActive(false);
             equipButton.gameObject.SetActive(true);
+            appliedButton.gameObject.SetActive(false);
         }
     }
     public void TryEquipProfile()
@@ -95,6 +99,10 @@ public class ProfilePanel : MonoBehaviour
         PlayerData.Instance.EquippedProfileImage = currentIndex;
         profileImage.sprite = ProfileList.Instance.profileList[currentIndex];
         SaveProfileIndexToPlayFab(currentIndex);
+
+        buyButton.gameObject.SetActive(false);
+        equipButton.gameObject.SetActive(false);
+        appliedButton.gameObject.SetActive(true);
     }
     public void RequestUnlockProfile(int index)
     {
