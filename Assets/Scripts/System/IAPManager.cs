@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.Purchasing;
 using PlayFab;
 using PlayFab.ClientModels;
-
+using Facebook.Unity;
+using IAPProduct = UnityEngine.Purchasing.Product;
 public class IAPManager : MonoBehaviour, IStoreListener
 {
     // --- 싱글톤 설정 ---
@@ -69,7 +70,7 @@ public class IAPManager : MonoBehaviour, IStoreListener
     {
         if (IsInitialized())
         {
-            Product product = m_StoreController.products.WithID(productId);
+            IAPProduct product = m_StoreController.products.WithID(productId);
             if (product != null && product.availableToPurchase)
             {
                 this.onPurchaseComplete = onComplete; // 콜백 저장
@@ -105,7 +106,11 @@ public class IAPManager : MonoBehaviour, IStoreListener
         PlayFabClientAPI.ValidateGooglePlayPurchase(request, result =>
         {
             Debug.LogError("✅ PlayFab 검증 성공!");
-
+            
+            FB.LogPurchase(
+                    (float)args.purchasedProduct.metadata.localizedPrice,
+                    args.purchasedProduct.metadata.isoCurrencyCode
+                );
             // 검증이 성공했을 때만 전달받은 콜백 실행
             onPurchaseComplete?.Invoke();
             onPurchaseComplete = null; // 사용 후 초기화
@@ -129,7 +134,7 @@ public class IAPManager : MonoBehaviour, IStoreListener
 
     public void OnInitializeFailed(InitializationFailureReason error) => Debug.LogError($"IAP 초기화 실패: {error}");
     public void OnInitializeFailed(InitializationFailureReason error, string message) => Debug.LogError($"IAP 초기화 실패: {error}, {message}");
-    public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
+    public void OnPurchaseFailed(IAPProduct product, PurchaseFailureReason failureReason)
     {
         Debug.LogError($"구매 실패: {product.definition.id}, 사유: {failureReason}");
         onPurchaseComplete = null; // 실패 시 콜백 제거

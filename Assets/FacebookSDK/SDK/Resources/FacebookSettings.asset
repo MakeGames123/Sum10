@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -2115301841, guid: c49f2b3ca212b47fc9cd8ce655177c89, type: 3}
+  m_Name: FacebookSettings
+  m_EditorClassIdentifier: 
+  selectedAppIndex: 0
+  clientTokens:
+  - 8a0087ce9db02cccb6891364c51bbfaf
+  appIds:
+  - 1545141410664492
+  appLabels:
+  - "\uB354\uD558\uB0E5"
+  cookie: 1
+  logging: 1
+  status: 1
+  xfbml: 0
+  frictionlessRequests: 1
+  androidKeystorePath: 72:5C:76:0C:28:72:85:E5:BA:A7:D1:0C:90:6E:87:68:92:1E:D9:D6
+  iosURLSuffix: 
+  appLinkSchemes:
+  - list: []
+  uploadAccessToken: 
+  autoLogAppEventsEnabled: 1
+  advertiserIDCollectionEnabled: 1
