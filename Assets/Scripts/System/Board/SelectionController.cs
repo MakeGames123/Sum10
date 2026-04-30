@@ -69,8 +69,11 @@ public class SelectionController
 
             foreach (var cell in selectedCells)
             {
-                if(cell.ReturnNum() > 0) gained++;
-                if(!cell.isHintCell) isHintPath = false;
+                if(cell.ReturnNum() > 0)
+                {
+                    gained++;
+                    if(!cell.isHintCell) isHintPath = false;
+                }
                 cell.SetNum(0);
             }
 

@@ -355,14 +355,13 @@ public class GameManager : MonoBehaviour
         text.GetComponent<RectTransform>().anchoredPosition = scoreTextPosition;
         text.GetComponent<TextFloating>().SetCondition("+" + scoreGain.ToString());
 
-        // 시간 추가 규칙 (경과 시간에 따라 감소)
+        // 시간 추가 규칙 (경과 시간에 따라 감소; 힌트 매칭 시 경과 무관 5초 고정)
         float timeBonus;
-        if (timeProgress < 30) timeBonus = 2f;
+        if (isHintPath) timeBonus = 5f;
+        else if (timeProgress < 30) timeBonus = 2f;
         else if (timeProgress < 60) timeBonus = 1.5f;
         else if (timeProgress < 120) timeBonus = 1f;
         else timeBonus = 0.5f;
-
-        if(isHintPath) timeBonus += 3;
 
         RemainingTime += timeBonus;
         playTime += timeBonus;
