@@ -11,7 +11,7 @@ public class SelectionController
     private readonly List<Cell> selectedCells = new();
     private bool isDragging;
     public Action OnKeyPadBlocked; //판 엎기
-    public Action<int> OnCellRemoved;
+    public Action<int, bool> OnCellRemoved;
 
     // 사운드 연결용 이벤트
     public Action OnSelectionStarted;       // 드래그 시작
@@ -65,14 +65,18 @@ public class SelectionController
         if (sum == 10)
         {
             int gained = 0;
+            bool isHintPath = true;
+
             foreach (var cell in selectedCells)
             {
                 if(cell.ReturnNum() > 0) gained++;
+                if(!cell.isHintCell) isHintPath = false;
                 cell.SetNum(0);
             }
 
             OnCellsDestroyed?.Invoke();
-            OnCellRemoved?.Invoke(gained);
+
+            OnCellRemoved?.Invoke(gained, isHintPath);
         }
         else
         {

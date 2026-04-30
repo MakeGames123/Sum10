@@ -5,6 +5,7 @@ public class Cell
 {
     int num;
     bool cellLock = false;
+    public bool isHintCell = false;
     public Vector2Int Position { get; private set; }
     public Action<bool> onValueChanged;
     public Action onRemoved;
@@ -21,7 +22,11 @@ public class Cell
         bool isAlreadyBlank = num == 0 && n == 0;
         num = n;
         onValueChanged?.Invoke(isAlreadyBlank);
-        if(num == 0) onRemoved?.Invoke();
+        if (num == 0)
+        {
+            isHintCell = false;
+            onRemoved?.Invoke();
+        }
     }
     public int ReturnNum()
     {
@@ -47,9 +52,10 @@ public class Cell
     }
     public void EnableHintMode()
     {
+        isHintCell = true;
         onEnableHintEvent?.Invoke();
     }
-    public void DisableHintMode()
+    public void DisableHintMode()//isHintCell 변경은 setnum에서 왜냐하면 보드매니저 CancelHint랑 호출 순서가 꼬임
     {
         onDisableHintEvent?.Invoke();
     }

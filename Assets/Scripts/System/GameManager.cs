@@ -4,6 +4,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using Facebook.Unity;
 
 public class GameManager : MonoBehaviour
 {
@@ -311,6 +312,13 @@ public class GameManager : MonoBehaviour
 
             AdCompletionSource?.TrySetResult(true);
         });
+
+        if(endScore >= 500) FB.LogAppEvent("score_500");
+        else if(endScore >= 250) FB.LogAppEvent("score_250");
+        else if(endScore >= 100) FB.LogAppEvent("score_100");
+        else if(endScore >= 50) FB.LogAppEvent("score_50");
+
+        FB.LogAppEvent("run_complete");
     }
 
     public void ResetIdleTimer()
@@ -323,7 +331,7 @@ public class GameManager : MonoBehaviour
         hintShownForCurrentIdle = false;
     }
 
-    public void HandleCellsRemoved(int gained)
+    public void HandleCellsRemoved(int gained, bool isHintPath)
     {
         if (gained <= 0 || !isRunning)
             return;
@@ -353,6 +361,8 @@ public class GameManager : MonoBehaviour
         else if (timeProgress < 60) timeBonus = 1.5f;
         else if (timeProgress < 120) timeBonus = 1f;
         else timeBonus = 0.5f;
+
+        if(isHintPath) timeBonus += 3;
 
         RemainingTime += timeBonus;
         playTime += timeBonus;
