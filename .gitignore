@@ -6,6 +6,8 @@
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
+*.aab
+*.apk
 Logs/
 UserSettings/
 Assets/AssetStoreTools*
