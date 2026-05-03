@@ -355,13 +355,33 @@ public class GameManager : MonoBehaviour
         text.GetComponent<RectTransform>().anchoredPosition = scoreTextPosition;
         text.GetComponent<TextFloating>().SetCondition("+" + scoreGain.ToString());
 
-        // 시간 추가 규칙 (경과 시간에 따라 감소; 힌트 매칭 시 경과 무관 5초 고정)
+        // 시간 추가 규칙
+        // - 일반 매칭: 경과 시간에 따라 감소 (2 → 1.5 → 1 → 0.5)
+        // - 힌트 매칭: 시간 감소분을 가산값이 보상해 합이 일정 (= 힌트 출현 5초 net 0)
+        //   점수 구간별 합 차등: <30:7초, <50:6초, <100:5초, <200:4초, ≥200:3초
+        //   (저점수=초보 보호, 고점수=farming 방지)
         float timeBonus;
-        if (isHintPath) timeBonus = 5f;
-        else if (timeProgress < 30) timeBonus = 2f;
-        else if (timeProgress < 60) timeBonus = 1.5f;
+        if (timeProgress < 30)       timeBonus = 2f;
+        else if (timeProgress < 60)  timeBonus = 1.5f;
         else if (timeProgress < 120) timeBonus = 1f;
-        else timeBonus = 0.5f;
+        else                         timeBonus = 0.5f;
+
+        if (isHintPath)
+        {
+            float hintAdd;
+            if (timeProgress < 30)       hintAdd = 3f;
+            else if (timeProgress < 60)  hintAdd = 3.5f;
+            else if (timeProgress < 120) hintAdd = 4f;
+            else                         hintAdd = 4.5f;
+
+            if (score < 30)        hintAdd += 2f;   // 합 7
+            else if (score < 50)   hintAdd += 1f;   // 합 6
+            else if (score >= 200) hintAdd -= 2f;   // 합 3
+            else if (score >= 100) hintAdd -= 1f;   // 합 4
+            // 50 ≤ score < 100: 합 5 (기본)
+
+            timeBonus += hintAdd;
+        }
 
         RemainingTime += timeBonus;
         playTime += timeBonus;
