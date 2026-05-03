@@ -47,7 +47,8 @@ public class SettingManager : MonoBehaviour
     }
     void OnHomeClicked()
     {
-        // 전면광고 → 게임 정리 → 로비 전환 (광고 제거/쿨다운 시 즉시 콜백)
+        // 광고 시청 동안 timer 정지 → 광고 끝나도 게임 안 끝나는 상태 보장
+        game.SuspendForAd();
         AdMobManager.Instance.ShowInterstitialAd(() =>
         {
             game.ForceEnd();
@@ -57,9 +58,13 @@ public class SettingManager : MonoBehaviour
     }
     void OnRetryClicked()
     {
+        game.SuspendForAd();
         AdMobManager.Instance.ShowInterstitialAd(() =>
         {
             Hide();
+            // 광고 중 EndRun이 발화했을 가능성 → GameOverPanel 명시적 정리
+            if (game.gameOverPanel != null) game.gameOverPanel.Hide();
+            UIController.Instance?.TransitionToInGame();
             game.RestartRun();
         });
     }

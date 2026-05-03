@@ -96,6 +96,8 @@ public class AdMobManager : MonoBehaviour
     }
     // 광고 닫힘 후 실행할 콜백 (퀘스트/점수 기록 용도)
     private System.Action _pendingAdCallback;
+    // 재진입 가드: 광고 표시 중 두 번째 호출이 _interstitialAd를 destroy하는 race 차단
+    private bool _isShowingAd = false;
 
     // 3. 광고 이벤트 핸들러 (광고가 닫혔을 때 다시 로드하는 등)
     private void RegisterEventHandlers(InterstitialAd ad)
@@ -103,6 +105,7 @@ public class AdMobManager : MonoBehaviour
         ad.OnAdFullScreenContentClosed += () =>
         {
             Debug.Log("광고 닫힘 → 쿨타임 시작 → 콜백 실행 → 다시 로드");
+            _isShowingAd = false;
             SaveLastAdTime(); // 광고 끝까지 봐야 쿨타임 시작
             _pendingAdCallback?.Invoke();
             _pendingAdCallback = null;
@@ -112,6 +115,7 @@ public class AdMobManager : MonoBehaviour
         ad.OnAdFullScreenContentFailed += (AdError error) =>
         {
             Debug.LogError("광고 표시 실패: " + error);
+            _isShowingAd = false;
             SaveLastAdTime(); // 실패도 쿨타임 시작 (무한 재시도 방지)
             _pendingAdCallback?.Invoke();
             _pendingAdCallback = null;
@@ -155,8 +159,18 @@ public class AdMobManager : MonoBehaviour
             return;
         }
 
+        // 재진입 가드: 이미 광고 표시 중이면 LoadInterstitialAd로 ad destroy되는 race 차단
+        // 첫 광고가 정상 종료해서 쿨타임/콜백 보장. 두 번째 호출자는 자기 콜백만 즉시 실행.
+        if (_isShowingAd)
+        {
+            Debug.Log("이미 광고 표시 중 → 두 번째 호출 무시 (콜백만 즉시 실행)");
+            onComplete?.Invoke();
+            return;
+        }
+
         if (_interstitialAd != null && _interstitialAd.CanShowAd())
         {
+            _isShowingAd = true;
             _pendingAdCallback = onComplete; // 광고 닫힘 시 호출
             _interstitialAd.Show();
             // SaveLastAdTime은 광고 닫힘 콜백(RegisterEventHandlers)에서 호출

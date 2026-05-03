@@ -281,6 +281,20 @@ public class GameManager : MonoBehaviour
         if (progress != null) StopCoroutine(progress);
         progress = null;
     }
+
+    // 다시하기/홈 광고 시청 직전에 호출. 광고 동안 timer/오프라인 시간 차감 차단.
+    // 광고 후 RestartRun(retry) 또는 ForceEnd(home)로 정상 마무리.
+    public void SuspendForAd()
+    {
+        isRunning = false;
+        if (progress != null)
+        {
+            StopCoroutine(progress);
+            progress = null;
+        }
+        // OnApplicationPause(false) 시 stale ExitTime으로 ApplyOfflineTime이 시간 차감하는 위험 차단
+        PlayerPrefs.DeleteKey(ExitTimeKey);
+    }
     private void EndRun()
     {
         isRunning = false;
