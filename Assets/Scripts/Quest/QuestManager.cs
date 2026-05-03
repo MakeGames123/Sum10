@@ -304,6 +304,19 @@ public class QuestManager : MonoBehaviour
 
         ClaimRewardToServer(quest.data);
     }
+    public bool HasUnclaimedReward()
+    {
+        foreach (var q in todayQuests)
+        {
+            if (q.isClear && !q.isClaimed) return true;
+        }
+        return false;
+    }
+    public void OpenPanel()
+    {
+        if (panel != null)
+            panel.gameObject.SetActive(true);
+    }
     void Shuffle(List<QuestData> list)
     {
         for (int i = 0; i < list.Count; i++)

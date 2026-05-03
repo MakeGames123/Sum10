@@ -132,7 +132,7 @@ public class AdMobManager : MonoBehaviour
         };
     }
     // 광고 쿨타임 설정을 위한 변수 (초 단위)
-    private const float AdCooldownSeconds = 300f;
+    private const float AdCooldownSeconds = 240f;
     private const string LastAdTimeKey = "LastRewardedAdTime";
 
     /// <summary>
@@ -218,4 +218,17 @@ public class AdMobManager : MonoBehaviour
 
         return Mathf.Max(0, remaining);
     }
+
+#if UNITY_EDITOR
+    // [에디터 전용] F8: 광고 쿨타임 리셋. 빌드에선 컴파일 자체에서 제외됨.
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F8))
+        {
+            PlayerPrefs.DeleteKey(LastAdTimeKey);
+            PlayerPrefs.Save();
+            Debug.Log("[AdMob Test] 쿨타임 리셋 완료. 즉시 광고 노출 가능.");
+        }
+    }
+#endif
 }

@@ -64,15 +64,26 @@ public class UIController : MonoBehaviour
         }
 
         gameManager.OnGameOver.AddListener(TransitionToGameOver);
-        setting.homeButton.onClick.AddListener(TransitionToLobby);
         gameOverPanel.homeButton.onClick.AddListener(TransitionToLobby);
         gameOverPanel.replayButton.onClick.AddListener(HandleReplayRequested);
+    }
+
+    private void Update()
+    {
+        // 인게임 중 안드로이드 뒤로가기 → 설정 토글 (어르신 UX)
+        if (Input.GetKeyDown(KeyCode.Escape) && CurrentState == UIState.InGame)
+        {
+            SettingManager.Instance?.Toggle();
+        }
     }
     /// <summary>
     /// 로비 상태로 전환
     /// </summary>
     public void TransitionToLobby()
     {
+        // 게임오버 → 홈 진입인지 캡처 (CurrentState 변경 전)
+        bool fromGameOver = CurrentState == UIState.GameOver;
+
         CurrentState = UIState.Lobby;
         gameOverPanel.Hide();
         TopBanner.Instance.RemoveBanner();
@@ -88,6 +99,12 @@ public class UIController : MonoBehaviour
         // 인게임 UI 숨기기
         inGameUIRoot.anchoredPosition = disablePos;
         SetActive(fastRestartButton, false);
+
+        // 게임오버 후 홈 진입 시, 수령 가능한 퀘스트가 있으면 퀘스트 창 자동 오픈
+        if (fromGameOver && QuestManager.Instance != null && QuestManager.Instance.HasUnclaimedReward())
+        {
+            QuestManager.Instance.OpenPanel();
+        }
 
         OnUIStateChanged?.Invoke(CurrentState);
     }

@@ -42,8 +42,35 @@ public class SettingManager : MonoBehaviour
         rect = GetComponent<RectTransform>();
         LoadSettings();
         BindUI();
-        homeButton.onClick.AddListener(game.ForceEnd);
-        retryButton.onClick.AddListener(Hide);
+        homeButton.onClick.AddListener(OnHomeClicked);
+        retryButton.onClick.AddListener(OnRetryClicked);
+    }
+    void OnHomeClicked()
+    {
+        // 전면광고 → 게임 정리 → 로비 전환 (광고 제거/쿨다운 시 즉시 콜백)
+        AdMobManager.Instance.ShowInterstitialAd(() =>
+        {
+            game.ForceEnd();
+            Hide();
+            UIController.Instance?.TransitionToLobby();
+        });
+    }
+    void OnRetryClicked()
+    {
+        AdMobManager.Instance.ShowInterstitialAd(() =>
+        {
+            Hide();
+            game.RestartRun();
+        });
+    }
+    public bool IsOpen()
+    {
+        return rect != null && rect.anchoredPosition == Vector2.zero;
+    }
+    public void Toggle()
+    {
+        if (IsOpen()) Hide();
+        else Show();
     }
     void Start()
     {

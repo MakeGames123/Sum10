@@ -11134,10 +11134,34 @@ PrefabInstance:
       propertyPath: alarm
       value: 
       objectReference: {fileID: 201854946}
+    - target: {fileID: 1755643137585821936, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1755643137585821936, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1889057690241081008, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1889057690241081008, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2613982322698508328, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
       propertyPath: alarm
       value: 
       objectReference: {fileID: 201854946}
+    - target: {fileID: 2887596800711964000, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887596800711964000, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5282983531147626312, guid: ae48304e6f1cd0848af7b900d31528c2, type: 3}
       propertyPath: m_Name
       value: Quest
