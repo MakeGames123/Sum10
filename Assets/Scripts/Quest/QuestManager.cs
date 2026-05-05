@@ -202,7 +202,7 @@ public class QuestManager : MonoBehaviour
                 isClaimed = isClaimed
             });
 
-            if(isClear && !isClaimed) alarm.enabled = true;
+            if (isClear && !isClaimed) alarm.enabled = true;
         }
     }
     public void RerollQuest(int index)
@@ -358,6 +358,14 @@ public class QuestManager : MonoBehaviour
         todayQuests.Clear();
 
         Debug.Log("퀘스트 로컬 데이터 초기화 완료");
+    }
+    public void AllClearQuest() // 테스트용
+    {
+        QuestManager.Instance.AddProgress("daily_play_time", 999);
+        QuestManager.Instance.AddProgress("play_count", 999);
+        QuestManager.Instance.AddProgress("single_game_cell_clear", 999);
+        QuestManager.Instance.AddProgress("single_game_score", 999);
+        QuestManager.Instance.AddProgress("single_game_combo", 999);
     }
 }
 [System.Serializable]

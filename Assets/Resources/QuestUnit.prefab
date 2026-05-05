@@ -510,6 +510,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 7190295206735269262}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &668450566095945063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -920,7 +932,7 @@ GameObject:
   - component: {fileID: 6548198515656899146}
   - component: {fileID: 7190295206735269262}
   m_Layer: 5
-  m_Name: "Alarm(\uAE30\uB2A5\uC5F0\uACB0\uBD80\uD0C1\uB4DC\uB9BD\uB2C8\uB2E4)"
+  m_Name: Alarm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1553,6 +1565,7 @@ MonoBehaviour:
   rerollButton: {fileID: 6924123643642317951}
   claimButton: {fileID: 430439347176734024}
   claimDisableImage: {fileID: 7309479060744577299}
+  claimAlarm: {fileID: 7190295206735269262}
   done: {fileID: 5855535746557097605}
 --- !u!1 &6242289161474575036
 GameObject:

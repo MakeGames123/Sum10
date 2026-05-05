@@ -12,6 +12,7 @@ public class QuestUnit : MonoBehaviour
     [SerializeField] Button rerollButton;
     [SerializeField] Button claimButton;
     [SerializeField] Image claimDisableImage;
+    [SerializeField] Image claimAlarm;
     [SerializeField] GameObject done;
 
     public void SetCondition(QuestState state)
@@ -25,6 +26,7 @@ public class QuestUnit : MonoBehaviour
         amount.text = state.data.RewardDiamond.ToString();
 
         claimDisableImage.enabled = !state.isClear;
+        claimAlarm.enabled = state.isClear && !state.isClaimed;
         rerollButton.gameObject.SetActive(!state.isRerolled && !state.isClear);
         claimButton.enabled = state.isClear && !state.isClaimed;
         done.SetActive(state.isClaimed);

@@ -167,7 +167,7 @@ public class NickNamePurchase : MonoBehaviour
                 break;
 
             case "INVALID_LENGTH":
-                SetStatus("닉네임 길이는 3~10자여야 합니다.");
+                SetStatus("닉네임 길이는 2~6자여야 합니다.");
                 break;
 
             case "INVALID_CHAR":
