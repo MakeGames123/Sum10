@@ -63,6 +63,7 @@ public class ScoreManager : MonoBehaviour
                 _ = FetchWeeklyTop50WithProfilesAsync();
                 _ = FetchTop50WithProfilesAsync();
                 _ = SyncHighScoreFromServerAsync();
+                ValidateScoreInvariant();
             });
         }
     }
@@ -210,9 +211,56 @@ public class ScoreManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 리더보드에 점수 제출 (주간 최고 갱신 시에만 호출할 것)
+    /// 로그인 시 invariant(weekly ≤ permanent) 검증 + 깨진 데이터 자동 보정
+    /// 위반 발견 시 permanent ← weekly 로 끌어올림 (사용자 박탈감 방지: 큰 값 기준)
+    /// 원인: 이전 버전에서 weekly/permanent 분리 호출 → 그 사이 앱 종료 시 weekly 만 저장됨
     /// </summary>
-    public Task<bool> SubmitWeeklyScoreAsync(int score)
+    private void ValidateScoreInvariant()
+    {
+        PlayFabClientAPI.GetPlayerStatistics(
+            new GetPlayerStatisticsRequest
+            {
+                StatisticNames = new List<string> { STAT_WEEKLY_HIGH_SCORE, STAT_HIGH_SCORE }
+            },
+            result =>
+            {
+                int weekly = 0;
+                int permanent = 0;
+                foreach (var stat in result.Statistics)
+                {
+                    if (stat.StatisticName == STAT_WEEKLY_HIGH_SCORE) weekly = stat.Value;
+                    else if (stat.StatisticName == STAT_HIGH_SCORE) permanent = stat.Value;
+                }
+
+                if (weekly > permanent && weekly > 0)
+                {
+                    Debug.LogWarning($"[Score Invariant] weekly={weekly} > permanent={permanent}. Healing → permanent={weekly}");
+                    _ = SubmitScoresAsync(weekly, weekly);
+
+                    PlayFabClientAPI.WritePlayerEvent(
+                        new WriteClientPlayerEventRequest
+                        {
+                            EventName = "score_invariant_healed",
+                            Body = new Dictionary<string, object>
+                            {
+                                { "weekly", weekly },
+                                { "permanent_before", permanent }
+                            }
+                        },
+                        null,
+                        error => Debug.LogError("[Score Invariant] event log failed: " + error.GenerateErrorReport())
+                    );
+                }
+            },
+            error => Debug.LogError("[Score Invariant] check failed: " + error.GenerateErrorReport())
+        );
+    }
+
+    /// <summary>
+    /// 주간/역대 점수를 한 번의 API 호출로 원자적으로 제출
+    /// 두 stat 사이에 사용자가 앱 종료해도 invariant(weekly ≤ permanent) 위반 불가
+    /// </summary>
+    public Task<bool> SubmitScoresAsync(int weeklyScore, int permanentScore)
     {
         var tcs = new TaskCompletionSource<bool>();
 
@@ -223,36 +271,12 @@ public class ScoreManager : MonoBehaviour
                 new StatisticUpdate
                 {
                     StatisticName = STAT_WEEKLY_HIGH_SCORE,
-                    Value = score
-                }
-            }
-        };
-
-        PlayFabClientAPI.UpdatePlayerStatistics(
-            request,
-            result => tcs.TrySetResult(true),
-            error =>
-            {
-                Debug.LogError("리더보드 전송 실패: " + error.GenerateErrorReport());
-                tcs.TrySetResult(false);
-            }
-        );
-
-        return tcs.Task;
-    }
-
-    public Task<bool> SubmitHighScore(int score)
-    {
-        var tcs = new TaskCompletionSource<bool>();
-
-        var request = new UpdatePlayerStatisticsRequest
-        {
-            Statistics = new List<StatisticUpdate>
-            {
+                    Value = weeklyScore
+                },
                 new StatisticUpdate
                 {
                     StatisticName = STAT_HIGH_SCORE,
-                    Value = score
+                    Value = permanentScore
                 }
             }
         };

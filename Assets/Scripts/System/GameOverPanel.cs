@@ -77,12 +77,19 @@ public class GameOverPanel : MonoBehaviour
         if (gameManager.AdCompletionSource != null)
             await gameManager.AdCompletionSource.Task;
 
-        // 5. 주간 최고 갱신 시
-        if (finalScore > weeklyBest)
+        // 5. 점수 제출 (주간/역대 원자적 - 앱 종료 시 invariant 위반 방지)
+        bool needWeeklyUpdate = finalScore > weeklyBest;
+        bool needPermanentUpdate = finalScore > previousBestScore;
+        if (needWeeklyUpdate || needPermanentUpdate)
         {
-            // 점수 제출
-            await scoreManager.SubmitWeeklyScoreAsync(finalScore);
+            int newWeekly = Mathf.Max(weeklyBest, finalScore);
+            int newPermanent = Mathf.Max(previousBestScore, finalScore);
+            await scoreManager.SubmitScoresAsync(newWeekly, newPermanent);
+        }
 
+        // 6. 주간 갱신 시 리더보드 동기화
+        if (needWeeklyUpdate)
+        {
             // PlayFab 확정 순위 가져오기 (모든 UI의 single source of truth)
             await scoreManager.FetchWeeklyTop50WithProfilesAsync();
 
@@ -102,10 +109,9 @@ public class GameOverPanel : MonoBehaviour
             scoreManager.CacheCalculatedRank(currentRank, finalScore);
         }
 
-        // 6. 역대 최고 갱신 시 저장 (로컬 + 서버 백업)
-        if (finalScore > previousBestScore)
+        // 7. 역대 갱신 시 후속 처리 (전체 Top50 캐시 갱신)
+        if (needPermanentUpdate)
         {
-            await scoreManager.SubmitHighScore(finalScore);
             Invoke(nameof(delay), 1f);
         }
 
