@@ -6,8 +6,8 @@
   <Project Path="PlayFab.csproj" />
   <Project Path="Google.Play.Games.csproj" />
   <Project Path="PlayFabEditorExtensions.csproj" />
-  <Project Path="Assembly-CSharp-firstpass.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Assembly-CSharp-firstpass.csproj" />
   <Project Path="GoogleMobileAds.Editor.csproj" />
   <Project Path="GoogleMobileAds.Mediation.UnityAds.iOS.csproj" />
   <Project Path="PlayFabSDKEditor.csproj" />
