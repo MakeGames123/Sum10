@@ -1,4 +1,43 @@
 Google Mobile Ads Unity Plugin Change Log
+
+**************
+Version 11.2.0
+**************
+
+- Updated the GMA iOS SDK dependency version to 13.4.0.
+- Updated the GMA Android SDK dependency version to 25.3.0.
+- Updated the GMA Android Next-Gen SDK dependency version to 1.1.1.
+- Added NativeOverlay support for GMA Android Next-Gen SDK.
+- Added next_gen_resolution_strategy.gradle to use lower webkit and error_prone_annotation library to support older Unity Editors.
+- Fixed an issue with fetching error code from Next-Gen AdInspectorError Class.
+- Added destroyAll() support for Preloading APIs when using Next-Gen SDK
+- Fixed getRewardItem() API returning NPE on UnityRewardedAd and UnityRewardedInterstitialAd class when using Next-Gen SDK.
+
+**************
+Version 11.1.0
+**************
+
+- Updated the GMA iOS SDK dependency version to 13.3.0.
+- Updated the GMA Android SDK dependency version to 25.2.0
+- Defer and raise userRewardEarnedCallback on main thread when running on iOS.
+- Added Android Settings Architecture toggle to allow for switching between the GMA Next-Gen Android SDK and the Legacy GMA Android SDK.
+- Added ability to surface ResponseInfo via LoadAdError object in case Ad Preloader fails to load an ad.
+- Added support for large banner ad size to the AdSize class.
+- Fixed GetRequestConfiguration on iOS to return RequestConfiguration set on the GMA iOS SDK.
+
+**************
+Version 11.0.0
+**************
+
+- Updated the GMA iOS SDK dependency version to 13.0.0.
+- Updated the GMA Android SDK dependency version to 25.0.0
+- Updated the UMP Android dependency version to 4.0.0.
+- Updated the UMP iOS dependency version to 3.1.0.
+- Added ConsentSyncId parameter to sync a user's consent across apps configured for consent syncing via the UMP SDK.
+- Fixed Analytics module firing error logs.
+- Fixed corner case where OnAdFullScreenContentClosed was not fired when the Home button was pressed at the same time as the ad was being dismissed.
+- Fire onPaidEvent when showing Rewarded and RewardedInterstitial ads in the Unity Editor.
+
 **************
 Version 10.7.0
 **************
