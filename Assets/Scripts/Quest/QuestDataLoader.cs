@@ -86,6 +86,8 @@ public class QuestDataLoader : MonoBehaviour
                 AccumulateType = CleanString(cols[6]),
                 ConditionValue = ToInt(cols[7]),
                 RewardDiamond = ToInt(cols[8]),
+                titleId = ToInt(cols[9]),
+                DescriptionId = ToInt(cols[10]),
             };
 
             dataDict[i] = data; // 또는 MissionId 기반으로 바꿔도 됨
@@ -149,4 +151,6 @@ public class QuestData
     public string AccumulateType;
     public int ConditionValue;
     public int RewardDiamond;
+    public int titleId;
+    public int DescriptionId;
 }

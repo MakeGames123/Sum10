@@ -101,23 +101,50 @@ public class DiaShopUI : MonoBehaviour
             bool isPaid = result.Data.ContainsKey("IsPaidUser") && result.Data["IsPaidUser"].Value == "1";
             bool isClaimed = result.Data.ContainsKey("FirstBonusClaimed") && result.Data["FirstBonusClaimed"].Value == "1";
 
-            if (!isPaid)
+            // LocalizationManager가 살아있는지 체크하는 방어 조건문
+            if (LocalizationLoader.Instance != null)
             {
-                freeBonusButton.interactable = false;
-                if (freeBonusStatusText) freeBonusStatusText.text = "결제 후 활성화";
-            }
-            else if (isClaimed)
-            {
-                freeBonusButton.interactable = false;
-                if (freeBonusStatusText) freeBonusStatusText.text = "수령 완료";
+                if (!isPaid)
+                {
+                    freeBonusButton.interactable = false;
+                    // 예시 ID 24: "결제 후 활성화" (시트에 새로 등록 필요)
+                    if (freeBonusStatusText) freeBonusStatusText.text = LocalizationLoader.Instance.GetText(29);
+                }
+                else if (isClaimed)
+                {
+                    freeBonusButton.interactable = false;
+                    // 예시 ID 25: "수령 완료" (시트에 새로 등록 필요)
+                    if (freeBonusStatusText) freeBonusStatusText.text = LocalizationLoader.Instance.GetText(58);
+                }
+                else
+                {
+                    freeBonusButton.interactable = true;
+                    // 이미지 18번 ID: "적용하기/Apply" (또는 "무료"용 신규 ID 세팅)
+                    if (freeBonusStatusText) freeBonusStatusText.text = LocalizationLoader.Instance.GetText(59);
+
+                    // 버튼 클릭 시 CloudScript 호출
+                    freeBonusButton.onClick.AddListener(() => OnClickFree(data));
+                }
             }
             else
             {
-                freeBonusButton.interactable = true;
-                if (freeBonusStatusText) freeBonusStatusText.text = "무료";
-
-                // 버튼 클릭 시 CloudScript 호출
-                freeBonusButton.onClick.AddListener(() => OnClickFree(data));
+                // 로컬라이즈 매니저가 없을 때의 최소한의 Fallback 조건문
+                if (!isPaid)
+                {
+                    freeBonusButton.interactable = false;
+                    if (freeBonusStatusText) freeBonusStatusText.text = "결제 후 활성화";
+                }
+                else if (isClaimed)
+                {
+                    freeBonusButton.interactable = false;
+                    if (freeBonusStatusText) freeBonusStatusText.text = "수령 완료";
+                }
+                else
+                {
+                    freeBonusButton.interactable = true;
+                    if (freeBonusStatusText) freeBonusStatusText.text = "무료";
+                    freeBonusButton.onClick.AddListener(() => OnClickFree(data));
+                }
             }
         }, null);
     }
@@ -136,9 +163,34 @@ public class DiaShopUI : MonoBehaviour
             else
             {
                 bonusTag.gameObject.SetActive(true);
-                if (tmp != null) tmp.text = item.bonusTag;
+                if (tmp != null)
+                {
+                    // 전역 매니저 클래스명(LocalizationManager)으로 통일 및 Null 체크
+                    if (LocalizationLoader.Instance != null) 
+                    { 
+                        // 시트에서 "보너스 {0}" 또는 "Bonus +{0}" 형태의 포맷 텍스트를 가져옴
+                        string rawBonusFormat = LocalizationLoader.Instance.GetText(item.bonusStringId);
+                        
+                        // 중괄호 포맷 문자가 포함되어 있다면 string.Format으로 bonusQty를 결합
+                        if (rawBonusFormat.Contains("{0}"))
+                        {
+                            tmp.text = string.Format(rawBonusFormat, item.bonusQty);
+                        }
+                        else
+                        {
+                            // 시트에 숫자가 생략된 텍스트만 있을 경우 뒤에 붙여주는 예외 방어 코드
+                            tmp.text = $"{rawBonusFormat} {item.bonusQty}";
+                        }
+                    }
+                    else  
+                    { 
+                        // 로컬라이즈 매니저가 없을 때 하드코딩 Fallback 처리 (한글 기본)
+                        tmp.text = $"보너스 {item.bonusQty}"; 
+                    }
+                }
             }
         }
+        
         var amountArea = product.Find("AmountArea");
         if (amountArea != null)
         {

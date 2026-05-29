@@ -4,8 +4,6 @@ using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
 using TMPro;
-using GooglePlayGames.BasicApi; // TMP 사용을 위해 필수
-
 
 public class NickNamePurchase : MonoBehaviour
 {
@@ -20,6 +18,7 @@ public class NickNamePurchase : MonoBehaviour
         string inputName = nicknameInputField.text;
         RequestNicknameToken(inputName);
     }
+
     public void RequestNicknameToken(string nickname)
     {
         PlayFabClientAPI.ExecuteCloudScript(
@@ -34,7 +33,8 @@ public class NickNamePurchase : MonoBehaviour
                 var data = result.FunctionResult as IDictionary<string, object>;
                 if (data == null)
                 {
-                    SetStatus("서버 응답이 올바르지 않습니다.");
+                    // ID 57: "서버 오류"
+                    SetStatusById(57);
                     return;
                 }
 
@@ -50,16 +50,17 @@ public class NickNamePurchase : MonoBehaviour
                 }
 
                 pendingToken = data["token"].ToString();
-
                 ConfirmNickname();
             },
             error =>
             {
                 Debug.LogError(error.GenerateErrorReport());
-                SetStatus("서버 통신 오류가 발생했습니다.");
+                // ID 57: "서버 오류"
+                SetStatusById(57);
             }
         );
     }
+
     public void ConfirmNickname()
     {
         if (string.IsNullOrEmpty(pendingToken))
@@ -80,7 +81,8 @@ public class NickNamePurchase : MonoBehaviour
                 var data = result.FunctionResult as IDictionary<string, object>;
                 if (data == null)
                 {
-                    SetStatus("서버 응답 오류");
+                    // ID 57: "서버 오류"
+                    SetStatusById(57);
                     return;
                 }
 
@@ -95,20 +97,20 @@ public class NickNamePurchase : MonoBehaviour
                     return;
                 }
 
-                // ⭐ 여기서 nickname 받아서 Apply 호출
+                // 여기서 nickname 받아서 Apply 호출
                 string nickname = data["nickname"].ToString();
-
                 ApplyNickname(nickname);
-
                 pendingToken = null;
             },
             error =>
             {
                 Debug.LogError(error.GenerateErrorReport());
-                SetStatus("서버 오류");
+                // ID 57: "서버 오류"
+                SetStatusById(57);
             }
         );
     }
+
     void ApplyNickname(string nickname)
     {
         PlayFabClientAPI.UpdateUserTitleDisplayName(
@@ -118,14 +120,17 @@ public class NickNamePurchase : MonoBehaviour
             },
             result =>
             {
-                SetStatus("닉네임 변경 성공!");
+                // ID 56: "닉네임 변경 성공!"
+                SetStatusById(56);
                 profile.UpdateProfile();
                 PlayerData.Instance.AdjustDiamond(-100);
             },
             error =>
             {
                 Debug.LogError(error.GenerateErrorReport());
-                SetStatus("이미 사용중인 닉네임입니다.");
+                
+                // ID 49: "이미 사용중인 닉네임입니다."
+                SetStatusById(49);
 
                 // ⭐ 환불 요청
                 PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest
@@ -138,53 +143,75 @@ public class NickNamePurchase : MonoBehaviour
                 {
                     Debug.Log("환불 처리 완료");
                 },
-                error =>
+                errorResult =>
                 {
-                    Debug.LogError("환불 실패: " + error.GenerateErrorReport());
+                    Debug.LogError("환불 실패: " + errorResult.GenerateErrorReport());
                 });
             }
         );
     }
+
     public void ResetInput()
     {
         nicknameInputField.text = "";
-        SetStatus("");
+        if (statusText != null) statusText.text = "";
     }
+
     void HandleNicknameFailReason(string reason)
     {
         switch (reason)
         {
             case "EMPTY":
-                SetStatus("닉네임을 입력해주세요.");
+                // ID 48: "닉네임을 입력해주세요."
+                SetStatusById(48);
                 break;
 
             case "ALREADY_EXISTS":
-                SetStatus("이미 사용중인 닉네임 입니다.");
+                // ID 49: "이미 사용중인 닉네임 입니다."
+                SetStatusById(49);
                 break;
 
             case "INSUFFICIENT_DIAMOND":
-                SetStatus("다이아가 부족합니다.");
+                // ID 54: "다이아가 부족합니다."
+                SetStatusById(54);
                 break;
 
             case "INVALID_LENGTH":
-                SetStatus("닉네임 길이는 3~6자여야 합니다.");
+                // ID 50: "닉네임 길이는 3~10자여야 합니다." (시트 기준 문구 매칭)
+                SetStatusById(50);
                 break;
 
             case "INVALID_CHAR":
-                SetStatus("닉네임에는 한글, 영문, 숫자만 사용할 수 있어요.");
+                // ID 51: "한글, 영문, 숫자만 사용할 수 있습니다." (쉼표 예외 확인 완료)
+                SetStatusById(51);
                 break;
 
             case "BANNED_WORD":
-                SetStatus("사용할 수 없는 단어가 포함되어 있어요.");
+                // ID 52: "사용할 수 없는 단어가 포함되어 있습니다."
+                SetStatusById(52);
                 break;
 
             default:
-                SetStatus("닉네임을 변경할 수 없습니다.");
+                // ID 53: "닉네임을 변경할 수 없습니다."
+                SetStatusById(53);
                 break;
         }
     }
-    private void SetStatus(string msg)
+
+    /// <summary>
+    /// ID를 인자로 받아 LocalizationManager를 통해 statusText에 반영하는 메서드
+    /// </summary>
+    private void SetStatusById(int stringId)
     {
-        if (statusText != null) statusText.text = msg;
+        if (statusText == null) return;
+
+        if (LocalizationLoader.Instance != null)
+        {
+            statusText.text = LocalizationLoader.Instance.GetText(stringId);
+        }
+        else
+        {
+            Debug.LogWarning($"[Localization Missing] ID: {stringId}");
+        }
     }
 }

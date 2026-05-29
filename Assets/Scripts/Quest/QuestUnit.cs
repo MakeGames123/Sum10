@@ -14,11 +14,10 @@ public class QuestUnit : MonoBehaviour
     [SerializeField] Image claimDisableImage;
     [SerializeField] Image claimAlarm;
     [SerializeField] GameObject done;
-
     public void SetCondition(QuestState state)
     {
-        condition.text = state.data.DescriptionKr;
-        title.text = state.data.TitleKr;
+        condition.text = LocalizationLoader.Instance.GetText(state.data.DescriptionId);
+        title.text = LocalizationLoader.Instance.GetText(state.data.titleId);
         gageText.text = state.progress.ToString() + "/" + state.data.ConditionValue.ToString();
         gage.value = state.data.ConditionValue > 0
             ? (float)state.progress / state.data.ConditionValue

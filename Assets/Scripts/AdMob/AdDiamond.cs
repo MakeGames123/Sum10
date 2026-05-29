@@ -15,6 +15,7 @@ public class AdDiamond : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI countText;
     [SerializeField] TextMeshProUGUI buttonText;
+    [SerializeField] TextMeshProUGUI claimTextTMP;
     [SerializeField] Button button;
     [SerializeField] PlayFabLoginManager login;
     [SerializeField] DiaPopup popup;
@@ -23,15 +24,50 @@ public class AdDiamond : MonoBehaviour
     bool isCooldown = false;
     const int COOLDOWN_MINUTES = 30;
     const string CooldownKey = "AdDiamond_NextTime";
+    string freeText;
+    string claimText;
 
     void Start()
     {
         login.onLogined.AddListener(GetDiamondCount);
         button.onClick.AddListener(TryAdDiamond);
-        buttonText.text = "무료 보석";
+
+        if (LocalizationLoader.Instance == null)
+        {
+            LocalizationLoader.Instance.OnLocalizationLoaded += GetText;
+        }
+        else if (LocalizationLoader.Instance.isLoaded)
+        {
+            GetText();
+        }
+        else
+        {
+            LocalizationLoader.Instance.OnLocalizationLoaded += GetText;
+        }
+
         LoadCooldown();
     }
+    void GetText()
+    {
+        if (LocalizationLoader.Instance == null) return;
 
+        string freeText = LocalizationLoader.Instance.GetText(64);
+
+
+        // 3. 쿨타임이 아닐 때만 버튼 텍스트를 무료 텍스트로 즉시 갱신
+        if (!isCooldown)
+        {
+            buttonText.text = freeText;
+        }
+
+        // 수령/보상 텍스트 (ID: 62)
+        claimText = LocalizationLoader.Instance.GetText(62);
+        // 2. 중괄호 포맷 {0}이 포함되어 있으면 rewardAmount를 결합하여 저장
+        if (claimText.Contains("{0}"))
+        {
+            claimTextTMP.text = string.Format(claimText, rewardAmount);
+        }
+    }
     void Update()
     {
         if (!isCooldown) return;
@@ -41,7 +77,7 @@ public class AdDiamond : MonoBehaviour
         if (remain.TotalSeconds <= 0)
         {
             isCooldown = false;
-            buttonText.text = "무료 보석";
+            buttonText.text = freeText;
             PlayerPrefs.DeleteKey(CooldownKey);
             return;
         }
@@ -53,7 +89,7 @@ public class AdDiamond : MonoBehaviour
         if (!PlayerPrefs.HasKey(CooldownKey))
         {
             isCooldown = false;
-            buttonText.text = "무료 보석";
+            buttonText.text = freeText;
             return;
         }
 
