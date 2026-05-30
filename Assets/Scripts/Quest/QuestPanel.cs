@@ -49,6 +49,17 @@ public class QuestPanel : MonoBehaviour
         int hours = remain.Hours;
         int minutes = remain.Minutes;
 
-        resetTime.text = $"남은 시간 : {hours}h {minutes}m";
+        if (LocalizationLoader.Instance != null)
+        {
+            string fmt = LocalizationLoader.Instance.GetText(72);
+            if (fmt.Contains("{0}"))
+                resetTime.text = string.Format(fmt, hours, minutes);
+            else
+                resetTime.text = $"{fmt} : {hours}h {minutes}m";
+        }
+        else
+        {
+            resetTime.text = $"남은 시간 : {hours}h {minutes}m";
+        }
     }
 }

@@ -2507,6 +2507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 7507129657734950232}
+  blockerPanel: {fileID: 7193793580797885056}
   onClick:
     m_PersistentCalls:
       m_Calls:
@@ -2535,6 +2536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 7193793580797885056}
+  blockerPanel: {fileID: 0}
   onClick:
     m_PersistentCalls:
       m_Calls: []

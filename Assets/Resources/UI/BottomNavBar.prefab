@@ -192,6 +192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9e938e58e92094e8d5d0d26e99fd9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mode: 0
   referenceWidth: 1080
   referenceHeight: 2340
   allowScaleUp: 1
@@ -331,6 +332,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 2930027d516d67344b99fa18563fdc73, type: 2}
+    - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
+      propertyPath: m_TextWrappingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
       propertyPath: m_characterSpacing
       value: -5
@@ -477,6 +482,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: d48803257030c1a4c9936b5d23e4c180, type: 2}
     - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
+      propertyPath: m_TextWrappingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
       propertyPath: m_characterSpacing
       value: -5
       objectReference: {fileID: 0}
@@ -621,6 +630,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 622461722bb945140a2c80f983f87478, type: 2}
+    - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
+      propertyPath: m_TextWrappingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
       propertyPath: m_characterSpacing
       value: -5
@@ -778,6 +791,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 2930027d516d67344b99fa18563fdc73, type: 2}
+    - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
+      propertyPath: m_TextWrappingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
       propertyPath: m_characterSpacing
       value: -5
