@@ -25,7 +25,6 @@ public class QuestPanel : MonoBehaviour
 
     void OnDisable()
     {
-        Debug.Log("asd");
         foreach (var state in manager.todayQuests)
         {
             if (!state.isClaimed && state.isClear) alarm.enabled = true;

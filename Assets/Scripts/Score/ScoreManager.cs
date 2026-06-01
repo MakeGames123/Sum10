@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-    public const string STAT_WEEKLY_HIGH_SCORE = "HighScore";
-    public const string STAT_HIGH_SCORE = "PermanentHighScore";
+    public string STAT_WEEKLY_HIGH_SCORE = "HighScore";
+    public string STAT_HIGH_SCORE = "PermanentHighScore";
 
     // 이전 주간 순위 + 주간 최고점수 (게임 시작 시 저장)
     private int previousWeeklyRank = -1;
@@ -53,6 +53,17 @@ public class ScoreManager : MonoBehaviour
 
     private void Start()
     {
+        if (LocalizationLoader.Instance.CurrentLanguage == "kr")
+        {
+            STAT_WEEKLY_HIGH_SCORE = "HighScore";
+            STAT_HIGH_SCORE = "PermanentHighScore";
+        }
+        else
+        {
+            STAT_WEEKLY_HIGH_SCORE = "HighScore_EN";
+            STAT_HIGH_SCORE = "PermanentHighScore_EN";
+        }
+
         if (login == null)
             login = FindObjectOfType<PlayFabLoginManager>();
 
