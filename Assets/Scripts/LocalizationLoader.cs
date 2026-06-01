@@ -13,7 +13,7 @@ public class LocalizationLoader : MonoBehaviour
 
     [Header("언어 설정")]
     [Tooltip("현재 게임에 적용 중인 언어 코드입니다.")]
-    [SerializeField] private string currentLanguage = "kr";
+    [SerializeField] private string currentLanguage = "en";
     public string CurrentLanguage => currentLanguage;
 
 #if UNITY_EDITOR

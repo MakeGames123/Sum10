@@ -310,7 +310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
       propertyPath: m_text
-      value: "\uC2A4\uD0A8"
+      value: Skin
       objectReference: {fileID: 0}
     - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
       propertyPath: m_fontAsset
@@ -608,7 +608,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
       propertyPath: m_text
-      value: "\uD648"
+      value: Home
       objectReference: {fileID: 0}
     - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
       propertyPath: m_fontAsset
@@ -769,7 +769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
       propertyPath: m_text
-      value: "\uB7AD\uD0B9"
+      value: Rank
       objectReference: {fileID: 0}
     - target: {fileID: 3811438781532569064, guid: f0e2d313f56da6944bc6c81d4be565cc, type: 3}
       propertyPath: m_fontAsset

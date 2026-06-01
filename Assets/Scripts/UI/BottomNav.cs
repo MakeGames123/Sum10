@@ -38,8 +38,23 @@ public class BottomNav : MonoBehaviour
         shopButton.onClick.AddListener(() => UpdateButtonUI(shopButton));
         rankButton.onClick.AddListener(() => UpdateButtonUI(rankButton));
     }
+    bool _initialized;
+
+    void OnEnable()
+    {
+        TryInitialize();
+    }
+
     void Start()
     {
+        TryInitialize();
+    }
+
+    void TryInitialize()
+    {
+        if (_initialized) return;
+        if (homeButton == null || homePanel == null) return;
+        _initialized = true;
         EnablePanel(homePanel);
         UpdateButtonUI(homeButton);
     }

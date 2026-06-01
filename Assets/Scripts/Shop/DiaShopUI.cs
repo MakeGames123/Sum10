@@ -176,10 +176,15 @@ public class DiaShopUI : MonoBehaviour
                         {
                             tmp.text = string.Format(rawBonusFormat, item.bonusQty);
                         }
-                        else
+                        else if (item.bonusQty > 0)
                         {
                             // 시트에 숫자가 생략된 텍스트만 있을 경우 뒤에 붙여주는 예외 방어 코드
                             tmp.text = $"{rawBonusFormat} {item.bonusQty}";
+                        }
+                        else
+                        {
+                            // bonusQty가 0이면 (예: 첫 구매 상품) 숫자 없이 시트 값 그대로
+                            tmp.text = rawBonusFormat;
                         }
                     }
                     else  

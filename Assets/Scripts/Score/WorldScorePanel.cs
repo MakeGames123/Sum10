@@ -117,7 +117,16 @@ public class WorldScorePanel : MonoBehaviour, IMainPanel
 
         while (remaining > 0)
         {
-            coolTimeText.text = $"{Mathf.CeilToInt(remaining)}초";
+            int sec = Mathf.CeilToInt(remaining);
+            if (LocalizationLoader.Instance != null)
+            {
+                string fmt = LocalizationLoader.Instance.GetText(73);
+                coolTimeText.text = fmt.Contains("{0}") ? string.Format(fmt, sec) : $"{sec}{fmt}";
+            }
+            else
+            {
+                coolTimeText.text = $"{sec}초";
+            }
             yield return new WaitForSeconds(1f);
             remaining -= 1f;
         }

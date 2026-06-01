@@ -859,6 +859,7 @@ GameObject:
   - component: {fileID: 3012686304777057920}
   - component: {fileID: 7180779849528326508}
   - component: {fileID: 5831513713666571409}
+  - component: {fileID: 3496928722697821655}
   m_Layer: 5
   m_Name: Logo
   m_TagString: Untagged
@@ -996,6 +997,21 @@ MonoBehaviour:
   releaseDuration: 0.15
   pressEase: 6
   releaseEase: 27
+--- !u!114 &3496928722697821655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5123509841306310190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e73ee1d1508ec54893858f9abd55b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 3012686304777057920}
+  krSprite: {fileID: 21300000, guid: ec1f9a372184bd2479f120fffc1cc5e7, type: 3}
+  enSprite: {fileID: -8024048890680042719, guid: 3a330dfe80cd49741add35a240a8bd94, type: 3}
 --- !u!1 &5308442877806295295
 GameObject:
   m_ObjectHideFlags: 0

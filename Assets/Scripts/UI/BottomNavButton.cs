@@ -123,4 +123,13 @@ public class BottomNavButton : MonoBehaviour, IPointerClickHandler
         iconTween?.Kill();
         labelTween?.Kill();
     }
+
+    private void OnEnable()
+    {
+        // OnDisable에서 tween이 중간에 죽고 다시 활성화된 경우 selected 상태 시각 복원
+        if (isSelected)
+        {
+            PlaySelectAnimation();
+        }
+    }
 }
