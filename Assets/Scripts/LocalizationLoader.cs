@@ -23,8 +23,10 @@ public class LocalizationLoader : MonoBehaviour
 #endif
 
     public bool isLoaded = false;
+    public bool isInitialized = false;
     private Dictionary<int, LocalizationData> localizationDict = new Dictionary<int, LocalizationData>();
     public event Action OnLocalizationLoaded;
+    public event Action OnInitialize;
 
     void Awake()
     {
@@ -58,6 +60,8 @@ public class LocalizationLoader : MonoBehaviour
         {
             currentLanguage = editorTestLanguage.ToLower();
             Debug.Log($"[Localization] 에디터 테스트 언어 적용: {currentLanguage}");
+            OnInitialize?.Invoke();
+            isInitialized = true;
             return;
         }
 #endif
@@ -77,7 +81,8 @@ public class LocalizationLoader : MonoBehaviour
                 currentLanguage = "en"; // 지원하지 않는 언어일 경우 기본값(영어)
                 break;
         }
-
+        OnInitialize?.Invoke();
+        isInitialized = true;
         Debug.Log($"[Localization] 시스템 언어 감지 완료: {systemLang} -> 코드: {currentLanguage}");
     }
 
@@ -117,7 +122,6 @@ public class LocalizationLoader : MonoBehaviour
                     data.id = parsedId;
                     data.kr = CleanValue(row[1]).Replace("\\n", "\n");
                     data.en = CleanValue(row[2]).Replace("\\n", "\n");
-                    if (data.id == 51) Debug.Log(data.kr + " " + data.en);
 
                     if (!localizationDict.ContainsKey(data.id))
                     {

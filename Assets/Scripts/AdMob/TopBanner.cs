@@ -39,7 +39,7 @@ public class TopBanner : MonoBehaviour
 
     public void PlaceBannerAd()
     {
-        if (_bannerView != null || PlayerData.Instance.GetAdStatus())
+        if (_bannerView != null || PlayerData.Instance.GetAdStatus() || LocalizationLoader.Instance.CurrentLanguage != "kr")
             return;
 
         AdSize adSize =

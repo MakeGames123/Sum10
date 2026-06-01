@@ -12,9 +12,16 @@ public class AdRemoveButton : MonoBehaviour
     [SerializeField] TextMeshProUGUI text;
     private const string REMOVE_ADS_KEY = "removeAds";
 
+    private bool isEn = false;
+
     private void Awake()
     {
         login.onLogined.AddListener(CheckRemoveAdsStatus);
+    }
+
+    void Start()
+    {
+        LocalizationLoader.Instance.OnLocalizationLoaded += CheckEn;
     }
 
     private void CheckRemoveAdsStatus()
@@ -45,10 +52,26 @@ public class AdRemoveButton : MonoBehaviour
 
     private void ApplyRemoveAdsStatus(bool removed)
     {
+        if (isEn)
+        {
+            image.enabled = false;
+            text.enabled = false;
+            return;
+        }
         //Debug.Log(removed);
         // 이미 구매했다면 버튼 비활성화
         image.enabled = !removed;
         text.enabled = !removed;
         PlayerData.Instance.SetAdStatus(removed);
+    }
+
+    private void CheckEn()
+    {
+        if (LocalizationLoader.Instance.CurrentLanguage != "kr")
+        {
+            image.enabled = false;
+            text.enabled = false;
+            isEn = true;
+        }
     }
 }

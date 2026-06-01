@@ -145,7 +145,7 @@ public class AdMobManager : MonoBehaviour
     /// </summary>
     public void ShowInterstitialAd(System.Action onComplete = null)
     {
-        if (PlayerData.Instance.GetAdStatus())
+        if (PlayerData.Instance.GetAdStatus() || LocalizationLoader.Instance.CurrentLanguage != "kr")
         {
             onComplete?.Invoke(); // 광고 제거 유저 → 즉시 콜백
             return;
