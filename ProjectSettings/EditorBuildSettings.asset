@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/RefactorScene.unity
     guid: f0489dffb8e5bfe488f1281b5c58caba
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: bbda0a735934c1442841662ccd13ee6b, type: 2}
+    com.unity.localization.settings: {fileID: 11400000, guid: 3f0d9573fe30d264c939cb50ada45542, type: 2}
+  m_UseUCBPForAssetBundles: 0

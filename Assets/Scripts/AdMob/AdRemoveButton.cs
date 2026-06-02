@@ -18,12 +18,6 @@ public class AdRemoveButton : MonoBehaviour
     {
         login.onLogined.AddListener(CheckRemoveAdsStatus);
     }
-
-    void Start()
-    {
-        LocalizationLoader.Instance.OnLocalizationLoaded += CheckEn;
-    }
-
     private void CheckRemoveAdsStatus()
     {
         PlayFabClientAPI.GetUserData(
@@ -52,7 +46,7 @@ public class AdRemoveButton : MonoBehaviour
 
     private void ApplyRemoveAdsStatus(bool removed)
     {
-        if (isEn)
+        if (LocalizationLoader.Instance.CurrentLanguage != "kr")
         {
             image.enabled = false;
             text.enabled = false;
@@ -63,15 +57,5 @@ public class AdRemoveButton : MonoBehaviour
         image.enabled = !removed;
         text.enabled = !removed;
         PlayerData.Instance.SetAdStatus(removed);
-    }
-
-    private void CheckEn()
-    {
-        if (LocalizationLoader.Instance.CurrentLanguage != "kr")
-        {
-            image.enabled = false;
-            text.enabled = false;
-            isEn = true;
-        }
     }
 }
