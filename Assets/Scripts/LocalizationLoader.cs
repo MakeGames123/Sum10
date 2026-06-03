@@ -113,8 +113,9 @@ public class LocalizationLoader : MonoBehaviour
 
         for (int i = 1; i < lines.Length; i++)
         {
-            string[] row = lines[i].Split(',');
-            if (row.Length >= 3)
+            List<string> row = ParseCsvLine(lines[i]);
+
+            if (row.Count >= 3)
             {
                 if (int.TryParse(CleanValue(row[0]), out int parsedId))
                 {
@@ -130,6 +131,34 @@ public class LocalizationLoader : MonoBehaviour
                 }
             }
         }
+    }
+    private List<string> ParseCsvLine(string line)
+    {
+        List<string> fields = new List<string>();
+
+        bool inQuotes = false;
+        string currentField = "";
+
+        foreach (char c in line)
+        {
+            if (c == '"')
+            {
+                inQuotes = !inQuotes;
+            }
+            else if (c == ',' && !inQuotes)
+            {
+                fields.Add(currentField);
+                currentField = "";
+            }
+            else
+            {
+                currentField += c;
+            }
+        }
+
+        fields.Add(currentField);
+
+        return fields;
     }
 
     private string CleanValue(string value) => string.IsNullOrEmpty(value) ? "" : value.Trim('"');

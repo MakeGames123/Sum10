@@ -10,6 +10,6 @@ public class ShopItemData
     public int bonusQty;
     public int totalQty;
     public string productId;       // IAP Product ID
-    public string priceText;       // "₩1,100" (나중에 IAP localizedPriceString으로 교체)
+    public int priceTextId;       // "₩1,100" (나중에 IAP localizedPriceString으로 교체)
     public int bonusStringId;       
 }

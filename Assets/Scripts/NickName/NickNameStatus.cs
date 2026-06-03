@@ -52,9 +52,8 @@ public class NickNameStatus : MonoBehaviour
     /// </summary>
     public void SetStatusById(int stringId)
     {
-        if (statusText == null) return;
-
         Debug.Log(stringId);
+        if (statusText == null) return;
 
         if (LocalizationLoader.Instance != null)
         {

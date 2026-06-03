@@ -150,7 +150,7 @@ public class ShopDataLoader : MonoBehaviour
                 bonusQty = int.Parse(cols[4]),
                 totalQty = int.Parse(cols[5]),
                 productId = cols[6],
-                priceText = cols[7],
+                priceTextId = int.Parse(cols[7]),
                 bonusStringId = int.Parse(cols[8]),
             };
 

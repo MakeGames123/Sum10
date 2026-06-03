@@ -221,7 +221,8 @@ public class DiaShopUI : MonoBehaviour
                 var tmp = priceText.GetComponent<TextMeshProUGUI>();
                 if (tmp != null)
                 {
-                    tmp.text = item.priceText;
+                    tmp.text =  LocalizationLoader.Instance.GetText(item.priceTextId);
+                    Debug.Log(tmp.text);
                 }
             }
         }
